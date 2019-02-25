@@ -1,0 +1,21 @@
+<%- include nav.ejs %>
+    <div class="container">
+        <h1 class='text-center mb-5'>Check the chords of your favorite artists</h1>
+        <div class='row'>    
+            <div class='col-md-8'>
+                <h4 class='text-center mt-2'>Choose your favorite artist</h4>
+                <ul class="list-group">
+                    <% data.forEach(function(item){ %>
+                        <li class="list-group-item artist-item"><a href='/guitar-chords/<%= item.link %>'><%= item.artist %></a><span><%= item.nOfSongs %> songs</span></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <div class='col-md-4'>
+                <h4 class='text-center mt-2'>The Panther Recomends</h4>
+                <ul class="list-group">
+                    <p>recommended list</p>
+                </ul>
+            </div>
+        </div>
+    </div>
+<%- include footer.ejs %>

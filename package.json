@@ -1,0 +1,20 @@
+{
+  "name": "chords_app",
+  "version": "1.0.0",
+  "description": "app for guitar chords",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "pedro",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "mongoose": "^5.4.7"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  }
+}

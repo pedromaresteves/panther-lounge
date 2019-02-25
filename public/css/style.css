@@ -1,0 +1,17 @@
+.video-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.video-item{
+    margin-bottom: 15px;
+}
+
+.artist-item{
+    display: flex;
+    justify-content: space-between;
+}
+
+.warns{
+    color:red;
+}
