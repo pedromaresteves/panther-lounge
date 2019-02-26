@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const SongModel = require("../models/song");
 const utils = require("../utils/utils");
+const stuff = require("../stuff.js");
 
-mongoose.connect('mongodb://admin:admin123@ds247410.mlab.com:47410/panterloungedb', {useNewUrlParser: true});
+//TODO: HIDE CONNECTION
+mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
