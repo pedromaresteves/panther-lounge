@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const ArtistTestModel = require("./models/artistTest");
 const stuff = require("../stuff.js");
-//TODO: HIDE CONNECTION
+
 mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

@@ -3,7 +3,6 @@ const SongModel = require("../models/song");
 const utils = require("../utils/utils");
 const stuff = require("../stuff.js");
 
-//TODO: HIDE CONNECTION
 mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 
 var db = mongoose.connection;
@@ -59,7 +58,6 @@ module.exports = {
     },
     song : function(req,res){
       // 1. Get song from DB and Paint it
-      //TODO: VERIFY THAT I'M PAINTING THE SONG ACCORDING TO THE ARTIST!
       let artistParamUnhiphenized = utils.unhiphenize(req.params.artist);
       let songParamUnhuphenized = utils.unhiphenize(req.params.song);
       let artistRegex = new RegExp("^" + artistParamUnhiphenized + "$", "gi");
