@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 var guitarChordsController = require("../controllers/guitarChordsController");
 const bodyParser = require("body-parser");
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
-//var jsonParser = bodyParser.json()
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.get("/", guitarChordsController.index);  
 router.get("/add-song", guitarChordsController.getAddSong);
@@ -12,7 +11,7 @@ router.post("/add-song", urlencodedParser, guitarChordsController.postAddSong);
 router.get("/add-song-success", guitarChordsController.getAddSongSuccess);
 router.get("/edit-song/:artist/:song", urlencodedParser, guitarChordsController.getEditSong);
 
-router.get("/:artist/", guitarChordsController.artistList);  
-router.get("/:artist/:song", guitarChordsController.song);  
+router.get("/:artist/", guitarChordsController.artistList);
+router.get("/:artist/:song", guitarChordsController.song);
 
 module.exports = router;

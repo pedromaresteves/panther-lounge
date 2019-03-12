@@ -1,6 +1,7 @@
 var express = require("express");
 var indexRouter = require("./routes/index");
-var guitarChordsRouter = require("./routes/guitarChords")
+var guitarChordsRouter = require("./routes/guitarChords");
+var apiRouter = require("./routes/api");
 var app = express();
 
 //set up template engine
@@ -12,6 +13,9 @@ app.use(express.static("./public"));
 //fire routers
 app.use('/', indexRouter);
 app.use('/guitar-chords', guitarChordsRouter);
+
+//fire API router
+app.use("/api", apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
