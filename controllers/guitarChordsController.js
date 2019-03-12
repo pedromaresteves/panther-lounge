@@ -3,7 +3,6 @@ const SongModel = require("../models/song");
 const utils = require("../utils/utils");
 const stuff = require("../stuff.js");
 
-//TODO: HIDE CONNECTION
 mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 
 var db = mongoose.connection;
@@ -13,35 +12,20 @@ db.once('open', function() {
 });
 
 module.exports = {
-    index : function(req, res){ //CHORDS IN SONG BANK
-      // 1.Get available artists
-      // 2.Order Artists
-      // 3.Get Number of Songs for each artist
-      // 4.Generate link for each artist
-      SongModel.distinct("artist").then(result =>{
-        return result.sort(utils.orderAz);
-      }).then(result => {
-        let generatedArtistLink;
-        let listOfArtists = [];
-        for(let i = 0; i< result.length; i++){
-          SongModel.countDocuments({artist:result[i]}).then(number=>{
-            generatedArtistLink = utils.linkify(result[i]);
-            listOfArtists.push({artist : result[i], nOfSongs : number, link : generatedArtistLink});
-            if(i === result.length-1){
-              return listOfArtists;
-            }
-          }).then(result => {
-            if(result){
-              res.render("guitarChords.ejs", {data: result}); 
-            }
-          }); 
-        }
-      });
+    index : function(req, res){ //SONGS IN SONG BANK
+      SongModel.aggregate([
+        //The lowerName property is only used to sort by name
+        {$group:{_id : {name : "$artist", lowerName: { "$toLower": "$artist" }}, total : { $sum: 1 }}},
+        {$sort:{'_id.lowerName' : 1}}
+        ]).then(result=>{
+          let finalArray = [];
+          result.forEach(function(item){
+            finalArray.push({artist:item._id.name, nOfSongs: item.total, link: utils.linkify(item._id.name)})
+          });
+          res.render("guitarChords.ejs", {data: finalArray}); 
+        });
     },
     artistList : function(req, res){ //SONGS ACCORDING TO ARTIST
-      // 1. return songs from one artist
-      // 2. order songs
-      // 3. Generate link for each song
       let artistParamUnhiphenized = utils.unhiphenize(req.params.artist);
       var artistRegex = new RegExp("^" + artistParamUnhiphenized + "$", "gi");
       SongModel.find({artist: artistRegex}).then(result => {
@@ -57,9 +41,7 @@ module.exports = {
         res.render("error.ejs", {url: req.url, errorMessage : err.message})
       });
     },
-    song : function(req,res){
-      // 1. Get song from DB and Paint it
-      //TODO: VERIFY THAT I'M PAINTING THE SONG ACCORDING TO THE ARTIST!
+    song : function(req,res){ //Get song from DB and Paint it
       let artistParamUnhiphenized = utils.unhiphenize(req.params.artist);
       let songParamUnhuphenized = utils.unhiphenize(req.params.song);
       let artistRegex = new RegExp("^" + artistParamUnhiphenized + "$", "gi");
@@ -96,7 +78,11 @@ module.exports = {
         res.render("addSong.ejs", {songData : result})
       }).catch(err => {
         console.log(req);
-        res.render("error.ejs", {url: req.url, errorMessage: err.message})
+        res.render("error.ejs", {url: req.url, errorMessage: err.message});
       });
+    },
+    deleteSong : function(req,res){
+      console.log("bitch please");
+      res.end();
     }
 }

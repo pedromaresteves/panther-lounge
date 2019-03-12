@@ -3,7 +3,7 @@ mongoose.Promise = global.Promise;
 const stuff = require("../stuff.js");
 
 before(function(done){
-    //TODO: HIDE CONNECTION
+
     mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
