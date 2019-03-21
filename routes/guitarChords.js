@@ -6,9 +6,6 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.get("/", guitarChordsController.index);  
 router.get("/add-song", guitarChordsController.getAddSong);
-
-router.post("/add-song", urlencodedParser, guitarChordsController.postAddSong);
-router.get("/add-song-success", guitarChordsController.getAddSongSuccess);
 router.get("/edit-song/:artist/:song", urlencodedParser, guitarChordsController.getEditSong);
 
 router.get("/:artist/", guitarChordsController.artistList);

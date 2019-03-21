@@ -1,4 +1,4 @@
-export default function addSongScript() {
+export default function artistPage() {
 
 var menu = document.getElementById("available-songs");
 var deleteSongsButtons = document.getElementsByClassName("delete-song");
@@ -24,8 +24,7 @@ function deleteSong(e){
     httpRequest.onreadystatechange = function(){    
         if(httpRequest.readyState === 4){
           const response = JSON.parse(httpRequest.response);
-
-          var errorDiv = document.createElement("span"); 
+          var errorDiv = document.createElement("div"); 
           var errorMsg = document.createTextNode(response.deletedMsg); 
           errorDiv.className += "text-muted text-center text-monospace";
           errorDiv.appendChild(errorMsg);
@@ -40,7 +39,6 @@ function deleteSong(e){
           }, 3000);
         }
     };
-    
     httpRequest.open('DELETE', songToDeleteUrl); //MAKE FUNCTION WORK
     httpRequest.send();
   }

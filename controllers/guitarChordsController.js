@@ -49,22 +49,13 @@ module.exports = {
       SongModel.findOne({title: songRegex, artist: artistRegex}).then(result => {
         res.render("songs.ejs", {song:result.lyricsChords, artist:result.artist})
       }).catch(err => {
-        console.log(req);
         res.render("error.ejs", {url: req.url, errorMessage: err.message})
       });
     },
     getAddSong : function(req,res){
         res.render("addSong.ejs", {songData:null})
     },
-    postAddSong : function(req,res){
-      const newSong = new SongModel({
-        artist: req.body.artist,
-        title: req.body.title,
-        lyricsChords: JSON.parse(req.body.lyrics).ops[0].insert
-      });
-      newSong.save();
-      res.redirect('/guitar-chords/add-song-success');
-    },
+
     getAddSongSuccess : function(req,res){
       res.render("addSongSuccess.ejs");
     },
@@ -74,15 +65,9 @@ module.exports = {
       let artistRegex = new RegExp("^" + artistParamUnhiphenized + "$", "gi");
       let songRegex = new RegExp("^" + songParamUnhuphenized + "$", "gi");
       SongModel.findOne({title: songRegex, artist: artistRegex}).then(result => {
-        console.log(result);
         res.render("addSong.ejs", {songData : result})
       }).catch(err => {
-        console.log(req);
         res.render("error.ejs", {url: req.url, errorMessage: err.message});
       });
     },
-    deleteSong : function(req,res){
-      console.log("bitch please");
-      res.end();
-    }
 }

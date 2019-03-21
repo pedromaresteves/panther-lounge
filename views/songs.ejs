@@ -1,5 +1,5 @@
 <%- include nav.ejs %>
 <div class="container">
-    <%- song.replace("\n", "<br>") %>
+    <%- song.replace(/\n/g, '<br>') %>
 </div>
 <%- include footer.ejs %>
