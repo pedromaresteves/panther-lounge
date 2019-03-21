@@ -1,4 +1,4 @@
-export default function addSongScript() {
+export default function addSong() {
 
     //Quill settings
     const options = {
@@ -16,10 +16,10 @@ export default function addSongScript() {
     let lyricsChordsSender = document.querySelector('input[name=lyrics]');
     let sendFormButton = document.querySelector('#submitButton');
 
+
     //If editing a song, we get the lyrics and chords and fill the text editor
     if(lyricsChordsSender.value){
-        console.log(lyricsChordsSender.value);
-        quill.insertText(0, lyricsChordsSender.value, true);
+        quill.setText(lyricsChordsSender.attributes.value.value);
     }
     
 
@@ -52,20 +52,61 @@ export default function addSongScript() {
 
     //Only allow saving if all field have values
     for(let i=0; i<formFields.length; i++){
-    formFields[i].addEventListener('blur', function( event ) {
-        let checkForm = checkFormValues(artistField.value,titleField.value);
-        if(checkForm.errors === false ){
-        sendFormButton.disabled = false;
-        } else {
-        sendFormButton.disabled = true;
-        }
+        formFields[i].addEventListener('blur', function( event ) {
+            let checkForm = checkFormValues(artistField.value,titleField.value);
+            if(checkForm.errors === false ){
+            sendFormButton.disabled = false;
+            } else {
+            sendFormButton.disabled = true;
+            }
         });
     }
-
+    if(checkFormValues(artistField.value,titleField.value).errors === false){
+        sendFormButton.disabled = false;
+    }
 
     //Submiting Quill content through form
     form.onsubmit = function(e) {
+        const addSongApiUrl = window.location.href.replace("guitar-chords", "api");
+        lyricsChordsSender.value = JSON.stringify(quill.getContents());
+        const songData = JSON.stringify({
+            artist:artistField.value,
+            title: titleField.value,
+            lyricsAndChords: lyricsChordsSender.value
+        });
+        var httpRequest;
     
-    lyricsChordsSender.value = JSON.stringify(quill.getContents());
+
+        e.preventDefault();
+        httpRequest = new XMLHttpRequest();
+        if (!httpRequest) {
+          alert('Giving up :( Cannot create an XMLHTTP instance');
+          return false;
+        }
+    
+        httpRequest.onreadystatechange = function(){    
+            if(httpRequest.readyState === 4){
+              const response = JSON.parse(httpRequest.response);
+              if(response.errorMsg){
+                const errorDiv = document.createElement("div"); 
+                const errorMsg = document.createTextNode(response.errorMsg); 
+                errorDiv.className += "text-danger text-center text-monospace";
+                errorDiv.appendChild(errorMsg);
+                form.prepend(errorDiv);
+                const intervalID = window.setInterval(function(){
+                  form.removeChild(errorDiv);
+                  clearInterval(intervalID);
+                }, 3000);
+                return true;
+              }
+              if(response.redirectUrl){
+                window.location = response.redirectUrl;
+                return true;
+              }
+            }
+        };
+        httpRequest.open('POST', addSongApiUrl);
+        httpRequest.setRequestHeader('Content-Type', 'application/json');
+        httpRequest.send(songData);
     }
 }
