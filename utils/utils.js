@@ -14,11 +14,22 @@
       },
     linkify : function (name){
       name = name.toLowerCase();
-      name = name.replace(/\s/g, '-')
+      name = name.replace(/(%20)/g, '_');
+      name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+      //name = encodeURIComponent(name);
       return name
     },
-    unhiphenize : function (name){
-      name = name.replace(/-/g, ' ')
+    unlinkify : function (name){      
+      name = name.replace(/_/g, '%20')
       return name
     },
+    capitalizeName : function(string){
+      let artistCapitalized = [];
+      string = string.split(" ");
+      string.forEach((word)=>{
+        word = word[0].toUpperCase() + word.slice(1, word.length)
+        artistCapitalized.push(word)
+      });
+      return artistCapitalized.join(" ");
+    }
   }

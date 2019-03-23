@@ -1,0 +1,8 @@
+Fix entering songs with ? and shit
+Forbid using underscore _ in names of artists or titles
+In song lyrics and chords, add tool tips do chords
+Allow transposing chords
+Add addSong button
+Add addSong button in artistPage and autofill artist field
+Create login system with Oauth
+Improve Song View

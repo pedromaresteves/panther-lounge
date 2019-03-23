@@ -36,7 +36,7 @@ function deleteSong(e){
             if(response.redirectUrl){
               window.location = response.redirectUrl;
             }
-          }, 3000);
+          }, 1500);
         }
     };
     httpRequest.open('DELETE', songToDeleteUrl); //MAKE FUNCTION WORK

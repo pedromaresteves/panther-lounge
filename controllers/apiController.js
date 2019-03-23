@@ -8,15 +8,16 @@ mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 module.exports = {
     addSong : function(req,res){
         const newSong = new SongModel({
-          artist: req.body.artist,
-          title: req.body.title,
+          artist: encodeURIComponent(req.body.artist.toLowerCase()),
+          title: encodeURIComponent(req.body.title),
           lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert
         });
         const data = {
             redirectUrl: "",
             errorMsg: ""
         };
-        SongModel.find({artist: newSong.artist, title: newSong.title}).then(result=>{
+        let newSongTitleRegex = new RegExp("^" + newSong.title + "$", "gi");
+        SongModel.find({artist: newSong.artist, title: newSongTitleRegex}).then(result=>{
           if(result.length === 0){
             newSong.save();
             data.redirectUrl = `http://127.0.0.1:3000/guitar-chords/${utils.linkify(newSong.artist)}/${utils.linkify(newSong.title)}`;
@@ -28,31 +29,30 @@ module.exports = {
     },
     editSong : function(req,res){
         const newSong = new SongModel({
-          artist: req.body.artist,
-          title: req.body.title,
-          lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert
+            artist: encodeURIComponent(req.body.artist.toLowerCase()),
+            title: encodeURIComponent(req.body.title),
+            lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert
         });
         const data = {
             redirectUrl: `http://127.0.0.1:3000/guitar-chords/${utils.linkify(newSong.artist)}/${utils.linkify(newSong.title)}`,
             errorMsg: ""
         };
-        SongModel.find({artist: newSong.artist, title: newSong.title}).then(result=>{
+        let newSongTitleRegex = new RegExp("^" + newSong.title + "$", "gi");
+        SongModel.find({artist: newSong.artist, title: newSongTitleRegex}).then(result=>{
             newSong.update();
             data.redirectUrl = `http://127.0.0.1:3000/guitar-chords/${utils.linkify(newSong.artist)}/${utils.linkify(newSong.title)}`;
             return res.send(data);
         });
     },
     deleteSong : function(req, res){ //SONGS IN SONG BANK
-        let artistParamUnhiphenized = utils.unhiphenize(req.params.artist);
-        let songParamUnhuphenized = utils.unhiphenize(req.params.song);
-        let artistRegex = new RegExp("^" + artistParamUnhiphenized + "$", "gi");
-        let songRegex = new RegExp("^" + songParamUnhuphenized + "$", "gi");
-    
+        console.log(req.params.artist, req.params.title);
+        let artistRegex = new RegExp("^" + utils.unlinkify(req.params.artist) + "$", "gi");
+        let titleRegex = new RegExp("^" + utils.unlinkify(req.params.title) + "$", "gi");
         const data = {
             redirectUrl: "",
             deletedMsg: "The song was deleted. Bye bye! :("
         };
-        SongModel.findOneAndDelete({artist: artistRegex, title: songRegex}).then(result => {
+        SongModel.findOneAndDelete({artist: artistRegex, title: titleRegex}).then(result => {
             return SongModel.findOne({artist: artistRegex});
         }).then(result =>{
             if(result){

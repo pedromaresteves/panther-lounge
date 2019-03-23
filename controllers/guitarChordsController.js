@@ -20,34 +20,32 @@ module.exports = {
         ]).then(result=>{
           let finalArray = [];
           result.forEach(function(item){
-            finalArray.push({artist:item._id.name, nOfSongs: item.total, link: utils.linkify(item._id.name)})
+            finalArray.push({artist: decodeURIComponent(utils.capitalizeName(item._id.name)), nOfSongs: item.total, link: encodeURIComponent(utils.linkify(item._id.name))})
           });
           res.render("guitarChords.ejs", {data: finalArray}); 
         });
     },
     artistList : function(req, res){ //SONGS ACCORDING TO ARTIST
-      let artistParamUnhiphenized = utils.unhiphenize(req.params.artist);
-      var artistRegex = new RegExp("^" + artistParamUnhiphenized + "$", "gi");
+      let artistRegex = new RegExp("^" + utils.unlinkify(req.params.artist) + "$", "gi");
       SongModel.find({artist: artistRegex}).then(result => {
-        let artistName = result[0].artist; //Every result will have the same artistname, I just get the first.
+        let artistName = decodeURIComponent(result[0].artist); //Every result will have the same artistname, I just get the first.
         let songsAndLinks = [];
         let generateSongLink;
         for(let i = 0; i < result.length; i++){
-          generateSongLink = utils.linkify(result[i].title);
+          generateSongLink = encodeURIComponent(utils.linkify(result[i].title));
           songsAndLinks.push({title : result[i].title, link : generateSongLink})
         }
-        res.render("artistPage.ejs", {artist: artistName, data: songsAndLinks, artistParam : req.params.artist, recommended: {item : "Poop"}})
+        res.render("artistPage.ejs", {artist: utils.capitalizeName(artistName), data: songsAndLinks, artistParam : req.params.artist, recommended: {item : "Poop"}})
       }).catch(err => {
         res.render("error.ejs", {url: req.url, errorMessage : err.message})
       });
     },
     song : function(req,res){ //Get song from DB and Paint it
-      let artistParamUnhiphenized = utils.unhiphenize(req.params.artist);
-      let songParamUnhuphenized = utils.unhiphenize(req.params.song);
-      let artistRegex = new RegExp("^" + artistParamUnhiphenized + "$", "gi");
-      let songRegex = new RegExp("^" + songParamUnhuphenized + "$", "gi");
-      SongModel.findOne({title: songRegex, artist: artistRegex}).then(result => {
-        res.render("songs.ejs", {song:result.lyricsChords, artist:result.artist})
+      console.log(req.params.artist, req.params.title);
+      let artistRegex = new RegExp("^" + utils.unlinkify(req.params.artist) + "$", "gi");
+      let titleRegex = new RegExp("^" + utils.unlinkify(req.params.title) + "$", "gi");
+      SongModel.findOne({title: titleRegex, artist: artistRegex}).then(result => {
+        res.render("songs.ejs", {song:result.lyricsChords, artist: decodeURIComponent(result.artist)})
       }).catch(err => {
         res.render("error.ejs", {url: req.url, errorMessage: err.message})
       });
@@ -55,16 +53,10 @@ module.exports = {
     getAddSong : function(req,res){
         res.render("addSong.ejs", {songData:null})
     },
-
-    getAddSongSuccess : function(req,res){
-      res.render("addSongSuccess.ejs");
-    },
     getEditSong : function(req,res){
-      let artistParamUnhiphenized = utils.unhiphenize(req.params.artist);
-      let songParamUnhuphenized = utils.unhiphenize(req.params.song);
-      let artistRegex = new RegExp("^" + artistParamUnhiphenized + "$", "gi");
-      let songRegex = new RegExp("^" + songParamUnhuphenized + "$", "gi");
-      SongModel.findOne({title: songRegex, artist: artistRegex}).then(result => {
+      let artistRegex = new RegExp("^" + utils.unlinkify(req.params.artist) + "$", "gi");
+      let titleRegex = new RegExp("^" + utils.unlinkify(req.params.title) + "$", "gi");
+      SongModel.findOne({title: titleRegex, artist: artistRegex}).then(result => {
         res.render("addSong.ejs", {songData : result})
       }).catch(err => {
         res.render("error.ejs", {url: req.url, errorMessage: err.message});
