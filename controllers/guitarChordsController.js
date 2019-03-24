@@ -20,30 +20,30 @@ module.exports = {
         ]).then(result=>{
           let finalArray = [];
           result.forEach(function(item){
-            finalArray.push({artist: decodeURIComponent(utils.capitalizeName(item._id.name)), nOfSongs: item.total, link: encodeURIComponent(utils.linkify(item._id.name))})
+            finalArray.push({artist: decodeURIComponent(utils.capitalizeName(item._id.name)), nOfSongs: item.total, link: utils.linkify(item._id.name)})
           });
           res.render("guitarChords.ejs", {data: finalArray}); 
         });
     },
     artistList : function(req, res){ //SONGS ACCORDING TO ARTIST
-      let artistRegex = new RegExp("^" + utils.unlinkify(req.params.artist) + "$", "gi");
+      let encodedArtistName = utils.unlinkify(encodeURIComponent(req.params.artist));  
+      let artistRegex = new RegExp("^" + encodedArtistName + "$", "gi");
       SongModel.find({artist: artistRegex}).then(result => {
         let artistName = decodeURIComponent(result[0].artist); //Every result will have the same artistname, I just get the first.
         let songsAndLinks = [];
         let generateSongLink;
         for(let i = 0; i < result.length; i++){
-          generateSongLink = encodeURIComponent(utils.linkify(result[i].title));
-          songsAndLinks.push({title : result[i].title, link : generateSongLink})
+          generateSongLink = utils.linkify(result[i].title);
+          songsAndLinks.push({title : decodeURIComponent(result[i].title), link : generateSongLink})
         }
-        res.render("artistPage.ejs", {artist: utils.capitalizeName(artistName), data: songsAndLinks, artistParam : req.params.artist, recommended: {item : "Poop"}})
+        res.render("artistPage.ejs", {artist: utils.capitalizeName(artistName), data: songsAndLinks, artistParam : encodeURIComponent(req.params.artist), recommended: {item : "Poop"}})
       }).catch(err => {
         res.render("error.ejs", {url: req.url, errorMessage : err.message})
       });
     },
     song : function(req,res){ //Get song from DB and Paint it
-      console.log(req.params.artist, req.params.title);
-      let artistRegex = new RegExp("^" + utils.unlinkify(req.params.artist) + "$", "gi");
-      let titleRegex = new RegExp("^" + utils.unlinkify(req.params.title) + "$", "gi");
+      let artistRegex = new RegExp("^" + utils.unlinkify(encodeURIComponent(req.params.artist)) + "$", "gi");
+      let titleRegex = new RegExp("^" + utils.unlinkify(encodeURIComponent(req.params.title)) + "$", "gi");
       SongModel.findOne({title: titleRegex, artist: artistRegex}).then(result => {
         res.render("songs.ejs", {song:result.lyricsChords, artist: decodeURIComponent(result.artist)})
       }).catch(err => {

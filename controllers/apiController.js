@@ -46,8 +46,8 @@ module.exports = {
     },
     deleteSong : function(req, res){ //SONGS IN SONG BANK
         console.log(req.params.artist, req.params.title);
-        let artistRegex = new RegExp("^" + utils.unlinkify(req.params.artist) + "$", "gi");
-        let titleRegex = new RegExp("^" + utils.unlinkify(req.params.title) + "$", "gi");
+        let artistRegex = new RegExp("^" + utils.unlinkify(encodeURIComponent(req.params.artist)) + "$", "gi");
+        let titleRegex = new RegExp("^" + utils.unlinkify(encodeURIComponent(req.params.title)) + "$", "gi");
         const data = {
             redirectUrl: "",
             deletedMsg: "The song was deleted. Bye bye! :("

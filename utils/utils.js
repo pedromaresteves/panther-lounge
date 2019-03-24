@@ -16,7 +16,6 @@
       name = name.toLowerCase();
       name = name.replace(/(%20)/g, '_');
       name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-      //name = encodeURIComponent(name);
       return name
     },
     unlinkify : function (name){      

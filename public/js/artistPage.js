@@ -39,6 +39,7 @@ function deleteSong(e){
           }, 1500);
         }
     };
+    console.log(songToDeleteUrl);
     httpRequest.open('DELETE', songToDeleteUrl); //MAKE FUNCTION WORK
     httpRequest.send();
   }
