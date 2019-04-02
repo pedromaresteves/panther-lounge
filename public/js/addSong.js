@@ -21,6 +21,11 @@ export default function addSong() {
     if(lyricsChordsSender.value){
         quill.setText(lyricsChordsSender.attributes.value.value);
     }
+
+    //If editing a song, don't allow user to edit Artist Name
+    if(window.location.pathname.indexOf("/edit-song/") !== -1){
+        artistField.disabled = true;
+    }
     
 
     //Check if Value is empty

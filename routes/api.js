@@ -10,9 +10,9 @@ var apiController = require("../controllers/apiController");
 //ADD SONG
 router.post("/add-song", jsonParser, apiController.addSong);
 //EDIT SONG
-router.post("/edit-song/:artist/:song", jsonParser, apiController.editSong);
+router.post("/edit-song/:artist/:title", jsonParser, apiController.editSong);
 //FIND SONG AND DELETE IT
-router.delete("/:artist/:song", urlencodedParser, apiController.deleteSong);  
+router.delete("/:artist/:title", urlencodedParser, apiController.deleteSong);  
 
 
 module.exports = router;

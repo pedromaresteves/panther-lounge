@@ -6,6 +6,7 @@
                 <h4 class='text-center mt-2'>Available Songs</h4>
                 <ul class="list-group">
                     <% for(let i = 0; i< data.length; i++){ %>
+                        
                             <li class="list-group-item artist-item"><a href="<%= artistParam %>/<%= data[i].link %>"><%= data[i].title %></a><span><a href="edit-song/<%= artistParam %>/<%= data[i].link %>" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-<%= i %>">Delete</a></span></li>
                                 <div class="modal fade" id="modal-<%= i %>" tabindex="-1" role="dialog" aria-labelledby="<%=data[i].link%>-label" aria-hidden="true">
                                 <div class="modal-dialog" role="document">

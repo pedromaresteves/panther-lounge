@@ -8,12 +8,7 @@ if(window.location.pathname.indexOf("/guitar-chords/") != -1 && window.location.
     artistPage();
 }
 
-//CHECK ADD SONG PAGE LOCATION
-if(window.location.pathname === "/guitar-chords/add-song"){ 
-    addSong();
-}
-
-//CHECK EDIT SONG PAGE LOCATION
-if(window.location.pathname.indexOf("/guitar-chords/edit-song") != -1){
+//CHECK ADD/EDIT SONG PAGE LOCATION AND LOAD SCRIPT
+if(window.location.pathname === "/guitar-chords/add-song" || window.location.pathname.indexOf("/guitar-chords/edit-song") != -1){ 
     addSong();
 }
