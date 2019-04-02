@@ -8,9 +8,11 @@ mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 module.exports = {
     addSong : function(req,res){
         const newSong = new SongModel({
-          artist: encodeURIComponent(req.body.artist.toLowerCase()),
-          title: encodeURIComponent(req.body.title),
-          lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert
+          artist: req.body.artist,
+          title: req.body.title,
+          lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert,
+          nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
+          nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
         });
         const data = {
             redirectUrl: "",
@@ -20,7 +22,7 @@ module.exports = {
         SongModel.find({artist: newSong.artist, title: newSongTitleRegex}).then(result=>{
           if(result.length === 0){
             newSong.save();
-            data.redirectUrl = `http://127.0.0.1:3000/guitar-chords/${utils.linkify(newSong.artist)}/${utils.linkify(newSong.title)}`;
+            data.redirectUrl = `http://127.0.0.1:3000/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`;
             return res.send(data);
           }
           data.errorMsg = "This song already exists in your song bank!";
@@ -29,30 +31,32 @@ module.exports = {
     },
     editSong : function(req,res){
         const newSong = new SongModel({
-            artist: encodeURIComponent(req.body.artist.toLowerCase()),
-            title: encodeURIComponent(req.body.title),
-            lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert
+            artist: req.body.artist,
+            title: req.body.title,
+            lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert,
+            nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
+            nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
         });
         const data = {
-            redirectUrl: `http://127.0.0.1:3000/guitar-chords/${utils.linkify(newSong.artist)}/${utils.linkify(newSong.title)}`,
+            redirectUrl: `http://127.0.0.1:3000/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`,
             errorMsg: ""
         };
-        let newSongTitleRegex = new RegExp("^" + newSong.title + "$", "gi");
-        SongModel.find({artist: newSong.artist, title: newSongTitleRegex}).then(result=>{
-            newSong.update();
-            data.redirectUrl = `http://127.0.0.1:3000/guitar-chords/${utils.linkify(newSong.artist)}/${utils.linkify(newSong.title)}`;
+        //let newSongTitleRegex = new RegExp("^" + newSong.title + "$", "gi");
+        let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
+        let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
+        SongModel.updateOne({nArtist: artistRegex, nTitle: titleRegex},
+            { $set: {lyricsChords: newSong.lyricsChords, title: newSong.title, nTitle: newSong.nTitle}}).then(result=>{
             return res.send(data);
         });
     },
     deleteSong : function(req, res){ //SONGS IN SONG BANK
-        console.log(req.params.artist, req.params.title);
-        let artistRegex = new RegExp("^" + utils.unlinkify(encodeURIComponent(req.params.artist)) + "$", "gi");
-        let titleRegex = new RegExp("^" + utils.unlinkify(encodeURIComponent(req.params.title)) + "$", "gi");
+        let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
+        let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
         const data = {
             redirectUrl: "",
             deletedMsg: "The song was deleted. Bye bye! :("
         };
-        SongModel.findOneAndDelete({artist: artistRegex, title: titleRegex}).then(result => {
+        SongModel.findOneAndDelete({nArtist: artistRegex, nTitle: titleRegex}).then(result => {
             return SongModel.findOne({artist: artistRegex});
         }).then(result =>{
             if(result){

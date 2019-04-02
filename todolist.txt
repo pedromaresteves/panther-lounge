@@ -1,5 +1,4 @@
-Fix songs with ()
-Forbid using underscore _ in names of artists or titles
+Refactor Controllers
 In song lyrics and chords, add tool tips do chords
 Allow transposing chords
 Add addSong button

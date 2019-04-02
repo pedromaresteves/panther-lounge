@@ -14,12 +14,7 @@
       },
     linkify : function (name){
       name = name.toLowerCase();
-      name = name.replace(/(%20)/g, '_');
-      name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-      return name
-    },
-    unlinkify : function (name){      
-      name = name.replace(/_/g, '%20')
+      //name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); DON'T KNOW HOW TO DENORMALIZE THE URLS TO SEARCH IN DB LATER, SO I REMOVE THIS
       return name
     },
     capitalizeName : function(string){
@@ -30,5 +25,14 @@
         artistCapitalized.push(word)
       });
       return artistCapitalized.join(" ");
+    },
+    encodeChars(str) {
+      return encodeURIComponent(str).
+          replace(/['()]/g, escape).
+          replace(/\*/g, '%2A').
+              replace(/%(?:7C|60|5E)/g, unescape);
+  },
+    escapeRegExp(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     }
   }
