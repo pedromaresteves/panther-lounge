@@ -91,6 +91,7 @@ export default function addSong() {
     
         httpRequest.onreadystatechange = function(){    
             if(httpRequest.readyState === 4){
+                console.log(JSON.parse(httpRequest.response), "POOOOOO");
               const response = JSON.parse(httpRequest.response);
               if(response.errorMsg){
                 const errorDiv = document.createElement("div"); 

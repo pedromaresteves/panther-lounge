@@ -8,7 +8,7 @@ const utils = require("../utils/utils");
 var apiController = require("../controllers/apiController");
 
 //ADD SONG
-router.post("/add-song", jsonParser, apiController.addSong);
+router.post("/add-song/:artist?", jsonParser, apiController.addSong);
 //EDIT SONG
 router.post("/edit-song/:artist/:title", jsonParser, apiController.editSong);
 //FIND SONG AND DELETE IT

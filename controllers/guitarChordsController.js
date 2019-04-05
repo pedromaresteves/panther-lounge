@@ -49,7 +49,7 @@ module.exports = {
       });
     },
     getAddSong : function(req,res){
-        res.render("addSong.ejs", {songData:null})
+      res.render("addSong.ejs", {songData:{artist:req.params.artist}})
     },
     getEditSong : function(req,res){
       let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");

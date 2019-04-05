@@ -9,6 +9,6 @@ if(window.location.pathname.indexOf("/guitar-chords/") != -1 && window.location.
 }
 
 //CHECK ADD/EDIT SONG PAGE LOCATION AND LOAD SCRIPT
-if(window.location.pathname === "/guitar-chords/add-song" || window.location.pathname.indexOf("/guitar-chords/edit-song") != -1){ 
+if(window.location.pathname.indexOf("/guitar-chords/add-song") != -1 || window.location.pathname.indexOf("/guitar-chords/edit-song") != -1){ 
     addSong();
 }
