@@ -1,6 +1,0 @@
-Refactor Controllers
-In song lyrics and chords, add tool tips do chords
-Allow transposing chords
-Create login system with Oauth
-Improve Song View
-Add song searcher (Fusejs)
