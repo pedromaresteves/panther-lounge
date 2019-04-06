@@ -1,8 +1,6 @@
 Refactor Controllers
 In song lyrics and chords, add tool tips do chords
 Allow transposing chords
-Add addSong button
-Add addSong button in artistPage and autofill artist field
 Create login system with Oauth
 Improve Song View
 Add song searcher (Fusejs)
