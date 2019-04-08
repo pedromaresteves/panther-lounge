@@ -10,7 +10,7 @@ module.exports = {
         const newSong = new SongModel({
           artist: req.body.artist,
           title: req.body.title,
-          lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert,
+          lyricsChords: req.body.lyricsAndChords,
           nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
           nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
         });
@@ -33,7 +33,7 @@ module.exports = {
         const newSong = new SongModel({
             artist: req.body.artist,
             title: req.body.title,
-            lyricsChords: JSON.parse(req.body.lyricsAndChords).ops[0].insert,
+            lyricsChords: req.body.lyricsAndChords,
             nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
             nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
         });
@@ -41,7 +41,6 @@ module.exports = {
             redirectUrl: `http://127.0.0.1:3000/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`,
             errorMsg: ""
         };
-        //let newSongTitleRegex = new RegExp("^" + newSong.title + "$", "gi");
         let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
         let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
         SongModel.updateOne({nArtist: artistRegex, nTitle: titleRegex},

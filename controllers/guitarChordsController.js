@@ -43,7 +43,9 @@ module.exports = {
       let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
       let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
       SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex}).then(result => {
-        res.render("songs.ejs", {artist: result.artist, song:result.lyricsChords})
+        const lyricsChords = JSON.parse(result.lyricsChords).ops;
+        let lyricsChordsHtml = "<div>";
+        res.render("songs.ejs", {artist: result.artist, song: lyricsChords})
       }).catch(err => {
         res.render("error.ejs", {url: req.url, errorMessage: err.message})
       });
