@@ -1,6 +1,14 @@
 import addSong from "./addSong.js";
 import artistPage from "./artistPage.js";
 
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip({
+        animated: 'fade',
+        placement: 'bottom',
+        html: true
+    });
+  });
+
 const numOfSlashes = window.location.pathname.match(/\//g).length;
 
 //CHECK ARTIST PAGE LOCATION

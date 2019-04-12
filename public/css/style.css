@@ -1,7 +1,3 @@
-body {
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-}
-
 .video-container{
     display: flex;
     justify-content: space-between;
