@@ -1,5 +1,29 @@
 <%- include nav.ejs %>
 <div class="container">
-    <%- song.replace(/\n/g, '<br>') %>
+    <div class="row">
+        <div class="col-md-8  mt-3">
+            <h2><%= title %> by <%= artist %></h2>
+            <p><small>Created By: <%= songCreater %></small></p>
+            <div class="mt-5">
+            <% song.forEach(function(item){ %>
+                <% if(item.attributes) { %>
+                    <% let style = ""; %>
+                    <% if(item.attributes.bold){ %>
+                    <%  style += "font-weight:bold;" %>
+                    <% } %>
+                    <% if(item.attributes.italic){ %>
+                    <% style += "font-style:italic;" %>
+                    <% } %>
+                    <span class="fix-form" style="<%= style %>"><%- item.insert.replace(/\t/g, "    ") %></span>
+                <% } else { %>
+                <span class="fix-form"><%- item.insert.replace(/\t/g, "    ") %></span>
+                <% } %>
+            <% }) %>
+            </div>
+        </div>      
+    </div>
+    <% //<a data-toggle="tooltip" title="<img src='https://www.cyberfret.com/wp-content/uploads/g-major-guitar-chord-1.gif' />">%>
+    <% //    Hola Mundo1! %>
+    <% //</a></li> %>
 </div>
 <%- include footer.ejs %>

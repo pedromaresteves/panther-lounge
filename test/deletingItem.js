@@ -1,4 +1,3 @@
-const mocha = require("mocha"); //This line is useless, mocha works without being required
 const assert = require("assert");
 const mongoose = require('mongoose');
 const TestModel = require("../models/test");

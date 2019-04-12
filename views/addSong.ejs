@@ -18,10 +18,12 @@
         <label class="mt-3" for="lyrics">Write the Lyrics and Chords</label>
         <% if(songData.lyricsChords) { %>  
             <input placeholder="Write the song" name="lyrics" value="<%= songData.lyricsChords %>" hidden>
+            <%- include quillToolbar.ejs %>
             <div id="editor"></div>
             <button id="submitButton" class="btn btn-primary mt-3" type="submit" disabled>Save Profile</button>
         <% } else {%>
             <input placeholder="Write the song" name="lyrics" hidden>
+            <%- include quillToolbar.ejs %>
             <div id="editor"></div>
             <button id="submitButton" class="btn btn-primary mt-3" type="submit" disabled>Save Profile</button>
         <% } %>

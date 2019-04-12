@@ -15,3 +15,11 @@
 .warns{
     color:red;
 }
+
+#editor{
+    white-space: pre;
+}
+
+.fix-form{
+    white-space: pre;
+}

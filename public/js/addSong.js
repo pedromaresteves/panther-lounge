@@ -1,13 +1,5 @@
 export default function addSong() {
 
-    //Quill settings
-    const options = {
-        debug: 'info',
-        placeholder: 'Compose an epic...',
-        theme: 'snow'
-    };
-    const quill = new Quill('#editor', options);
-
     //DOM Variables
     const form = document.querySelector('form');
     let artistField = document.querySelector('input[name=artist]');
@@ -16,10 +8,30 @@ export default function addSong() {
     let lyricsChordsSender = document.querySelector('input[name=lyrics]');
     let sendFormButton = document.querySelector('#submitButton');
 
+    //Quill settings
+    var quill = new Quill('#editor', {
+        modules: {
+            toolbar: '#toolbar'
+        },
+        placeholder: 'Compose an epic...',
+        theme: 'snow'
+        });
+    // var quillChordBtn = document.querySelector('#chord-button'); ADD CHORD FUNCTION
 
+    // //Set Quill Chord Button
+    // quillChordBtn.addEventListener('click', function(e) {
+    //     e.preventDefault();
+    //     console.log('Clicked!');
+    // });
+    
     //If editing a song, we get the lyrics and chords and fill the text editor
     if(lyricsChordsSender.value){
-        quill.setText(lyricsChordsSender.attributes.value.value);
+        const songContent = JSON.parse(lyricsChordsSender.attributes.value.value).ops;
+        let contentToBeSet = [];
+        songContent.forEach(function(item){
+            contentToBeSet.push(item)
+        });
+        quill.setContents(contentToBeSet)
     }
 
     //If editing a song, don't allow user to edit Artist Name
