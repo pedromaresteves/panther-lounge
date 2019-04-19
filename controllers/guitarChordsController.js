@@ -14,9 +14,8 @@ db.once('open', function() {
 module.exports = {
     index : function(req, res){ //SONGS IN SONG BANK
       SongModel.aggregate([
-        //The lowerName property is only used to sort by name
         {$group:{_id : {name : "$artist", link: "$nArtist"}, total : { $sum: 1 }}},
-        {$sort:{'_id.lowerName' : 1}}
+        {$sort:{'_id.link' : 1}}
         ]).then(result=>{
           let finalArray = [];
           result.forEach(function(item){
@@ -26,16 +25,17 @@ module.exports = {
         });
     },
     artistList : function(req, res){ //SONGS ACCORDING TO ARTIST
-      SongModel.find({nArtist:req.params.artist}).then(result => {
-        let artistName = result[0].artist; //Every result will have the same artistname, I just get the first.
-        let songsAndLinks = [];
-        let generateSongLink;
-        for(let i = 0; i < result.length; i++){
-          generateSongLink = result[i].nTitle;
-          songsAndLinks.push({title : result[i].title, link : utils.encodeChars(generateSongLink)})
-        }
-        res.render("artistPage.ejs", {artist: artistName, data: songsAndLinks, artistParam : utils.encodeChars(req.params.artist), recommended: {item : "Poop"}})
-      }).catch(err => {
+      SongModel.aggregate([
+        { $match: { nArtist: req.params.artist } },
+        {$group:{_id : {name : "$artist", title: "$title", link: "$nTitle"} }},
+        { $sort: { '_id.link' : 1 } }
+        ]).then(result => {
+        let finalArray = [];
+        result.forEach(function(item){
+          finalArray.push({artist: item._id.name, title: item._id.title, link: utils.encodeChars(item._id.link)})
+        });
+        res.render("artistPage.ejs", {artist: finalArray[0].artist, data: finalArray, artistParam : utils.encodeChars(req.params.artist), recommended: {item : "Poop"}})
+        }).catch(err => {
         res.render("error.ejs", {url: req.url, errorMessage : err.message})
       });
     },

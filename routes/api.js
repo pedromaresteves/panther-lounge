@@ -12,7 +12,7 @@ router.post("/add-song/:artist?", jsonParser, apiController.addSong);
 //EDIT SONG
 router.post("/edit-song/:artist/:title", jsonParser, apiController.editSong);
 //FIND SONG AND DELETE IT
-router.delete("/:artist/:title", urlencodedParser, apiController.deleteSong);  
+router.delete("/:artist/:title", jsonParser, apiController.deleteSong);  
 
 
 module.exports = router;
