@@ -7,6 +7,10 @@ const SongModel = require("../models/song");
 const utils = require("../utils/utils");
 var apiController = require("../controllers/apiController");
 
+//PAGINATION Artists
+router.get("/", jsonParser, apiController.paginationArtists);
+//PAGINATION SongsByArtist
+router.get("/:artist", jsonParser, apiController.paginationSongsByArtist);
 //ADD SONG
 router.post("/add-song/:artist?", jsonParser, apiController.addSong);
 //EDIT SONG
