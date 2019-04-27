@@ -6,6 +6,41 @@ const stuff = require("../stuff.js");
 mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 
 module.exports = {
+    paginationArtists : function(req,res){
+        const resultsPerPage = 3;
+        const resultsToSkip = req.query.page-1;
+        if(!resultsToSkip) resultsToSkip = 0;
+        SongModel.aggregate([
+            {$group:{_id : {name : "$artist", link: "$nArtist"}, total : { $sum: 1 }}},
+            {$sort:{'_id.link' : 1}},
+            {$skip : resultsToSkip*resultsPerPage},
+            {$limit : 3}
+            ]).then(result => {
+                let finalArray = [];
+                result.forEach(function(item){
+                  finalArray.push({artist: item._id.name, nOfSongs: item.total, link: utils.encodeChars(item._id.link)})
+                });
+                return res.send([finalArray]); //I send an array to be consistent with the songsByArtist function
+            });
+    },
+    paginationSongsByArtist : function(req,res){
+        const resultsPerPage = 3;
+        let resultsToSkip = req.query.page-1;
+        if(!resultsToSkip) resultsToSkip = 0;
+        SongModel.aggregate([
+          { $match: { nArtist: req.params.artist } },
+          { $group:{_id : {name : "$artist", title: "$title", link: "$nTitle"}}},
+          { $sort: { '_id.link' : 1 } },
+          { $skip : resultsToSkip*resultsPerPage },
+          {$limit : 3}
+          ]).then(result => {
+            let finalArray = [];
+            result.forEach(function(item){
+                finalArray.push({artist: item._id.name, title: item._id.title, link: utils.encodeChars(item._id.link)})
+            });
+            return res.send([finalArray, utils.encodeChars(req.params.artist)]);
+         });
+    },
     addSong : function(req,res){
         const newSong = new SongModel({
           artist: req.body.artist,

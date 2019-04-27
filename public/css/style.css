@@ -23,3 +23,7 @@
 .fix-form{
     white-space: pre;
 }
+
+.clicked-page-button {
+    color: palevioletred;
+}

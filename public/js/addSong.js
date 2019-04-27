@@ -42,9 +42,7 @@ export default function addSong() {
 
     //Check if Value is empty
     function checkEmptyValues(fieldValue){
-    if(fieldValue === ""){
-        return false;
-    }
+    if(fieldValue === "") return false;
     return true;
     }
 
@@ -54,16 +52,9 @@ export default function addSong() {
         errors: false,
         msg: ""
     }
-    //let errors = '';
-    if(checkEmptyValues(artist) === false){
-        test.msg += "You must insert an Artist <br>";
-    }
-    if(checkEmptyValues(title) === false){
-        test.msg += "You must insert a Title <br>";
-    }
-    if(test.msg.length > 0){
-        test.errors = true;
-    }
+    if(checkEmptyValues(artist) === false) test.msg += "You must insert an Artist <br>";
+    if(checkEmptyValues(title) === false) test.msg += "You must insert a Title <br>";
+    if(test.msg.length > 0) test.errors = true;
     return test;
     }
 
@@ -78,9 +69,7 @@ export default function addSong() {
             }
         });
     }
-    if(checkFormValues(artistField.value,titleField.value).errors === false){
-        sendFormButton.disabled = false;
-    }
+    if(checkFormValues(artistField.value,titleField.value).errors === false) sendFormButton.disabled = false;
 
     //Submiting Quill content through form
     form.onsubmit = function(e) {
@@ -103,7 +92,6 @@ export default function addSong() {
     
         httpRequest.onreadystatechange = function(){    
             if(httpRequest.readyState === 4){
-                console.log(JSON.parse(httpRequest.response), "POOOOOO");
               const response = JSON.parse(httpRequest.response);
               if(response.errorMsg){
                 const errorDiv = document.createElement("div"); 
