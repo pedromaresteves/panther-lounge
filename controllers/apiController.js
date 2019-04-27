@@ -9,6 +9,7 @@ module.exports = {
     paginationArtists : function(req,res){
         const resultsPerPage = 3;
         const resultsToSkip = req.query.page-1;
+        if(!resultsToSkip) resultsToSkip = 0;
         SongModel.aggregate([
             {$group:{_id : {name : "$artist", link: "$nArtist"}, total : { $sum: 1 }}},
             {$sort:{'_id.link' : 1}},
@@ -19,7 +20,7 @@ module.exports = {
                 result.forEach(function(item){
                   finalArray.push({artist: item._id.name, nOfSongs: item.total, link: utils.encodeChars(item._id.link)})
                 });
-                return res.send([finalArray]); //I send array to be consistent with the songsByArtist function
+                return res.send([finalArray]); //I send an array to be consistent with the songsByArtist function
             });
     },
     paginationSongsByArtist : function(req,res){

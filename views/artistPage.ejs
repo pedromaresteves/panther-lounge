@@ -5,12 +5,12 @@
             <a href="add-song/<%= artist %>" id="make-song" type="button" class="btn btn-success d-block mx-auto"><h5>Make Song!</h5></a>
         </div>
         <div class='row'>    
-            <div id="available-songs" class='col-md-8'>
+            <div id="available-songs" class='col-md-12'>
                 <h4 class='text-center mt-2'><%= artist %> Songs</h4>
                 <ul id="page-results" class="list-group">
                     <% for(let i = 0; i< data.length; i++){ %>
-                            <li class="list-group-item artist-item"><a href="<%= artistParam %>/<%= data[i].link %>"><%= data[i].title %></a><span><a href="edit-song/<%= artistParam %>/<%= data[i].link %>" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-<%= data[i].title %>">Delete</a></span></li>
-                                <div class="modal fade" id="modal-<%= data[i].title %>" tabindex="-1" role="dialog" aria-labelledby="<%=data[i].link%>-label" aria-hidden="true">
+                            <li class="list-group-item artist-item"><a href="<%= artistParam %>/<%= data[i].link %>"><%= data[i].title %></a><span><a href="edit-song/<%= artistParam %>/<%= data[i].link %>" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-<%= data[i].title.replace(/\s/g, "") %>">Delete</a></span></li>
+                                <div class="modal fade" id="modal-<%= data[i].title.replace(/\s/g, "") %>" tabindex="-1" role="dialog" aria-labelledby="<%=data[i].link%>-label" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                         <div class="modal-header">
@@ -38,14 +38,6 @@
                         <% }%>
                     </ul>
                 </nav>
-            </div>
-            <div class='col-md-4'>
-                <h4 class='text-center mt-2'>The Panther Recomends</h4>
-                <ul class="list-group">
-                        <% for(var item in recommended){ %>
-                            <li class="list-group-item artist-item"><%= recommended[item] %></li>
-                        <% } %>
-                    </ul>
             </div>
         </div>
     </div>

@@ -30,7 +30,7 @@ module.exports = {
             {$group:{_id : {name : "$artist", link: "$nArtist"}}},
             {$count:"numArtists"}]).then(result=>{
               const numOfPages = Math.ceil(result[0].numArtists/resultsPerPage);
-              res.render("guitarChords.ejs", {data: finalArray, numOfPages: numOfPages}); 
+              res.render("index.ejs", {data: finalArray, numOfPages: numOfPages}); 
             })
         });
     },
@@ -64,6 +64,7 @@ module.exports = {
       let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
       SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex}).then(result => {
         const lyricsChords = JSON.parse(result.lyricsChords).ops;
+        if(!result.songCreater) result.songCreater = "Temp User"
         res.render("songs.ejs", {artist: result.artist, title: result.title, songCreater: result.songCreater, song: lyricsChords});
       }).catch(err => {
         res.render("error.ejs", {url: req.url, errorMessage: err.message})
