@@ -1,3 +1,5 @@
+import getPageResults from "./getPageResults.js";
+
 export default function deleteSong() {
     const menu = document.getElementById("available-songs");
     const deleteSongsButtons = document.getElementsByClassName("delete-song");
@@ -31,6 +33,7 @@ export default function deleteSong() {
                 window.location = response.redirectUrl;
               }
             }, 1500);
+            getPageResults(window.location.search.match(/[0-9]/g).join(""));
           }
       };
       httpRequest.open('DELETE', songToDeleteUrl); //MAKE FUNCTION WORK
@@ -39,5 +42,5 @@ export default function deleteSong() {
     
       for(let i = 0; i<deleteSongsButtons.length; i++){
         deleteSongsButtons[i].addEventListener("click", deleteSong);
-        }  
+      }  
 } 
