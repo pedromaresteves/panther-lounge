@@ -1,8 +1,11 @@
 <%- include nav.ejs %>
 <div class="container">
     <div class="row">
-        <div class="col-md-8  mt-3">
-            <h2><%= title %> by <%= artist %></h2>
+        <div class="col-md-12  mt-3 mb-3">
+            <a href="http://127.0.0.1:3000/guitar-chords/<%= nArtist %>">Go back to <em><%= artist %></em> song list</a>
+        </div>
+        <div class="col-md-8">
+            <h2><%= title %> by <a href="http://127.0.0.1:3000/guitar-chords/<%= nArtist %>"><%= artist %></a></h2>
             <p><small>Created By: <%= songCreater %></small></p>
             <div class="mt-5">
             <% song.forEach(function(item){ %>

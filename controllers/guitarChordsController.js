@@ -65,7 +65,7 @@ module.exports = {
       SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex}).then(result => {
         const lyricsChords = JSON.parse(result.lyricsChords).ops;
         if(!result.songCreater) result.songCreater = "Temp User"
-        res.render("songs.ejs", {artist: result.artist, title: result.title, songCreater: result.songCreater, song: lyricsChords});
+        res.render("songs.ejs", {artist: result.artist, nArtist: result.nArtist, title: result.title, songCreater: result.songCreater, song: lyricsChords});
       }).catch(err => {
         res.render("error.ejs", {url: req.url, errorMessage: err.message})
       });
