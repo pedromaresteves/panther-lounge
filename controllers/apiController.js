@@ -8,7 +8,7 @@ mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 module.exports = {
     paginationArtists : function(req,res){
         const resultsPerPage = 3;
-        const resultsToSkip = req.query.page-1;
+        let resultsToSkip = req.query.page-1;
         if(!resultsToSkip) resultsToSkip = 0;
         SongModel.aggregate([
             {$group:{_id : {name : "$artist", link: "$nArtist"}, total : { $sum: 1 }}},
