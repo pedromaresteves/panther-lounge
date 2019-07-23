@@ -101,4 +101,13 @@ module.exports = {
             res.send(data);
         });
     },
+    getAllResults : function(req, res){
+        SongModel.find({}).sort( { nArtist: 1 } ).then(result => {
+            result.forEach(function(item){
+                item.nArtist = utils.encodeChars(item.nArtist)
+                item.nTitle = utils.encodeChars(item.nTitle)
+            });
+            res.send(result)
+        });
+    }
 }
