@@ -13,13 +13,6 @@ export default function index() {
   let fuse;
   let result;
 
-  function addItemsToList() {
-    var node = document.createElement("LI");
-    var textnode = document.createTextNode("Water");
-    node.appendChild(textnode);
-    artistResults.getElementById("myList").appendChild(node);
-  }
-
   freeSearchInput.addEventListener("keyup", event => {
     let artistsArr = [];
     result = fuse.search(freeSearchInput.value);
@@ -28,9 +21,7 @@ export default function index() {
     result.forEach(function(item){
       if(artistsArr.indexOf(item.artist) === -1){
         artistsArr.push(item.artist);
-        console.log(artistsArr);
         artistResults.innerHTML += `<li class="list-group-item"><a href="/guitar-chords/${item.nArtist}">${item.artist} <small>(Artist Page)</small></a></li>`
-        //searchResults.innerHTML += `<li class="list-group-item"><a href="/guitar-chords/${item.nArtist}">${item.artist} <small>(Artist Page)</small></a></li>`
       }
       songResults.innerHTML += `<li class="list-group-item"><a href="/guitar-chords/${item.nArtist}/${item.nTitle}">${item.artist} - ${item.title}</a></li>`;
     })
