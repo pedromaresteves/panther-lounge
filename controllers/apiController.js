@@ -1,9 +1,5 @@
-const mongoose = require('mongoose');
 const SongModel = require("../models/song");
 const utils = require("../utils/utils");
-const stuff = require("../stuff.js");
-
-mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 
 module.exports = {
     paginationArtists : function(req,res){
