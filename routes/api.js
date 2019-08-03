@@ -9,6 +9,8 @@ var apiController = require("../controllers/apiController");
 
 //PAGINATION Artists
 router.get("/", jsonParser, apiController.paginationArtists);
+//GET ALL RESULTS FOR FREE SEARCH
+router.get("/get-all-results", jsonParser, apiController.getAllResults);
 //PAGINATION SongsByArtist
 router.get("/:artist", jsonParser, apiController.paginationSongsByArtist);
 //ADD SONG

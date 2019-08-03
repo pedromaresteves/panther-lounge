@@ -1,8 +1,18 @@
-var express = require("express");
-var indexRouter = require("./routes/index");
-var guitarChordsRouter = require("./routes/guitarChords");
-var apiRouter = require("./routes/api");
-var app = express();
+const express = require("express");
+const indexRouter = require("./routes/index");
+const guitarChordsRouter = require("./routes/guitarChords");
+const apiRouter = require("./routes/api");
+const stuff = require("./stuff.js");
+const mongoose = require('mongoose');
+const app = express();
+
+mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    console.log("DB Connection Started");
+});
 
 //set up template engine
 app.set("view engine", "ejs");
