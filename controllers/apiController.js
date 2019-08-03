@@ -1,9 +1,5 @@
-const mongoose = require('mongoose');
 const SongModel = require("../models/song");
 const utils = require("../utils/utils");
-const stuff = require("../stuff.js");
-
-mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 
 module.exports = {
     paginationArtists : function(req,res){
@@ -83,7 +79,7 @@ module.exports = {
             return res.send(data);
         });
     },
-    deleteSong : function(req, res){ //SONGS IN SONG BANK
+    deleteSong : function(req, res){
         let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
         let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
         const data = {
@@ -101,4 +97,13 @@ module.exports = {
             res.send(data);
         });
     },
+    getAllResults : function(req, res){
+        SongModel.find({}).sort( { nArtist: 1 } ).then(result => {
+            result.forEach(function(item){
+                item.nArtist = utils.encodeChars(item.nArtist)
+                item.nTitle = utils.encodeChars(item.nTitle)
+            });
+            res.send(result)
+        });
+    }
 }

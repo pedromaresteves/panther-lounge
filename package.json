@@ -13,10 +13,13 @@
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-validator": "^5.3.1",
+    "fuse.js": "^3.4.4",
     "mongoose": "^5.4.7"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.10",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6"
   }
 }

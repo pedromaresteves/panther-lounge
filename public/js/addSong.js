@@ -16,13 +16,6 @@ export default function addSong() {
         placeholder: 'Compose an epic...',
         theme: 'snow'
         });
-    // var quillChordBtn = document.querySelector('#chord-button'); ADD CHORD FUNCTION
-
-    // //Set Quill Chord Button
-    // quillChordBtn.addEventListener('click', function(e) {
-    //     e.preventDefault();
-    //     console.log('Clicked!');
-    // });
     
     //If editing a song, we get the lyrics and chords and fill the text editor
     if(lyricsChordsSender.value){
