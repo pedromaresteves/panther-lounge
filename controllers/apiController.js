@@ -79,7 +79,7 @@ module.exports = {
             return res.send(data);
         });
     },
-    deleteSong : function(req, res){ //SONGS IN SONG BANK
+    deleteSong : function(req, res){
         let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
         let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
         const data = {
