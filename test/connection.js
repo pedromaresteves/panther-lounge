@@ -3,8 +3,8 @@ mongoose.Promise = global.Promise;
 const stuff = require("../stuff.js");
 
 before(function(done){
-
-    mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
+    console.log(stuff.testsDBConnection);
+    mongoose.connect(stuff.testsDBConnection, {useNewUrlParser: true});
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function() {
