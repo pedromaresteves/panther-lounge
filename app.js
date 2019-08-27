@@ -1,10 +1,12 @@
 const express = require("express");
 const indexRouter = require("./routes/index");
+const authRouter = require("./routes/auth");
 const guitarChordsRouter = require("./routes/guitarChords");
 const apiRouter = require("./routes/api");
 const stuff = require("./stuff.js");
 const mongoose = require('mongoose');
 const app = express();
+const passportSetup = require('./auth-config/passport-setup')
 
 mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
 
@@ -22,6 +24,7 @@ app.use(express.static("./public"));
 
 //fire routers
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
 app.use('/guitar-chords', guitarChordsRouter);
 
 //fire API router
