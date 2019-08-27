@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const app = express();
 const passportSetup = require('./auth-config/passport-setup')
 
-mongoose.connect(stuff.dbconnection, {useNewUrlParser: true});
+mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
