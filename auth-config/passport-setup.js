@@ -3,6 +3,17 @@ const GoogleStrategy = require('passport-google-oauth20');
 const stuff = require('../stuff');
 const UserModel = require('../models/user')
 
+passport.serializeUser((user,done) => {
+    console.log("serialize", user._id, user.id)
+    done(null, user.id)
+});
+
+passport.deserializeUser((id,done) => {
+    UserModel.findById(id).then((result)=>{
+        done(null, result)
+    });
+});
+
 passport.use(
     new GoogleStrategy({
         //Options for google auth
@@ -11,7 +22,7 @@ passport.use(
         callbackURL: stuff.google.callbackURL,
     }, (accessToken, refreshToken, profile, done)=>{
         //Passport Callback function
-        UserModel.find({ googleId: profile.id }, function (err, user) {
+        UserModel.findOne({ googleId: profile.id }, function (err, user) {
             const newUser = new UserModel({
                 username: profile.displayName,
                 googleId: profile.id,
@@ -19,10 +30,11 @@ passport.use(
             if(user.length < 1) {
                 newUser.save().then((newUser)=>{
                     console.log(`New user created: ${newUser}.`);
+                    done(null, newUser)
                 });
             }
-            console.log(`User already created: ${user}`);
-            return done(err, user);
+            console.log(`User already created: ${user} Fuck ass`);
+            done(null, user)
         });
     })
 );

@@ -9,15 +9,15 @@ router.get("/login", function(req, res) {
 });  
 
 router.get("/logout", function(req, res) {
-    res.sned("Poo choo") 
+    res.send("Poo choo") 
 }); 
 
 router.get("/google", passport.authenticate('google', {
-    scope: ['openid profile']
+    scope: ['profile']
 })); 
 
 router.get("/google/redirect", passport.authenticate('google'), function(req, res) {
-    res.send("login with google") 
+    res.send(req.user) 
 }); 
 
 module.exports = router;

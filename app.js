@@ -6,9 +6,22 @@ const apiRouter = require("./routes/api");
 const stuff = require("./stuff.js");
 const mongoose = require('mongoose');
 const app = express();
+const passport = require('passport');
 const passportSetup = require('./auth-config/passport-setup')
+const cookieSession = require('cookie-session');
 
 mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true});
+
+//set up cookies
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: [stuff.session.cookieKey]
+}));
+
+//initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
