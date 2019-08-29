@@ -1,10 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const bodyParser = require("body-parser");
-const urlencodedParser = bodyParser.urlencoded({ extended: false });
 var jsonParser = bodyParser.json()
-const SongModel = require("../models/song");
-const utils = require("../utils/utils");
 var apiController = require("../controllers/apiController");
 
 //PAGINATION Artists

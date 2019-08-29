@@ -2,6 +2,7 @@ const express = require("express");
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const guitarChordsRouter = require("./routes/guitarChords");
+const profileRouter = require("./routes/profile");
 const apiRouter = require("./routes/api");
 const stuff = require("./stuff.js");
 const mongoose = require('mongoose');
@@ -38,6 +39,7 @@ app.use(express.static("./public"));
 //fire routers
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
+app.use('/profile', profileRouter);
 app.use('/guitar-chords', guitarChordsRouter);
 
 //fire API router

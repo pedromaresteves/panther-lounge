@@ -27,19 +27,23 @@
               <a class="nav-link" href="/guitar-chords">Guitar Chords<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/philosophies">Philosophies<span class="sr-only">(current)</span></a>
+              <a class="nav-link disabled" href="">Philosophies<span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle disabled" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 The Five Drakes
               </a>
               <div class="dropdown-menu " aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/videos">Videos</a>
-                <a class="dropdown-item" href="/songs">Songs</a>
+                <a class="dropdown-item disabled" href="" disabled="disabled">Videos</a>
+                <a class="dropdown-item disabled" href="" disabled="disabled">Songs</a>
             </li>
           </ul>
           <div class="nav-item ml-auto">
-            <a class="nav-link" href="/auth/login">Login</a>
+            <% if (userData) {%>
+              <a class="nav-link" href="/auth/logout">Logout</a>
+            <%} else { %>
+              <a class="nav-link" href="/auth/login">Login</a>
+            <% } %>
           </div>
         </div>
       </nav>

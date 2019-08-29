@@ -9,4 +9,4 @@ module.exports={
     watch: false
 }
 
-//to run without NPM SCRIPT - node_modules/webpack-cli/bin/cli.js
+//to run without NPM SCRIPT - node_modules/.bin/webpack

@@ -4,7 +4,6 @@ const stuff = require('../stuff');
 const UserModel = require('../models/user')
 
 passport.serializeUser((user,done) => {
-    console.log("serialize", user._id, user.id)
     done(null, user.id)
 });
 
@@ -26,15 +25,14 @@ passport.use(
             const newUser = new UserModel({
                 username: profile.displayName,
                 googleId: profile.id,
+                thumbnail: profile._json.picture
             });
-            if(user.length < 1) {
+            if(!user) {
                 newUser.save().then((newUser)=>{
-                    console.log(`New user created: ${newUser}.`);
-                    done(null, newUser)
+                    return done(null, newUser)
                 });
             }
-            console.log(`User already created: ${user} Fuck ass`);
-            done(null, user)
+            return done(null, user)
         });
     })
 );
