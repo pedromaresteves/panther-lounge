@@ -28,11 +28,11 @@ passport.use(
                 thumbnail: profile._json.picture
             });
             if(!user) {
-                newUser.save().then((newUser)=>{
-                    return done(null, newUser)
+                return newUser.save().then((newUser)=>{
+                    done(null, newUser);
                 });
             }
-            return done(null, user)
+            return done(null, user);
         });
     })
 );
