@@ -6,7 +6,7 @@ module.exports={
         path: __dirname + '/public/js/',
         filename:'bundle.js'
     },
-    watch: false
+    watch: true
 }
 
-//to run without NPM SCRIPT - node_modules/.bin/webpack
+//to run without node_modules/.bin/webpack
