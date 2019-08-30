@@ -4,7 +4,7 @@
   "description": "app for guitar chords",
   "main": "app.js",
   "scripts": {
-    "test": "mocha",
+    "testDB": "mocha --exit",
     "start": "nodemon app.js"
   },
   "author": "pedro",

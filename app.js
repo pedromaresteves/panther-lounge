@@ -23,6 +23,7 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
+mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
