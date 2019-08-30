@@ -1,10 +1,27 @@
 const express = require("express");
 const indexRouter = require("./routes/index");
+const authRouter = require("./routes/auth");
 const guitarChordsRouter = require("./routes/guitarChords");
+const profileRouter = require("./routes/profile");
 const apiRouter = require("./routes/api");
 const stuff = require("./stuff.js");
 const mongoose = require('mongoose');
 const app = express();
+const passport = require('passport');
+const passportSetup = require('./auth-config/passport-setup')
+const cookieSession = require('cookie-session');
+
+mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true});
+
+//set up cookies
+app.use(cookieSession({
+  maxAge: 24 * 60 * 60 * 1000,
+  keys: [stuff.session.cookieKey]
+}));
+
+//initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true});
 
@@ -22,6 +39,8 @@ app.use(express.static("./public"));
 
 //fire routers
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/profile', profileRouter);
 app.use('/guitar-chords', guitarChordsRouter);
 
 //fire API router

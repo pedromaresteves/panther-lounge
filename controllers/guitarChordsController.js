@@ -20,7 +20,7 @@ module.exports = {
             {$group:{_id : {name : "$artist", link: "$nArtist"}}},
             {$count:"numArtists"}]).then(result=>{
               const numOfPages = Math.ceil(result[0].numArtists/resultsPerPage);
-              res.render("index.ejs", {data: finalArray, numOfPages: numOfPages}); 
+              res.render("index.ejs", {userData: req.user, data: finalArray, numOfPages: numOfPages}); 
             })
         });
     },
@@ -43,9 +43,9 @@ module.exports = {
           { $match: { nArtist: req.params.artist } },
           { $count:"numArtists"}]).then(result=>{
             const numOfPages = Math.ceil(result[0].numArtists/resultsPerPage);
-            res.render("artistPage.ejs", {artist: finalArray[0].artist, data: finalArray, numOfPages: numOfPages, artistParam : utils.encodeChars(req.params.artist), recommended: {item : "Poop"}})
+            res.render("artistPage.ejs", {userData: req.user, artist: finalArray[0].artist, data: finalArray, numOfPages: numOfPages, artistParam : utils.encodeChars(req.params.artist), recommended: {item : "Poop"}})
               }).catch(err => {
-              res.render("error.ejs", {url: req.url, errorMessage : err.message})
+              res.render("error.ejs", {userData: req.user, url: req.url, errorMessage : err.message})
             }); 
           });
     },
@@ -55,21 +55,21 @@ module.exports = {
       SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex}).then(result => {
         const lyricsChords = JSON.parse(result.lyricsChords).ops;
         if(!result.songCreater) result.songCreater = "Temp User"
-        res.render("songs.ejs", {artist: result.artist, nArtist: result.nArtist, title: result.title, songCreater: result.songCreater, song: lyricsChords});
+        res.render("songs.ejs", {userData: req.user, artist: result.artist, nArtist: result.nArtist, title: result.title, songCreater: result.songCreater, song: lyricsChords});
       }).catch(err => {
-        res.render("error.ejs", {url: req.url, errorMessage: err.message})
+        res.render("error.ejs", {userData: req.user, url: req.url, errorMessage: err.message})
       });
     },
     getAddSong : function(req,res){
-      res.render("addSong.ejs", {songData:{artist:req.params.artist}})
+      res.render("addSong.ejs", {userData: req.user, songData:{artist:req.params.artist}})
     },
     getEditSong : function(req,res){
       let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
       let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
       SongModel.findOne({title: titleRegex, artist: artistRegex}).then(result => {
-        res.render("addSong.ejs", {songData : result})
+        res.render("addSong.ejs", {userData: req.user, songData : result})
       }).catch(err => {
-        res.render("error.ejs", {url: req.url, errorMessage: err.message});
+        res.render("error.ejs", {userData: req.user, url: req.url, errorMessage: err.message});
       });
     },
 }

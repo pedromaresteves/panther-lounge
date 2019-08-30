@@ -8,3 +8,5 @@ module.exports={
     },
     watch: true
 }
+
+//to run without node_modules/.bin/webpack
