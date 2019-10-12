@@ -1,5 +1,3 @@
-require
-
 module.exports={
     entry: './public/js/main.js',
     output:{
