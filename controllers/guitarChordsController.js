@@ -60,7 +60,7 @@ module.exports = {
         res.render("error.ejs", {userData: req.user, url: req.url, errorMessage: err.message})
       });
     },
-    getAddSong : function(req,res){
+    getAddSong : function(req,res){   
       res.render("addSong.ejs", {userData: req.user, songData:{artist:req.params.artist}})
     },
     getEditSong : function(req,res){

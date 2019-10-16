@@ -43,7 +43,8 @@ module.exports = {
           title: req.body.title,
           lyricsChords: req.body.lyricsAndChords,
           nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
-          nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+          nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
+          songCreator: req.user._id
         });
         const data = {
             redirectUrl: "",
