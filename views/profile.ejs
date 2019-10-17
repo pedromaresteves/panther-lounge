@@ -9,8 +9,12 @@
                 <strong>Total Songs: </strong><%= userData.username %><br>
                 <strong>Today's sexyness level: </strong><%= userData.username %>
             </p>
-            <h5 class="mt-5"><strong>Your songs:</strong></h5>
-            <p><%= userSongs %></p>  
+            <h5 class='mt-5'><strong>Your songs:</strong></h5>
+            <ul id='page-results' class='list-group'>
+                <% userSongs.forEach(function(item){ %>
+                    <li class='list-group-item artist-item'><a href='/guitar-chords/<%- item.artistLink %>'><%= item.artist %></a><a href='/guitar-chords/<%= item.artistLink %>/<%= item.songLink %>'><%= item.title %></a><span><a href='/guitar-chords/edit-song/<%= item.artistLink %>/<%= item.songLink %>' class='mr-3'>Edit</a><a href='/guitar-chords/' data-toggle='modal' data-target='#modal-<%=item.title.replace(/\s/g, '') %>'>Delete</a></span></li>
+                    <% }) %>
+            </ul>
         </div>
     </div>
 </div>
