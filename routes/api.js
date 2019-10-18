@@ -8,6 +8,8 @@ var apiController = require("../controllers/apiController");
 router.get("/", jsonParser, apiController.paginationArtists);
 //GET ALL RESULTS FOR FREE SEARCH
 router.get("/get-all-results", jsonParser, apiController.getAllResults);
+//PROFILE SONGS
+router.get("/profile", jsonParser, apiController.profileSongs);
 //PAGINATION SongsByArtist
 router.get("/:artist", jsonParser, apiController.paginationSongsByArtist);
 //ADD SONG
