@@ -1,10 +1,10 @@
 import deleteSong from "./deleteSong.js";
 export default function getPageResults(currentPage) {
     let partialPath;
-
+    
     if(window.location.pathname.indexOf('guitar-chords') !== -1) partialPath = window.location.pathname.replace("guitar-chords", "api")
     if(window.location.pathname.indexOf('profile') !== -1) partialPath = window.location.pathname.replace("profile/", "api/profile")
-
+    console.log(`${window.location.origin}${partialPath}?page=${currentPage}`);
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
     alert('Giving up :( Cannot create an XMLHTTP instance');
@@ -16,6 +16,7 @@ export default function getPageResults(currentPage) {
         let newResultsHtml = ``;
         if(httpRequest.readyState === 4){
         const response = JSON.parse(httpRequest.response);
+        console.log(response);
         if(response.length == 1){
             response[0].forEach(function(item){
             newResultsHtml += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.link}">${item.artist}</a><span>${item.nOfSongs} songs</span></li>`;

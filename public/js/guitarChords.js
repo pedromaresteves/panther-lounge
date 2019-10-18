@@ -1,8 +1,7 @@
 import pagination from "./pagination.js";
 import Fuse from 'fuse.js';
-import { Query } from "mongoose";
 
-export default function index() {
+export default function guitarChords() {
   pagination();
   
   const freeSearchInput = document.getElementById("search-input");
@@ -37,7 +36,6 @@ export default function index() {
         if(httpRequest.readyState === 4){
           const response = JSON.parse(httpRequest.response);
           songDb = response;
-          console.log(songDb);
           var options = {
             shouldSort: true,
             threshold: 0.3,
@@ -50,8 +48,7 @@ export default function index() {
               "nArtist"
             ]
           };
-          fuse = new Fuse(songDb, options); // "list" is the item array
-        
+          fuse = new Fuse(songDb, options); // "list" is the item array 
         }
     };
   httpRequest.open('GET', `${window.location.origin}${window.location.pathname.replace("guitar-chords", "api")}/get-all-results`);

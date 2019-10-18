@@ -2,6 +2,10 @@ import getPageResults from "./getPageResults.js";
 
 export default function pagination() {
 
+    if(!window.location.search.match(/[0-9]/g)){
+      getPageResults(1);
+    } 
+
     const pages = document.querySelectorAll("#pag-nav ul li");
     for(let i = 0; i< pages.length; i++){
       pages[i].addEventListener("click", pageAction);

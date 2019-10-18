@@ -20,7 +20,7 @@ module.exports = {
             {$group:{_id : {name : "$artist", link: "$nArtist"}}},
             {$count:"numArtists"}]).then(result=>{
               const numOfPages = Math.ceil(result[0].numArtists/resultsPerPage);
-              res.render("index.ejs", {userData: req.user, data: finalArray, numOfPages: numOfPages}); 
+              res.render("guitarChords.ejs", {userData: req.user, data: finalArray, numOfPages: numOfPages}); 
             })
         });
     },
