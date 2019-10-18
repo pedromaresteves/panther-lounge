@@ -1,12 +1,16 @@
 import deleteSong from "./deleteSong.js";
-
 export default function getPageResults(currentPage) {
+    let partialPath;
+
+    if(window.location.pathname.indexOf('guitar-chords') !== -1) partialPath = window.location.pathname.replace("guitar-chords", "api")
+    if(window.location.pathname.indexOf('profile') !== -1) partialPath = window.location.pathname.replace("profile/", "api/profile")
+
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
     alert('Giving up :( Cannot create an XMLHTTP instance');
     return false;
     }
-
+    
     httpRequest.onreadystatechange = function(){    
         const pageComponent = document.querySelector("#page-results");
         let newResultsHtml = ``;
@@ -44,6 +48,7 @@ export default function getPageResults(currentPage) {
         deleteSong();
         }
     };
-    httpRequest.open('GET', `${window.location.origin}${window.location.pathname.replace("guitar-chords", "api")}?page=${currentPage}`);
+
+    httpRequest.open('GET', `${window.location.origin}${partialPath}?page=${currentPage}`);
     httpRequest.send();
 }

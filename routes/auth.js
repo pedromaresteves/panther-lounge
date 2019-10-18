@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const passport = require('passport');
 
 router.get("/login", function(req, res) {
-    res.render("login2.ejs", {userData: req.user}) 
+    res.render("login.ejs", {userData: req.user}) 
 });  
 
 router.get("/logout", function(req, res) {

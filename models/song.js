@@ -8,7 +8,7 @@ const SongSchema = new Schema({
     lyricsChords: String,
     nArtist: String,
     nTitle: String,
-    songCreater: String
+    songCreator: String
 });
 
 //The nArtist and nTitle Fields refer to a normalize version of the respective values

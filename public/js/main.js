@@ -1,6 +1,7 @@
 import addSong from "./addSong.js";
 import artistPage from "./artistPage.js";
 import index from "./index.js";
+import profile from "./profile.js";
 
 $(function () {
     $('[data-toggle="tooltip"]').tooltip({
@@ -12,7 +13,7 @@ $(function () {
 
 const numOfSlashes = window.location.pathname.match(/\//g).length;
 
-//CHECK INDEX AND  ARTIST PAGE LOCATIONS
+//CHECK INDEX AND ARTIST PAGE LOCATIONS
 if(window.location.pathname.indexOf("/guitar-chords") != -1 && numOfSlashes == 1){ 
     index();
 }
@@ -25,4 +26,8 @@ if(window.location.pathname.indexOf("/guitar-chords/") != -1 && window.location.
 //CHECK ADD/EDIT SONG PAGE LOCATION AND LOAD SCRIPT
 if(window.location.pathname.indexOf("/guitar-chords/add-song") != -1 || window.location.pathname.indexOf("/guitar-chords/edit-song") != -1){ 
     addSong();
+}
+
+if(window.location.pathname.indexOf("/profile/") != -1 && window.location.pathname.indexOf("add-song") == -1 && numOfSlashes == 2){ 
+    profile();
 }

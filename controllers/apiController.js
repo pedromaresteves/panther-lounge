@@ -37,13 +37,37 @@ module.exports = {
             return res.send([finalArray, utils.encodeChars(req.params.artist)]);
          });
     },
+    profileSongs : async function(req, res){
+        let userSongs = [];
+        const resultsPerPage = 3;
+        let resultsToSkip = req.query.page-1;
+        if(!resultsToSkip) resultsToSkip = 0;
+        const songsToShow = await SongModel.aggregate([
+            { $match: { songCreator: req.user._id.toString()} },
+            { $sort: { nTitle : 1} },
+            { $skip: resultsToSkip*resultsPerPage },
+            { $limit : resultsPerPage}
+        ]);
+        songsToShow.forEach(function(item){
+            userSongs.push(
+                {
+                artist: item.artist,
+                title: item.title,
+                artistLink: utils.encodeChars(item.nArtist),
+                songLink: utils.encodeChars(item.nTitle)
+                }                    
+            );
+        });
+        res.send([userSongs]); 
+    },
     addSong : function(req,res){
         const newSong = new SongModel({
           artist: req.body.artist,
           title: req.body.title,
           lyricsChords: req.body.lyricsAndChords,
           nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
-          nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+          nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
+          songCreator: req.user._id
         });
         const data = {
             redirectUrl: "",

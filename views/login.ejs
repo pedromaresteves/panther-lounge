@@ -1,26 +1,18 @@
 <%- include nav.ejs %>
-<h1>Login</h1>
-<main>
-    <a id="my-signin2" href="google">Google+</a>
-</main>
-<script>
-    function onSuccess(googleUser) {
-        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-    }
-    function onFailure(error) {
-        console.log(error);
-    }
-    function renderButton() {
-        gapi.signin2.render('my-signin2', {
-        'scope': 'profile email',
-        'width': 240,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': onSuccess,
-        'onfailure': onFailure
-        });
-    }
-</script>
+<div class='container'>
+    <div class='row justify-content-center h-100'>
+        <div class='col-md-8 align-self-center my-auto'>
+            <h1 class='text-center mb-4'> Come in and get cozy</h1>
+            <a class='btn btn-block btn-social btn-google' href="google"><span class="fab fa-google"></span> Sign in with Google</a>
+        </div>
+    </div>
+</div>
 
-<script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+<div class="row mt-5">
+    <div class='col-md-12 align-self-center'>
+        <h4 class='text-center mb-3 text-secondary'>Are you asking yourself why should you login?</h4>
+        <p class='text-center text-secondary'>The answer is: Why shouldn't you?</p>
+    </div>
+</div>
+
+
