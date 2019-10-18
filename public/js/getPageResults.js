@@ -5,9 +5,6 @@ export default function getPageResults(currentPage) {
     if(window.location.pathname.indexOf('guitar-chords') !== -1) partialPath = window.location.pathname.replace("guitar-chords", "api")
     if(window.location.pathname.indexOf('profile') !== -1) partialPath = window.location.pathname.replace("profile/", "api/profile")
 
-    console.log(partialPath, "FUCK");
-    console.log(`${window.location.origin}${partialPath}?page=${currentPage}`);
-
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {
     alert('Giving up :( Cannot create an XMLHTTP instance');
