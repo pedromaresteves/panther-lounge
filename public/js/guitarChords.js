@@ -1,11 +1,17 @@
 import pagination from "./pagination.js";
+import getPageResults from "./getPageResults.js";
 import Fuse from 'fuse.js';
 
 export default function guitarChords() {
+  if(!window.location.search.match(/[0-9]/g)){
+    getPageResults(1);
+  } else {
+    let currentPage = window.location.search.match(/[0-9]/g).join("");
+    getPageResults(currentPage);
+  }
   pagination();
-  
+
   const freeSearchInput = document.getElementById("search-input");
-  const searchResults = document.getElementById("search-results");
   const artistResults = document.getElementById("artist-list");
   const songResults = document.getElementById("song-list");
   let songDb = [];

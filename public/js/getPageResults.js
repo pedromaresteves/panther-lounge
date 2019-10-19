@@ -1,4 +1,5 @@
 import deleteSong from "./deleteSong.js";
+import pagination from "./pagination.js";
 export default function getPageResults(currentPage) {
     let partialPath;
     
@@ -12,18 +13,24 @@ export default function getPageResults(currentPage) {
     }
     
     httpRequest.onreadystatechange = function(){    
-        const pageComponent = document.querySelector("#page-results");
+        const resultsComponent = document.querySelector("#page-results");
+        const paginationComponent = document.querySelector('#pag-nav ul');
         let newResultsHtml = ``;
+        let paginationHtml = ``;
         if(httpRequest.readyState === 4){
         const response = JSON.parse(httpRequest.response);
-        console.log(response);
-        if(response.length == 1){
-            response[0].forEach(function(item){
+        if(response[0] === 'paginationArtists'){
+            response[1].forEach(function(item){
             newResultsHtml += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.link}">${item.artist}</a><span>${item.nOfSongs} songs</span></li>`;
             });
-        } else{
-            response[0].forEach(function(item){
-            newResultsHtml += `<li class="list-group-item artist-item"><a href="${response[1]}/${item.link}">${item.title}</a><span><a href="edit-song/${response[1]}/${item.link}" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
+            for(let i = 1; i <= response[2]; i++) {
+                paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
+            }
+        }
+        if(response[0] === 'paginationSongsByArtist'){
+            console.log(response);
+            response[1].forEach(function(item){
+            newResultsHtml += `<li class="list-group-item artist-item"><a href="${response[2]}/${item.link}">${item.title}</a><span><a href="edit-song/${response[2]}/${item.link}" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
             <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.link}-label" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -44,8 +51,13 @@ export default function getPageResults(currentPage) {
                 </div>
             </div>`
             });
+        for(let i = 1; i <= response[3]; i++) {
+            paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
         }
-        pageComponent.innerHTML = newResultsHtml;
+        }
+        resultsComponent.innerHTML = newResultsHtml;
+        paginationComponent.innerHTML = paginationHtml;
+        pagination();
         deleteSong();
         }
     };

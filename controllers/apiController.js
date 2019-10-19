@@ -2,40 +2,46 @@ const SongModel = require("../models/song");
 const utils = require("../utils/utils");
 
 module.exports = {
-    paginationArtists : function(req,res){
+    paginationArtists : async function(req,res){
         const resultsPerPage = 3;
         let resultsToSkip = req.query.page-1;
         if(!resultsToSkip) resultsToSkip = 0;
-        SongModel.aggregate([
+        let results = await SongModel.aggregate([
             {$group:{_id : {name : "$artist", link: "$nArtist"}, total : { $sum: 1 }}},
             {$sort:{'_id.link' : 1}},
             {$skip : resultsToSkip*resultsPerPage},
             {$limit : 3}
-            ]).then(result => {
-                let finalArray = [];
-                result.forEach(function(item){
-                  finalArray.push({artist: item._id.name, nOfSongs: item.total, link: utils.encodeChars(item._id.link)})
-                });
-                return res.send([finalArray]); //I send an array to be consistent with the songsByArtist function
-            });
+            ]);
+        let finalArray = [];
+        results.forEach(function(item){
+            finalArray.push({artist: item._id.name, nOfSongs: item.total, link: utils.encodeChars(item._id.link)})
+          });
+        let totalResults = await SongModel.aggregate([
+            {$group:{_id : {name : "$artist", link: "$nArtist"}}},
+            {$count:"numArtists"}]);
+        const numOfPages = Math.ceil(totalResults[0].numArtists/resultsPerPage);
+        return res.send(["paginationArtists", finalArray, numOfPages]);
     },
-    paginationSongsByArtist : function(req,res){
+    paginationSongsByArtist : async function(req,res){
         const resultsPerPage = 3;
         let resultsToSkip = req.query.page-1;
         if(!resultsToSkip) resultsToSkip = 0;
-        SongModel.aggregate([
+        let results = await SongModel.aggregate([
           { $match: { nArtist: req.params.artist } },
           { $group:{_id : {name : "$artist", title: "$title", link: "$nTitle"}}},
           { $sort: { '_id.link' : 1 } },
           { $skip : resultsToSkip*resultsPerPage },
           {$limit : 3}
-          ]).then(result => {
-            let finalArray = [];
-            result.forEach(function(item){
-                finalArray.push({artist: item._id.name, title: item._id.title, link: utils.encodeChars(item._id.link)})
-            });
-            return res.send([finalArray, utils.encodeChars(req.params.artist)]);
-         });
+          ]);
+        let finalArray = [];
+        results.forEach(function(item){
+            finalArray.push({artist: item._id.name, title: item._id.title, link: utils.encodeChars(item._id.link)})
+        });
+        let totalResults = await SongModel.aggregate([
+            { $match: { nArtist: req.params.artist } },
+            { $count:"numArtists"}]);
+        const numOfPages = Math.ceil(totalResults[0].numArtists/resultsPerPage);
+        return res.send(["paginationSongsByArtist", finalArray, utils.encodeChars(req.params.artist), numOfPages]);
     },
     profileSongs : async function(req, res){
         let userSongs = [];

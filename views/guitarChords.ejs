@@ -19,13 +19,11 @@
             <div class='col-md-12'>
                 <h4 class='text-center mt-2'>Choose your favorite artist</h4>
                 <ul id="page-results" class="list-group">
-                    <% data.forEach(function(item){ %>
-                        <li class="list-group-item artist-item"><a href="/guitar-chords/<%- item.link %>"><%= item.artist %></a><span><%= item.nOfSongs %> songs</span></li>
-                    <% }) %>
+                    <div class="spinner"></div>
                 </ul>
                 <nav id="pag-nav" class="mt-3" aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
-                        <% for(let i = 1; i <= numOfPages; i++) {%>
+                        <% for(let i = 1; i <= 2; i++) {%>
                             <li class="page-item"><a class="page-link" href="#"><%= i %></a></li>
                         <% }%>
                     </ul>
