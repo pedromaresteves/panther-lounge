@@ -19,18 +19,14 @@ export default function getPageResults(currentPage) {
         let paginationHtml = ``;
         if(httpRequest.readyState === 4){
         const response = JSON.parse(httpRequest.response);
-        if(response[0] === 'paginationArtists'){
-            response[1].forEach(function(item){
+        if(response.name === 'paginationArtists'){
+            response.visibleResults.forEach(function(item){
             newResultsHtml += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.link}">${item.artist}</a><span>${item.nOfSongs} songs</span></li>`;
             });
-            for(let i = 1; i <= response[2]; i++) {
-                paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
-            }
         }
-        if(response[0] === 'paginationSongsByArtist'){
-            console.log(response);
-            response[1].forEach(function(item){
-            newResultsHtml += `<li class="list-group-item artist-item"><a href="${response[2]}/${item.link}">${item.title}</a><span><a href="edit-song/${response[2]}/${item.link}" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
+        if(response.name === 'paginationSongsByArtist'){
+            response.visibleResults.forEach(function(item){
+            newResultsHtml += `<li class="list-group-item artist-item"><a href="${response.escapedArtist}/${item.link}">${item.title}</a><span><a href="edit-song/${response.escapedArtist}/${item.link}" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
             <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.link}-label" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -45,18 +41,18 @@ export default function getPageResults(currentPage) {
                     </div>
                     <div class="modal-footer">
                         <a id="closeDialog" href="/" data-dismiss="modal">Close</a>
-                        <a class="delete-song" data-dismiss="modal" href="${response[1]}/${item.link}">Delete Song</a>
+                        <a class="delete-song" data-dismiss="modal" href="${response.escapedArtist}/${item.link}">Delete Song</a>
                     </div>
                     </div>
                 </div>
             </div>`
             });
-            for(let i = 1; i <= response[3]; i++) {
-                if(i == response[4]) {
-                    paginationHtml += `<li class="page-item"><a class="page-link clicked-page-button" href="#"> ${i} </a></li>`; 
-                }else {
-                    paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
-                }
+        }
+        for(let i = 1; i <= response.numOfPages; i++) {
+            if(i == response.currentPage) {
+                paginationHtml += `<li class="page-item"><a class="page-link clicked-page-button" href="#"> ${i} </a></li>`; 
+            }else {
+                paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
             }
         }
         resultsComponent.innerHTML = newResultsHtml;

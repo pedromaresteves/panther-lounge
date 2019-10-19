@@ -24,7 +24,7 @@ export default function deleteSong() {
             const response = JSON.parse(httpRequest.response);
             var errorDiv = document.createElement("div"); 
             var errorMsg = document.createTextNode(response.deletedMsg); 
-            errorDiv.className += "text-muted text-center text-monospace";
+            errorDiv.className += "font-weight-bold text-center text-monospace bg-info text-white";
             errorDiv.appendChild(errorMsg);
             itemToRemove.remove();
             menu.prepend(errorDiv);
@@ -34,14 +34,14 @@ export default function deleteSong() {
               if(response.redirectUrl){
                 window.location = response.redirectUrl;
               }
-            }, 1500);
+            }, 2500);
             if(window.location.search.match(/[0-9]/g)){
-              return currentPage = window.location.search.match(/[0-9]/g).join("")
+              currentPage = window.location.search.match(/[0-9]/g).join("")
             } 
             getPageResults(currentPage);
           }
       };
-      httpRequest.open('DELETE', songToDeleteUrl); //MAKE FUNCTION WORK
+      httpRequest.open('DELETE', songToDeleteUrl);
       httpRequest.send();
       }
     

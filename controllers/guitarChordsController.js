@@ -3,11 +3,14 @@ const utils = require("../utils/utils");
 
 module.exports = {
     index : async function(req, res){ //SONGS IN SONG BANK
-      res.render("guitarChords.ejs", {userData: req.user, numOfPages: 2}); 
+      res.render("guitarChords.ejs", {userData: req.user, numOfPages: 2}).catch(err => {
+        res.render("error.ejs", {userData: req.user, url: req.url, errorMessage : err.message});
+      });
     },
     artistList : async function(req, res){ //SONGS ACCORDING TO ARTIST
-      res.render("artistPage.ejs", {userData: req.user, artist: req.params.artist, numOfPages: 2});
-      //res.render("error.ejs", {userData: req.user, url: req.url, errorMessage : err.message});
+      res.render("artistPage.ejs", {userData: req.user, artist: req.params.artist, numOfPages: 2}).catch(err => {
+        res.render("error.ejs", {userData: req.user, url: req.url, errorMessage : err.message});
+      });
     },
     song : function(req,res){ //Get song from DB and Paint it
       let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
