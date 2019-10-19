@@ -2,37 +2,12 @@ const SongModel = require("../models/song");
 const utils = require("../utils/utils");
 
 module.exports = {
-    index : function(req, res){ //SONGS IN SONG BANK
-      console.log(req.params, req.query, "index");
-      res.render("guitarChords.ejs", {userData: req.user, numOfPages: 1}); 
+    index : async function(req, res){ //SONGS IN SONG BANK
+      res.render("guitarChords.ejs", {userData: req.user, numOfPages: 2}); 
     },
-    artistList : function(req, res){ //SONGS ACCORDING TO ARTIST
-      console.log(req.params, req.query, "artistlist");
-      // const resultsPerPage = 3;
-      // let resultsToSkip = req.query.page-1;
-      // if(!resultsToSkip) resultsToSkip = 0;
-      // SongModel.aggregate([
-      //   { $match: { nArtist: req.params.artist } },
-      //   { $group:{_id : {name : "$artist", title: "$title", link: "$nTitle"}}},
-      //   { $sort: { '_id.link' : 1 } },
-      //   { $skip : resultsToSkip*resultsPerPage },
-      //   {$limit : 3}
-      //   ]).then(result => {
-      //   let finalArray = [];
-      //   result.forEach(function(item){
-      //     finalArray.push({artist: item._id.name, title: item._id.title, link: utils.encodeChars(item._id.link)})
-      //   });
-      //   SongModel.aggregate([
-      //     { $match: { nArtist: req.params.artist } },
-      //     { $count:"numArtists"}]).then(result=>{
-      //       const numOfPages = Math.ceil(result[0].numArtists/resultsPerPage);
-      //       res.render("artistPage.ejs", {userData: req.user, artist: finalArray[0].artist, data: finalArray, numOfPages: numOfPages, artistParam : utils.encodeChars(req.params.artist), recommended: {item : "Poop"}})
-      //         }).catch(err => {
-      //         res.render("error.ejs", {userData: req.user, url: req.url, errorMessage : err.message})
-      //       }); 
-      //     });
-      res.render("artistPage.ejs", {userData: req.user, numOfPages: 2})
-      res.render("error.ejs", {userData: req.user, url: req.url, errorMessage : err.message})
+    artistList : async function(req, res){ //SONGS ACCORDING TO ARTIST
+      res.render("artistPage.ejs", {userData: req.user, artist: req.params.artist, numOfPages: 2});
+      //res.render("error.ejs", {userData: req.user, url: req.url, errorMessage : err.message});
     },
     song : function(req,res){ //Get song from DB and Paint it
       let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");

@@ -16,10 +16,10 @@ module.exports = {
         results.forEach(function(item){
             finalArray.push({artist: item._id.name, nOfSongs: item.total, link: utils.encodeChars(item._id.link)})
           });
-        let totalResults = await SongModel.aggregate([
+          let totalResults = await SongModel.aggregate([
             {$group:{_id : {name : "$artist", link: "$nArtist"}}},
             {$count:"numArtists"}]);
-        const numOfPages = Math.ceil(totalResults[0].numArtists/resultsPerPage);
+          const numOfPages = Math.ceil(totalResults[0].numArtists/resultsPerPage);
         return res.send(["paginationArtists", finalArray, numOfPages]);
     },
     paginationSongsByArtist : async function(req,res){
@@ -41,7 +41,7 @@ module.exports = {
             { $match: { nArtist: req.params.artist } },
             { $count:"numArtists"}]);
         const numOfPages = Math.ceil(totalResults[0].numArtists/resultsPerPage);
-        return res.send(["paginationSongsByArtist", finalArray, utils.encodeChars(req.params.artist), numOfPages]);
+        return res.send(["paginationSongsByArtist", finalArray, utils.encodeChars(req.params.artist), numOfPages, req.query.page]);
     },
     profileSongs : async function(req, res){
         let userSongs = [];

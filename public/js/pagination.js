@@ -10,18 +10,12 @@ export default function pagination() {
 
   function pageAction(e){
     e.preventDefault();
-    let selectedPage = e.target.textContent.replace(/\s/g, "");;
+    let selectedPage = e.target.textContent.replace(/\s/g, "");
 
     //UPDATE URL
     history.pushState({
-      id: `page ${e.target.textContent}`
-    }, 'New Page', `${e.target.origin}${e.target.pathname}?page=${e.target.textContent}`);
-
-    //UPDATE PRESSED BUTTON COLOR
-    for(let i = 0; i< pages.length; i++){
-      pages[i].firstChild.classList.remove("clicked-page-button");
-    }
-    e.target.classList.add("clicked-page-button");
+      id: `page ${selectedPage}`
+    }, 'New Page', `${e.target.origin}${e.target.pathname}?page=${selectedPage}`);
 
     getPageResults(selectedPage);
   }

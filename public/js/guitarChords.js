@@ -1,4 +1,3 @@
-import pagination from "./pagination.js";
 import getPageResults from "./getPageResults.js";
 import Fuse from 'fuse.js';
 
@@ -9,7 +8,6 @@ export default function guitarChords() {
     let currentPage = window.location.search.match(/[0-9]/g).join("");
     getPageResults(currentPage);
   }
-  pagination();
 
   const freeSearchInput = document.getElementById("search-input");
   const artistResults = document.getElementById("artist-list");

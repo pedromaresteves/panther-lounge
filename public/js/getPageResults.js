@@ -51,9 +51,13 @@ export default function getPageResults(currentPage) {
                 </div>
             </div>`
             });
-        for(let i = 1; i <= response[3]; i++) {
-            paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
-        }
+            for(let i = 1; i <= response[3]; i++) {
+                if(i == response[4]) {
+                    paginationHtml += `<li class="page-item"><a class="page-link clicked-page-button" href="#"> ${i} </a></li>`; 
+                }else {
+                    paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
+                }
+            }
         }
         resultsComponent.innerHTML = newResultsHtml;
         paginationComponent.innerHTML = paginationHtml;
