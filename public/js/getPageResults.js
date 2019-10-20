@@ -21,32 +21,11 @@ export default function getPageResults(currentPage) {
         const response = JSON.parse(httpRequest.response);
         if(response.name === 'paginationArtists'){
             response.visibleResults.forEach(function(item){
-            newResultsHtml += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.link}">${item.artist}</a><span>${item.nOfSongs} songs</span></li>`;
+            newResultsHtml += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.artistPath}">${item.artist}</a><span>${item.nOfSongs} songs</span></li>`;
             });
         }
         if(response.name === 'paginationSongsByArtist'){
-            response.visibleResults.forEach(function(item){
-            newResultsHtml += `<li class="list-group-item artist-item"><a href="${response.escapedArtist}/${item.link}">${item.title}</a><span><a href="edit-song/${response.escapedArtist}/${item.link}" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
-            <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.link}-label" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="${item.link}-label">Delete Song Warning</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this song?
-                    </div>
-                    <div class="modal-footer">
-                        <a id="closeDialog" href="/" data-dismiss="modal">Close</a>
-                        <a class="delete-song" data-dismiss="modal" href="${response.escapedArtist}/${item.link}">Delete Song</a>
-                    </div>
-                    </div>
-                </div>
-            </div>`
-            });
+            newResultsHtml = generateArtistPageHtml(response);
         }
         for(let i = 1; i <= response.numOfPages; i++) {
             if(i == response.currentPage) {
@@ -64,4 +43,31 @@ export default function getPageResults(currentPage) {
 
     httpRequest.open('GET', `${window.location.origin}${partialPath}?page=${currentPage}`);
     httpRequest.send();
+}
+
+function generateArtistPageHtml(res){
+    let html = '';
+    res.visibleResults.forEach(function(item){
+        html += `<li class="list-group-item artist-item"><a href="${res.artistPath}/${item.songPath}">${item.title}</a><span><a href="edit-song/${res.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
+        <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.songPath}-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="${item.songPath}-label">Delete Song Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this song?
+                </div>
+                <div class="modal-footer">
+                    <a id="closeDialog" href="/" data-dismiss="modal">Close</a>
+                    <a class="delete-song" data-dismiss="modal" href="${res.artistPath}/${item.songPath}">Delete Song</a>
+                </div>
+                </div>
+            </div>
+        </div>`
+        });
+    return html;
 }

@@ -19,7 +19,7 @@ module.exports = {
             {$limit : 3}
             ]);
         results.forEach(function(item){
-            data.visibleResults.push({artist: item._id.name, nOfSongs: item.total, link: utils.encodeChars(item._id.link)});
+            data.visibleResults.push({artist: item._id.name, nOfSongs: item.total, artistPath: utils.encodeChars(item._id.link)});
         });
         let totalResults = await SongModel.aggregate([
         {$group:{_id : {name : "$artist", link: "$nArtist"}}},
@@ -31,7 +31,7 @@ module.exports = {
         let data = {
             name: 'paginationSongsByArtist',
             visibleResults: [],
-            escapedArtist: utils.encodeChars(req.params.artist),
+            artistPath: utils.encodeChars(req.params.artist),
             currentPage: req.query.page,
             numOfPages: 1
         };
@@ -39,13 +39,13 @@ module.exports = {
         if(!resultsToSkip) resultsToSkip = 0;
         let results = await SongModel.aggregate([
           { $match: { nArtist: req.params.artist } },
-          { $group:{_id : {name : "$artist", title: "$title", link: "$nTitle"}}},
+          { $group:{_id : {name : "$artist", title: "$title", songPath: "$nTitle"}}},
           { $sort: { '_id.link' : 1 } },
           { $skip : resultsToSkip*resultsPerPage },
           {$limit : 3}
           ]);
         results.forEach(function(item){
-            data.visibleResults.push({artist: item._id.name, title: item._id.title, link: utils.encodeChars(item._id.link)})
+            data.visibleResults.push({artist: item._id.name, title: item._id.title, songPath: utils.encodeChars(item._id.songPath)})
         });
         let totalResults = await SongModel.aggregate([
             { $match: { nArtist: req.params.artist } },
@@ -54,8 +54,12 @@ module.exports = {
         return res.send(data);
     },
     profileSongs : async function(req, res){
-        let userSongs = [];
-        const resultsPerPage = 3;
+        let data = {
+            name: 'profileSongs',
+            visibleResults: [],
+            currentPage: req.query.page,
+            numOfPages: 1
+        };
         let resultsToSkip = req.query.page-1;
         if(!resultsToSkip) resultsToSkip = 0;
         const songsToShow = await SongModel.aggregate([
@@ -65,16 +69,20 @@ module.exports = {
             { $limit : resultsPerPage}
         ]);
         songsToShow.forEach(function(item){
-            userSongs.push(
+            data.visibleResults.push(
                 {
                 artist: item.artist,
                 title: item.title,
-                artistLink: utils.encodeChars(item.nArtist),
-                songLink: utils.encodeChars(item.nTitle)
+                artistPath: utils.encodeChars(item.nArtist),
+                songPath: utils.encodeChars(item.nTitle)
                 }                    
             );
         });
-        res.send([userSongs]); 
+        const totalUserSongs = await SongModel.aggregate([
+            { $match: { songCreator: req.user._id.toString() } },
+            { $count:"numSongs"}]);
+        data.numOfPages = Math.ceil(totalUserSongs[0].numSongs/resultsPerPage);
+        res.send(userSongs); 
     },
     addSong : function(req,res){
         const newSong = new SongModel({
