@@ -28,6 +28,6 @@ if(window.location.pathname.indexOf("/guitar-chords/add-song") != -1 || window.l
     addSong();
 }
 
-if(window.location.pathname.indexOf("/profile/") != -1 && window.location.pathname.indexOf("add-song") == -1 && numOfSlashes == 2){ 
+if(window.location.pathname.indexOf("/profile") != -1){ 
     profile();
 }

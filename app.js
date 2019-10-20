@@ -11,7 +11,7 @@ const passport = require('passport');
 const passportSetup = require('./auth-config/passport-setup')
 const cookieSession = require('cookie-session');
 
-mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true});
+mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true, useUnifiedTopology: true});
 
 //set up cookies
 app.use(cookieSession({
@@ -22,8 +22,6 @@ app.use(cookieSession({
 //initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
-
-mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

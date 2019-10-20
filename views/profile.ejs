@@ -11,13 +11,11 @@
             </p>
             <h5 class='mt-5'><strong>Your songs:</strong></h5>
             <ul id='page-results' class='list-group'>
-                <% userSongs.forEach(function(item){ %>
-                    <li class='list-group-item artist-item'><a href='/guitar-chords/<%- item.artistLink %>'><%= item.artist %></a><a href='/guitar-chords/<%= item.artistLink %>/<%= item.songLink %>'><%= item.title %></a><span><a href='/guitar-chords/edit-song/<%= item.artistLink %>/<%= item.songLink %>' class='mr-3'>Edit</a><a href='/guitar-chords/' data-toggle='modal' data-target='#modal-<%=item.title.replace(/\s/g, '') %>'>Delete</a></span></li>
-                    <% }) %>
+                <div class="spinner"></div> 
             </ul>
             <nav id="pag-nav" class="mt-3" aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <% for(let i = 1; i <= numOfPages; i++) {%>
+                    <% for(let i = 1; i <= 2; i++) {%>
                         <li class="page-item"><a class="page-link" href="#"><%= i %></a></li>
                     <% }%>
                 </ul>

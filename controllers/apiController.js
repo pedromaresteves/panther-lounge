@@ -82,7 +82,7 @@ module.exports = {
             { $match: { songCreator: req.user._id.toString() } },
             { $count:"numSongs"}]);
         data.numOfPages = Math.ceil(totalUserSongs[0].numSongs/resultsPerPage);
-        res.send(userSongs); 
+        res.send(data); 
     },
     addSong : function(req,res){
         const newSong = new SongModel({
