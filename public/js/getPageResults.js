@@ -2,8 +2,6 @@ import deleteSong from "./deleteSong.js";
 import pagination from "./pagination.js";
 export default function getPageResults() {
     let path = window.location.origin + "/api" + window.location.pathname + window.location.search;
-    
-    console.log(path);
 
     let httpRequest = new XMLHttpRequest();
     if (!httpRequest) {

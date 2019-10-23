@@ -2,6 +2,8 @@ import getPageResults from "./getPageResults.js";
 import Fuse from 'fuse.js';
 
 export default function guitarChords() {
+  let path = window.location.origin + "/api" + window.location.pathname + "/get-all-results";
+
   if(!window.location.search.match(/[0-9]/g)){
     getPageResults(1);
   } else {
@@ -12,7 +14,6 @@ export default function guitarChords() {
   const freeSearchInput = document.getElementById("search-input");
   const artistResults = document.getElementById("artist-list");
   const songResults = document.getElementById("song-list");
-  let songDb = [];
   let fuse;
   let result;
 
@@ -38,8 +39,7 @@ export default function guitarChords() {
     
     httpRequest.onreadystatechange = function(){    
         if(httpRequest.readyState === 4){
-          const response = JSON.parse(httpRequest.response);
-          songDb = response;
+          const songDb = JSON.parse(httpRequest.response);
           var options = {
             shouldSort: true,
             threshold: 0.3,
@@ -52,10 +52,10 @@ export default function guitarChords() {
               "nArtist"
             ]
           };
-          fuse = new Fuse(songDb, options); // "list" is the item array 
+          fuse = new Fuse(songDb, options);
         }
     };
-  httpRequest.open('GET', `${window.location.origin}${window.location.pathname.replace("guitar-chords", "api")}/get-all-results`);
+  httpRequest.open('GET', path);
   httpRequest.send();
 
 }
