@@ -2,7 +2,7 @@ import getPageResults from "./getPageResults.js";
 
 export default function deleteSong() {
     
-    const menu = document.getElementById("available-songs");
+    const yourSongsTitle = document.querySelector("#error-message");
     const deleteSongsButtons = document.getElementsByClassName("delete-song");
     
     function deleteSong(e){
@@ -10,8 +10,8 @@ export default function deleteSong() {
       let currentPage = 1;
       const eventTarget = e.target;
       const itemToRemove = document.querySelector("a[href='" + eventTarget.attributes.href.value + "'").parentElement; 
-      const songToDeleteUrl = eventTarget.href.replace("guitar-chords", "api");
-      var httpRequest;
+      const songToDeleteUrl = eventTarget.href.replace("profile", "api/guitar-chords");
+      let httpRequest;
     
       httpRequest = new XMLHttpRequest();
       if (!httpRequest) {
@@ -24,16 +24,16 @@ export default function deleteSong() {
             const response = JSON.parse(httpRequest.response);
             var errorDiv = document.createElement("div"); 
             var errorMsg = document.createTextNode(response.deletedMsg); 
-            errorDiv.className += "font-weight-bold text-center text-monospace bg-info text-white";
+            errorDiv.className += "m-1 text-center text-monospace bg-info text-white";
             errorDiv.appendChild(errorMsg);
             itemToRemove.remove();
-            menu.prepend(errorDiv);
+            yourSongsTitle.appendChild(errorDiv);
             var intervalID = window.setInterval(function(){
-              menu.removeChild(errorDiv);
-              clearInterval(intervalID);
+              yourSongsTitle.removeChild(errorDiv);
               if(response.redirectUrl){
                 window.location = response.redirectUrl;
               }
+              clearInterval(intervalID);
             }, 2500);
             if(window.location.search.match(/[0-9]/g)){
               currentPage = window.location.search.match(/[0-9]/g).join("")

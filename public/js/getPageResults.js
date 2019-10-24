@@ -16,7 +16,6 @@ export default function getPageResults() {
         let paginationHtml = ``;
         if(httpRequest.readyState === 4){
             const response = JSON.parse(httpRequest.response);
-            console.log(response);
             if(response.name === 'paginationArtists'){
                 newResultsHtml = genGuitarChordsIndexResults(response);
             }

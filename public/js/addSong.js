@@ -7,6 +7,8 @@ export default function addSong() {
     const formFields = [artistField,titleField];
     let lyricsChordsSender = document.querySelector('input[name=lyrics]');
     let sendFormButton = document.querySelector('#submitButton');
+    const addSongApiUrl = window.location.origin + "/api" + window.location.pathname;
+    console.log(addSongApiUrl);
 
     //Quill settings
     var quill = new Quill('#editor', {
@@ -66,7 +68,6 @@ export default function addSong() {
 
     //Submiting Quill content through form
     form.onsubmit = function(e) {
-        const addSongApiUrl = window.location.href.replace("guitar-chords", "api");
         lyricsChordsSender.value = JSON.stringify(quill.getContents());
         const songData = JSON.stringify({
             artist:artistField.value,

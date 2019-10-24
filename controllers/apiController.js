@@ -81,7 +81,9 @@ module.exports = {
         const totalUserSongs = await SongModel.aggregate([
             { $match: { songCreator: req.user._id.toString() } },
             { $count:"numSongs"}]);
-        data.numOfPages = Math.ceil(totalUserSongs[0].numSongs/resultsPerPage);
+        if(totalUserSongs[0]){
+            data.numOfPages = Math.ceil(totalUserSongs[0].numSongs/resultsPerPage);
+        }
         res.send(data); 
     },
     addSong : function(req,res){
@@ -105,6 +107,7 @@ module.exports = {
             return res.send(data);
           }
           data.errorMsg = "This song already exists in your song bank!";
+          console.log(data);
           return res.send(data);
         });
     },
