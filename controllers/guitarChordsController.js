@@ -6,7 +6,7 @@ module.exports = {
       res.render("guitarChords.ejs", {userData: req.user}); 
     },
     artistList : async function(req, res){ //SONGS ACCORDING TO ARTIST
-      res.render("artistPage.ejs", {userData: req.user, artist: req.params.artist})
+      res.render("artistPage.ejs", {userData: req.user, artistParam: req.params.artist})
     },
     song : function(req,res){ //Get song from DB and Paint it
       let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");

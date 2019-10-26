@@ -87,6 +87,14 @@ module.exports = {
         res.send(data); 
     },
     addSong : function(req,res){
+        const data = {
+            redirectUrl: '',
+            errorMsg: ''
+        };
+        if(!req.user){
+            data.errorMsg = 'You gotta be logged if you wanna add songs.'
+            return res.send(data);
+        }
         const newSong = new SongModel({
           artist: req.body.artist,
           title: req.body.title,
@@ -95,10 +103,6 @@ module.exports = {
           nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
           songCreator: req.user._id
         });
-        const data = {
-            redirectUrl: "",
-            errorMsg: ""
-        };
         let newSongTitleRegex = new RegExp("^" + newSong.title + "$", "gi");
         SongModel.find({artist: newSong.artist, title: newSongTitleRegex}).then(result=>{
           if(result.length === 0){
@@ -106,9 +110,8 @@ module.exports = {
             data.redirectUrl = `http://127.0.0.1:3000/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`;
             return res.send(data);
           }
-          data.errorMsg = "This song already exists in your song bank!";
-          console.log(data);
-          return res.send(data);
+        data.errorMsg = "This song already exists in your song bank!";
+        return res.send(data);
         });
     },
     editSong : function(req,res){

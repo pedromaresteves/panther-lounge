@@ -1,15 +1,15 @@
 <%- include nav.ejs %>
     <div class="container">
         <div class='row'> 
-            <div class="col-md-12  mt-3 mb-3">
-                <a href="http://127.0.0.1:3000/guitar-chords">Guitar Chords</a><span> / </span><span><%= artist %></span>
+            <div class="col-md-12 mt-3 mb-3">
+                <a href="http://127.0.0.1:3000/guitar-chords">Guitar Chords</a><span> / </span><span><%= artistParam %></span>
             </div>  
             <div class='col-md-8 offset-md-2 mt-3 mb-5'>
-                <h6 class="text-center">Can't find the <span class="font-italic"><%= artist %></span> song you're looking for? What about creating it yourself?</h6>
-                <a href="add-song/<%= artist %>" id="make-song" type="button" class="btn btn-success d-block mx-auto"><h5>Make Song!</h5></a>
+                <h6 class="text-center">Can't find the song you're looking for? What about creating it yourself?</h6>
+                <a href="add-song/<%= artistParam %>" id="make-song" type="button" class="btn btn-success d-block mx-auto"><h5>Make Song!</h5></a>
             </div>
-            <div id="available-songs" class='col-md-12'>
-                <h4 class='text-center mt-2'><%= artist %> Songs</h4>
+            <div id="available-songs" class='col-md-10 offset-md-1'>
+                <h4 id="artist-title" class='text-center mt-2'></h4>
                 <ul id="page-results" class="list-group">
                     <div class="spinner"></div> 
                 </ul>

@@ -20,6 +20,8 @@ export default function getPageResults() {
                 newResultsHtml = genGuitarChordsIndexResults(response);
             }
             if(response.name === 'paginationSongsByArtist'){
+                const artistTitleElement = document.querySelector("#artist-title");
+                artistTitleElement.innerHTML = `${response.visibleResults[0].artist} Songs`;
                 newResultsHtml = genArtistPageResults(response);
             }
             if(response.name === 'profileSongs'){
@@ -53,7 +55,7 @@ function genGuitarChordsIndexResults(res){
 function genArtistPageResults(res){
     let html = '';
     res.visibleResults.forEach(function(item){
-        html += `<li class="list-group-item artist-item"><a href="${res.artistPath}/${item.songPath}">${item.title}</a><span><a href="edit-song/${res.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
+        html += `<li class="list-group-item artist-item"><a href="${res.artistPath}/${item.songPath}">${item.title}</a><span></li>
         <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.songPath}-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
