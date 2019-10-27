@@ -45,6 +45,11 @@
           </ul>
           <div class="nav-item ml-auto">
             <% if (userData) {%>
+              <a class="nav-link" href="/profile">Your Profile</a>
+            <%} %>
+          </div>
+          <div class="nav-item">
+            <% if (userData) {%>
               <a class="nav-link" href="/auth/logout">Logout</a>
             <%} else { %>
               <a class="nav-link" href="/auth/login">Login</a>

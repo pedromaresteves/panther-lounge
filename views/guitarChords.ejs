@@ -1,7 +1,7 @@
 <%- include nav.ejs %>
     <div class="container">
         <div class="row">
-            <div class="mt-3 col-md-8 offset-md-2">
+            <div class="mt-1 col-md-8 offset-md-2 mb-3">
                 <div >
                     <input id="search-input" type="text" class="form-control" placeholder="Search for your favorite artist" aria-label="Insert Artist or Song" aria-describedby="basic-addon1">
                     <div class="border" id="search-results">
@@ -11,13 +11,14 @@
                 </div>
             </div>
         </div>
-        <div class='col-md-8 offset-md-2 mt-3 mb-5'>
-            <h6 class="text-center">Can't find the song you're looking for? What about creating it yourself?</h6>
-            <a href="guitar-chords/add-song" id="make-song" type="button" class="btn btn-success d-block mx-auto"><h5>Make Song!</h5></a>
-        </div>
+        <%if(userData){%>
+            <%- include makeSong.ejs %>
+        <%} else {%>
+            <%- include goToLogin.ejs %>
+        <%}%>
         <div class='row'>    
             <div class='col-md-12'>
-                <h4 class='text-center mt-2'>Choose your favorite artist</h4>
+                <h4 class='text-center mt-3'>Choose your favorite artist</h4>
                 <ul id="page-results" class="list-group">
                     <div class="spinner"></div>
                 </ul>
