@@ -96,7 +96,7 @@ module.exports = {
             return res.send(data);
         }
         const newSong = new SongModel({
-          artist: req.body.artist,
+          artist: utils.capitalizeName(req.body.artist),
           title: req.body.title,
           lyricsChords: req.body.lyricsAndChords,
           nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),

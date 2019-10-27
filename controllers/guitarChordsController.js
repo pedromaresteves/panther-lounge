@@ -25,7 +25,7 @@ module.exports = {
     getEditSong : function(req,res){
       let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
       let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
-      SongModel.findOne({title: titleRegex, artist: artistRegex}).then(result => {
+      SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex}).then(result => {
         res.render("addSong.ejs", {userData: req.user, songData : result})
       }).catch(err => {
         res.render("error.ejs", {userData: req.user, url: req.url, errorMessage: err.message});

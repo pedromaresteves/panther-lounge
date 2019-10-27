@@ -20,7 +20,9 @@ export default function getPageResults() {
                 newResultsHtml = genGuitarChordsIndexResults(response);
             }
             if(response.name === 'paginationSongsByArtist'){
-                const artistTitleElement = document.querySelector("#artist-title");
+                const artistTitleElement = document.querySelector('#artist-title');
+                const breadcrumbArtist = document.querySelector('#breadcrumb-artist');
+                breadcrumbArtist.innerHTML = response.visibleResults[0].artist;
                 artistTitleElement.innerHTML = `${response.visibleResults[0].artist} Songs`;
                 newResultsHtml = genArtistPageResults(response);
             }
