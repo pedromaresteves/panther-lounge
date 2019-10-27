@@ -15,14 +15,14 @@
     "express": "^4.16.4",
     "express-validator": "^5.3.1",
     "fuse.js": "^3.4.4",
-    "mongoose": "^5.4.7",
+    "mongoose": "^5.7.7",
     "passport": "^0.4.0",
     "passport-google-oauth": "^2.0.0"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.10",
-    "webpack": "^4.36.1",
+    "nodemon": "^1.19.4",
+    "webpack": "^4.41.2",
     "webpack-cli": "^3.3.6"
   }
 }
