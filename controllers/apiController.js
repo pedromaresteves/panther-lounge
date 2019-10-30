@@ -86,6 +86,15 @@ module.exports = {
         }
         res.send(data); 
     },
+    getLyricsNchords: async function(req, res){
+        console.log(req.params);
+        let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
+        let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
+        SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex}).then(result => {
+          if(!result.songCreater) result.songCreater = "Temp User"
+          res.send(result);
+        });
+    },
     addSong : function(req,res){
         const data = {
             redirectUrl: '',

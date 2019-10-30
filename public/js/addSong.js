@@ -69,10 +69,11 @@ export default function addSong() {
     //Submiting Quill content through form
     form.onsubmit = function(e) {
         lyricsChordsSender.value = JSON.stringify(quill.getContents());
+        console.log(quill.getContents());
         const songData = JSON.stringify({
             artist:artistField.value,
             title: titleField.value,
-            lyricsAndChords: lyricsChordsSender.value
+            lyricsAndChords: quill.getContents()
         });
         var httpRequest;
     
@@ -101,7 +102,7 @@ export default function addSong() {
                 return true;
               }
               if(response.redirectUrl){
-                window.location = response.redirectUrl;
+                //window.location = response.redirectUrl;
                 return true;
               }
             }

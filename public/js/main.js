@@ -2,6 +2,7 @@ import addSong from "./addSong.js";
 import artistPage from "./artistPage.js";
 import guitarChords from "./guitarChords.js";
 import profile from "./profile.js";
+import songPong from "./song"
 
 $(function () {
     $('[data-toggle="tooltip"]').tooltip({
@@ -28,6 +29,12 @@ if(window.location.pathname.indexOf("/guitar-chords/add-song") != -1 || window.l
     addSong();
 }
 
+//SONG
+if(window.location.pathname.indexOf("/guitar-chords") != -1 && numOfSlashes == 3){ 
+    songPong();
+}
+
+//PROFILE
 if(window.location.pathname.indexOf("/profile") != -1){ 
     profile();
 }
