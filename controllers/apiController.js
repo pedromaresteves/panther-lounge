@@ -87,11 +87,10 @@ module.exports = {
         res.send(data); 
     },
     getLyricsNchords: async function(req, res){
-        console.log(req.params);
         let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
         let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
         SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex}).then(result => {
-          if(!result.songCreater) result.songCreater = "Temp User"
+          if(!result.songCreator) result.songCreator = "Temp User"
           res.send(result);
         });
     },
@@ -138,7 +137,7 @@ module.exports = {
         let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
         let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
         SongModel.updateOne({nArtist: artistRegex, nTitle: titleRegex},
-            { $set: {lyricsChords: newSong.lyricsChords, title: newSong.title, nTitle: newSong.nTitle}}).then(result=>{
+            { $set: {lyricsChords: newSong.lyricsChords, title: newSong.title, nTitle: newSong.nTitle}}).then(result => {
             return res.send(data);
         });
     },

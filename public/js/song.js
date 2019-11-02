@@ -1,13 +1,12 @@
 
 export default function songPong() {
     let path = window.location.origin + "/api" + window.location.pathname;
-    console.log(path);
-
+    console.log("pop");
     var quill = new Quill('#editor', {
         modules: {
             toolbar: false
         },
-        placeholder: 'Compose an epic...',
+        placeholder: 'Loading Content',
         theme: false
         });
     quill.enable(false);

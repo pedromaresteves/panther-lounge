@@ -1,4 +1,4 @@
-export default function addSong() {
+export default function addOrEditSong() {
 
     //DOM Variables
     const form = document.querySelector('form');
@@ -8,7 +8,6 @@ export default function addSong() {
     let lyricsChordsSender = document.querySelector('input[name=lyrics]');
     let sendFormButton = document.querySelector('#submitButton');
     const addSongApiUrl = window.location.origin + "/api" + window.location.pathname;
-    console.log(addSongApiUrl);
 
     //Quill settings
     var quill = new Quill('#editor', {
@@ -20,8 +19,8 @@ export default function addSong() {
         });
     
     //If editing a song, we get the lyrics and chords and fill the text editor
-    if(lyricsChordsSender.value){
-        const songContent = JSON.parse(lyricsChordsSender.attributes.value.value).ops;
+    if(!!lyricsChordsSender.value){
+        const songContent = JSON.parse(lyricsChordsSender.value).ops;
         let contentToBeSet = [];
         songContent.forEach(function(item){
             contentToBeSet.push(item)
@@ -69,7 +68,6 @@ export default function addSong() {
     //Submiting Quill content through form
     form.onsubmit = function(e) {
         lyricsChordsSender.value = JSON.stringify(quill.getContents());
-        console.log(quill.getContents());
         const songData = JSON.stringify({
             artist:artistField.value,
             title: titleField.value,
@@ -87,7 +85,6 @@ export default function addSong() {
     
         httpRequest.onreadystatechange = function(){    
             if(httpRequest.readyState === 4){
-                console.log(httpRequest.response);
               const response = JSON.parse(httpRequest.response);
               if(response.errorMsg){
                 const errorDiv = document.createElement("div"); 
@@ -102,7 +99,7 @@ export default function addSong() {
                 return true;
               }
               if(response.redirectUrl){
-                //window.location = response.redirectUrl;
+                window.location = response.redirectUrl;
                 return true;
               }
             }

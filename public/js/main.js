@@ -1,4 +1,4 @@
-import addSong from "./addSong.js";
+import addOrEditSong from "./addOrEditSong.js";
 import artistPage from "./artistPage.js";
 import guitarChords from "./guitarChords.js";
 import profile from "./profile.js";
@@ -26,11 +26,14 @@ if(window.location.pathname.indexOf("/guitar-chords/") != -1 && window.location.
 
 //CHECK ADD/EDIT SONG PAGE LOCATION AND LOAD SCRIPT
 if(window.location.pathname.indexOf("/guitar-chords/add-song") != -1 || window.location.pathname.indexOf("/guitar-chords/edit-song") != -1){ 
-    addSong();
+    addOrEditSong();
 }
 
 //SONG
-if(window.location.pathname.indexOf("/guitar-chords") != -1 && numOfSlashes == 3){ 
+if(window.location.pathname.indexOf("/guitar-chords") != -1
+&& window.location.pathname.indexOf("/add-song") == -1
+&& window.location.pathname.indexOf("/edit-song") == -1
+&& numOfSlashes == 3){ 
     songPong();
 }
 
