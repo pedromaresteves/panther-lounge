@@ -12,6 +12,8 @@ router.get("/guitar-chords/get-all-results", jsonParser, apiController.getAllRes
 router.get("/profile", jsonParser, apiController.profileSongs);
 //PAGINATION SongsByArtist
 router.get("/guitar-chords/:artist", jsonParser, apiController.paginationSongsByArtist);
+//SONG
+router.get("/guitar-chords/:artist/:title", jsonParser, apiController.getLyricsNchords);
 //ADD SONG
 router.post("/guitar-chords/add-song/:artist?", jsonParser, apiController.addSong);
 //EDIT SONG

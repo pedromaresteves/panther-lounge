@@ -83,7 +83,7 @@ function genArtistPageResults(res){
 function genProfileResults(res){
     let html = '';
     res.visibleResults.forEach(function(item){        
-        html += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.artistPath}">${item.artist}</a><a href="/guitar-chords/${item.artistPath}/${item.songPath}">${item.title}</a><span><a href="/guitar-chords/edit-song/${item.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="/" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
+        html += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.artistPath}">${item.artist}</a><a href="/guitar-chords/${item.artistPath}/${item.songPath}">${item.title}</a><span><a href="/guitar-chords/edit-song/${item.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="#" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
         <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.songPath}-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -98,7 +98,7 @@ function genProfileResults(res){
                 </div>
                 <div class="modal-footer">
                     <a id="closeDialog" href="/" data-dismiss="modal">Close</a>
-                    <a class="delete-song" data-dismiss="modal" href="${item.artistPath}/${item.songPath}">Delete Song</a>
+                    <a class="delete-song" data-dismiss="modal" href="/api/guitar-chords/${item.artistPath}/${item.songPath}">Delete Song</a>
                 </div>
                 </div>
             </div>

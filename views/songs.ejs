@@ -2,31 +2,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12  mt-3 mb-3">
-            <a href="http://127.0.0.1:3000/guitar-chords">Guitar Chords</a><span> / </span><a href="http://127.0.0.1:3000/guitar-chords/<%= nArtist %>"><%= artist %></a><span> / </span><span><%= title %><span>
-        </div>
-        <div class="col-md-8">
-            <h2><%= title %> by <a href="http://127.0.0.1:3000/guitar-chords/<%= nArtist %>"><%= artist %></a></h2>
-            <p><small>Created By: <%= songCreater %></small></p>
-            <div class="mt-5">
-            <% song.forEach(function(item){ %>
-                <% if(item.attributes) { %>
-                    <% let style = ""; %>
-                    <% if(item.attributes.bold){ %>
-                    <%  style += "font-weight:bold;" %>
-                    <% } %>
-                    <% if(item.attributes.italic){ %>
-                    <% style += "font-style:italic;" %>
-                    <% } %>
-                    <span class="fix-form" style="<%= style %>"><%- item.insert.replace(/\t/g, "    ") %></span>
-                <% } else { %>
-                <span class="fix-form"><%- item.insert.replace(/\t/g, "    ") %></span>
-                <% } %>
-            <% }) %>
+            <a href="http://127.0.0.1:3000/guitar-chords">Guitar Chords</a><span> / </span><a href="http://127.0.0.1:3000/guitar-chords/<%= songData.nArtist %>"><%= songData.artist %></a><span> / </span><span><%= songData.title %><span>
             </div>
+            <div class="col-md-8">
+                <h2><%= songData.title %> by <a href="http://127.0.0.1:3000/guitar-chords/<%= songData.nArtist %>"><%= songData.artist %></a></h2>
+                <p><small>Created By: <%= songData.songCreator %></small></p>
+            <div id="editor" class="mt-5" value="<%= songData.lyricsChords %>"></div>
         </div>      
     </div>
-    <% //<a data-toggle="tooltip" title="<img src='https://www.cyberfret.com/wp-content/uploads/g-major-guitar-chord-1.gif' />">%>
-    <% //    Hola Mundo1! %>
-    <% //</a></li> %>
 </div>
+<script src="//cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <%- include footer.ejs %>
