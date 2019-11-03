@@ -1,6 +1,6 @@
 const SongModel = require("../models/song");
 const utils = require("../utils/utils");
-const resultsPerPage = 3;
+const resultsPerPage = 10;
 
 module.exports = {
     paginationArtists : async function(req,res){
@@ -145,17 +145,11 @@ module.exports = {
         let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
         let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
         const data = {
-            redirectUrl: "",
             deletedMsg: "The song was deleted. Bye bye! :("
         };
         SongModel.findOneAndDelete({nArtist: artistRegex, nTitle: titleRegex}).then(result => {
             return SongModel.findOne({artist: artistRegex});
         }).then(result =>{
-            if(result){
-                res.send(data);
-                return true;
-            }
-            data.redirectUrl = "http://127.0.0.1:3000/guitar-chords";
             res.send(data);
         });
     },

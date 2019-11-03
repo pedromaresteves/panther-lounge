@@ -1,7 +1,6 @@
 
 export default function songPong() {
-    let path = window.location.origin + "/api" + window.location.pathname;
-    console.log("pop");
+    let lyricsChordsElement = document.querySelector('#editor');
     var quill = new Quill('#editor', {
         modules: {
             toolbar: false
@@ -10,20 +9,12 @@ export default function songPong() {
         theme: false
         });
     quill.enable(false);
-
-    let httpRequest = new XMLHttpRequest();
-    if (!httpRequest) {
-        alert('Giving up :( Cannot create an XMLHTTP instance');
-        return false;
+    if(!!lyricsChordsElement.attributes.value.value){
+        const songContent = JSON.parse(lyricsChordsElement.attributes.value.value).ops;
+        let contentToBeSet = [];
+        songContent.forEach(function(item){
+            contentToBeSet.push(item)
+        });
+        quill.setContents(contentToBeSet)
     }
-    
-    httpRequest.onreadystatechange = function(){    
-        if(httpRequest.readyState === 4){
-            const response = JSON.parse(httpRequest.response);
-            quill.setContents(response.lyricsChords.ops);
-        }
-    };
-
-    httpRequest.open('GET', path);
-    httpRequest.send();
 }

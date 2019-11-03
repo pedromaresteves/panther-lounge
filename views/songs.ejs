@@ -7,8 +7,7 @@
             <div class="col-md-8">
                 <h2><%= songData.title %> by <a href="http://127.0.0.1:3000/guitar-chords/<%= songData.nArtist %>"><%= songData.artist %></a></h2>
                 <p><small>Created By: <%= songData.songCreator %></small></p>
-            <div id="editor" class="mt-5">
-            </div>
+            <div id="editor" class="mt-5" value="<%= songData.lyricsChords %>"></div>
         </div>      
     </div>
 </div>

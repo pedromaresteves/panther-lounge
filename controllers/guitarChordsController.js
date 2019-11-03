@@ -19,15 +19,12 @@ module.exports = {
       };
       let songCreatorData;
       let song = await SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex});
-      songData.artist = song.artist;
-      songData.title = song.title;
-      songData.nArtist = song.nArtist;
-      songData.nTitle = song.nTitle; 
+      song.lyricsChords = JSON.stringify(song.lyricsChords);
       if(song.songCreator){
         songCreatorData = await UserModel.findOne({ _id : song.songCreator });
-        songData.songCreator = songCreatorData.username;
+        song.songCreator = songCreatorData.username;
       }
-      res.render("songs.ejs", {userData: req.user, songData: songData});
+      res.render("songs.ejs", {userData: req.user, songData: song});
     },
     getAddSong : function(req,res){   
       const songData = {
