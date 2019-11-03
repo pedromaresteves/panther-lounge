@@ -1,6 +1,11 @@
 <%- include nav.ejs %>
 <div id="form-container" class="container mt-3">
-    <h3>Add a brand new song</h3>
+    <% if(songData.lyricsChords){ %>
+        <h3>C'mon, edit the song!</h3>
+    <% } %>
+    <% if(!songData.lyricsChords){ %>
+        <h3>Add a brand new song</h3>
+    <% } %>
     <form class="mt-3" method="post" action="/guitar-chords/add-song" novalidate>
     <div class="form-group">
         <label class="mt-3" for="artist">Artist</label>
