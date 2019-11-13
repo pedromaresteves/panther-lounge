@@ -8,15 +8,12 @@ module.exports = {
       res.render("guitarChords.ejs", {userData: req.user, makeSongUrl: makeSongUrl}); 
     },
     artistList : function(req, res){ //SONGS ACCORDING TO ARTIST
-      let makeSongUrl = `add-song/${req.params.artist}`;
+      let makeSongUrl = `add-song/${utils.encodeChars(req.params.artist)}`;
       res.render("artistPage.ejs", {userData: req.user, makeSongUrl: makeSongUrl})
     },
     song : async function(req,res){ //Get song from DB and Paint it
       let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
       let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
-      let songData = {
-        songCreator: "Temp User"
-      };
       let songCreatorData;
       let song = await SongModel.findOne({nTitle: titleRegex, nArtist: artistRegex});
       song.lyricsChords = JSON.stringify(song.lyricsChords);
@@ -24,6 +21,7 @@ module.exports = {
         songCreatorData = await UserModel.findOne({ _id : song.songCreator });
         song.songCreator = songCreatorData.username;
       }
+      song.nArtist = utils.encodeChars(song.nArtist);
       res.render("songs.ejs", {userData: req.user, songData: song});
     },
     getAddSong : function(req,res){   
