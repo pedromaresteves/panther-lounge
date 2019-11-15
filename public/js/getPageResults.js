@@ -63,13 +63,14 @@ function genArtistPageResults(res){
 }
 function genProfileResults(res){
     let html = '';
-    res.visibleResults.forEach(function(item){        
-        html += `<li class="list-group-item artist-item"><a class="col-4 d-none d-sm-block text-left text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><a class="col-4 text-left text-truncate" href="/guitar-chords/${item.artistPath}/${item.songPath}">${item.title}</a><span class="col-md-2 text-right"><a href="/guitar-chords/edit-song/${item.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="#" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
-        <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.songPath}-label" aria-hidden="true">
+    let counter = 0;
+    res.visibleResults.forEach(function(item){      
+        html += `<li class="list-group-item artist-item"><a class="col-4 d-none d-sm-block text-left text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><a class="col-4 text-left text-truncate" href="/guitar-chords/${item.artistPath}/${item.songPath}">${item.title}</a><span class="col-md-2 text-right"><a href="/guitar-chords/edit-song/${item.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="#" data-toggle="modal" data-target="#modal-${counter}">Delete</a></span></li>
+        <div class="modal fade" id="modal-${counter}" tabindex="-1" role="dialog" aria-labelledby="delete-song-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="${item.songPath}-label">Delete Song Warning</h5>
+                    <h5 class="modal-title" id="delete-song-warning-label">Delete Song Warning</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -84,6 +85,7 @@ function genProfileResults(res){
                 </div>
             </div>
         </div>`
+        counter++;
         });
     return html;
 }
