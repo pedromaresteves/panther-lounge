@@ -27,6 +27,10 @@ export default function getPageResults() {
                 newResultsHtml = genArtistPageResults(response);
             }
             if(response.name === 'profileSongs'){
+                const sexyLevel = Math.floor((Math.random() * 1000) + 1);
+                const profileStats = document.querySelector('#profile-stats');
+                profileStats.innerHTML = `<strong>Total Songs: </strong>${response.visibleResults.length}<br>
+                                        <strong>Your sexyness level at the moment: </strong>${sexyLevel}`; 
                 newResultsHtml = genProfileResults(response);
             }
             for(let i = 1; i <= response.numOfPages; i++) {
