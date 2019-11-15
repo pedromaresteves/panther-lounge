@@ -8,16 +8,24 @@ export default function addOrEditSong() {
     let lyricsChordsSender = document.querySelector('input[name=lyrics]');
     let sendFormButton = document.querySelector('#submitButton');
     const addSongApiUrl = window.location.origin + "/api" + window.location.pathname;
+    const quillCharlimit = 6000;
 
     //Quill settings
-    var quill = new Quill('#editor', {
+    const toolbarOptions = [{ size: [ 'small', false, 'large', 'huge' ]},'bold', 'italic', 'underline', { 'indent': '-1'}, { 'indent': '+1' }];
+    const quill = new Quill('#editor', {
         modules: {
-            toolbar: '#toolbar'
+            toolbar: toolbarOptions
         },
         placeholder: 'Compose an epic...',
         theme: 'snow'
         });
-    
+
+    quill.on('text-change', function (delta, old, source) {
+        if (quill.getLength() > quillCharlimit) {
+        quill.deleteText(quillCharlimit, quill.getLength());
+        }
+    });
+
     //If editing a song, we get the lyrics and chords and fill the text editor
     if(!!lyricsChordsSender.value){
         const songContent = JSON.parse(lyricsChordsSender.value).ops;

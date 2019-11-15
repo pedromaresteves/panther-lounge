@@ -14,9 +14,9 @@
         <input class="form-control" name="title" maxlength="450" value="<%= songData.title %>">
         <label class="mt-3" for="lyrics">Write the Lyrics and Chords</label>
         <input placeholder="Write the song" name="lyrics" value="<%= songData.lyricsChords %>" hidden>
-        <%- include quillToolbar.ejs %>
+        <div id="toolbar"></div>
         <div id="editor"></div>
-        <button id="submitButton" class="btn btn-primary mt-3" type="submit" disabled>Save Profile</button>
+        <button id="submitButton" class="btn btn-primary mt-3" type="submit" disabled>Save Song</button>
     </div>  
     </form>
 </div>
