@@ -50,45 +50,27 @@ export default function getPageResults() {
 function genGuitarChordsIndexResults(res){
     let html = '';
     res.visibleResults.forEach(function(item){
-        html += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.artistPath}">${item.artist}</a><span>${item.nOfSongs} songs</span></li>`;
+        html += `<li class="list-group-item artist-item"><a class="col-6 text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><span>${item.nOfSongs} songs</span></li>`;
     });
     return html;
 }
 function genArtistPageResults(res){
     let html = '';
     res.visibleResults.forEach(function(item){
-        html += `<li class="list-group-item artist-item"><a href="${res.artistPath}/${item.songPath}">${item.title}</a><span></li>
-        <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.songPath}-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="${item.songPath}-label">Delete Song Warning</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this song?
-                </div>
-                <div class="modal-footer">
-                    <a id="closeDialog" href="/" data-dismiss="modal">Close</a>
-                    <a class="delete-song" data-dismiss="modal" href="${res.artistPath}/${item.songPath}">Delete Song</a>
-                </div>
-                </div>
-            </div>
-        </div>`
+        html += `<li class="list-group-item artist-item text-center"><a class="col-12 text-center text-truncate" href="${res.artistPath}/${item.songPath}">${item.title}</a></li>`
         });
     return html;
 }
 function genProfileResults(res){
     let html = '';
-    res.visibleResults.forEach(function(item){        
-        html += `<li class="list-group-item artist-item"><a href="/guitar-chords/${item.artistPath}">${item.artist}</a><a href="/guitar-chords/${item.artistPath}/${item.songPath}">${item.title}</a><span><a href="/guitar-chords/edit-song/${item.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="#" data-toggle="modal" data-target="#modal-${item.title.replace(/\s/g, "")}">Delete</a></span></li>
-        <div class="modal fade" id="modal-${item.title.replace(/\s/g, "")}" tabindex="-1" role="dialog" aria-labelledby="${item.songPath}-label" aria-hidden="true">
+    let counter = 0;
+    res.visibleResults.forEach(function(item){      
+        html += `<li class="list-group-item artist-item"><a class="col-4 d-none d-sm-block text-left text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><a class="col-4 text-left text-truncate" href="/guitar-chords/${item.artistPath}/${item.songPath}">${item.title}</a><span class="col-md-2 text-right"><a href="/guitar-chords/edit-song/${item.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="#" data-toggle="modal" data-target="#modal-${counter}">Delete</a></span></li>
+        <div class="modal fade" id="modal-${counter}" tabindex="-1" role="dialog" aria-labelledby="delete-song-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="${item.songPath}-label">Delete Song Warning</h5>
+                    <h5 class="modal-title" id="delete-song-warning-label">Delete Song Warning</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
@@ -103,6 +85,7 @@ function genProfileResults(res){
                 </div>
             </div>
         </div>`
+        counter++;
         });
     return html;
 }

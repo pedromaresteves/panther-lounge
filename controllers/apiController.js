@@ -16,7 +16,7 @@ module.exports = {
             {$group:{_id : {name : "$artist", link: "$nArtist"}, total : { $sum: 1 }}},
             {$sort:{'_id.link' : 1}},
             {$skip : resultsToSkip*resultsPerPage},
-            {$limit : 3}
+            {$limit : resultsPerPage}
             ]);
         results.forEach(function(item){
             data.visibleResults.push({artist: item._id.name, nOfSongs: item.total, artistPath: utils.encodeChars(item._id.link)});
@@ -42,7 +42,7 @@ module.exports = {
           { $group:{_id : {name : "$artist", title: "$title", songPath: "$nTitle"}}},
           { $sort: { '_id.link' : 1 } },
           { $skip : resultsToSkip*resultsPerPage },
-          {$limit : 3}
+          {$limit : resultsPerPage}
           ]);
         results.forEach(function(item){
             data.visibleResults.push({artist: item._id.name, title: item._id.title, songPath: utils.encodeChars(item._id.songPath)})
