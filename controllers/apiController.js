@@ -64,7 +64,7 @@ module.exports = {
         if(!resultsToSkip) resultsToSkip = 0;
         const songsToShow = await SongModel.aggregate([
             { $match: { songCreator: req.user._id.toString()} },
-            { $sort: { nTitle : 1} },
+            { $sort: { nArtist : 1} },
             { $skip: resultsToSkip*resultsPerPage },
             { $limit : resultsPerPage}
         ]);
