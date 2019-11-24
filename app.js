@@ -4,7 +4,6 @@ const authRouter = require("./routes/auth");
 const guitarChordsRouter = require("./routes/guitarChords");
 const profileRouter = require("./routes/profile");
 const apiRouter = require("./routes/api");
-const stuff = require("./stuff.js");
 const mongoose = require('mongoose');
 const app = express();
 const passport = require('passport');
