@@ -12,6 +12,7 @@ passport.deserializeUser((id,done) => {
     });
 });
 
+console.log(process.env.googleClientID);
 passport.use(
     new GoogleStrategy({
         //Options for google auth

@@ -9,7 +9,7 @@ const app = express();
 const passport = require('passport');
 const passportSetup = require('./auth-config/passport-setup')
 const cookieSession = require('cookie-session');
-
+const PORT = process.env.PORT || 3000
 mongoose.connect(process.env.DBCONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
 
 //set up cookies
@@ -61,5 +61,5 @@ res.render('error.ejs', {errorMessage: res.locals.message, url:"http://127.0.0.1
 });
 
 //listen port
-app.listen(3000);
-console.log("You are listening to port 3000");
+app.listen(PORT);
+console.log(`You are listening to port ${PORT}`);
