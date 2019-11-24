@@ -9,7 +9,9 @@ const app = express();
 const passport = require('passport');
 const passportSetup = require('./auth-config/passport-setup')
 const cookieSession = require('cookie-session');
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 5000;
+
+
 mongoose.connect(process.env.DBCONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
 
 //set up cookies
@@ -52,12 +54,12 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-// set locals, only providing error in development
-res.locals.message = err.message;
-res.locals.error = req.app.get('env') === 'development' ? err : {};
-// render the error page
-res.status(err.status || 500);
-res.render('error.ejs', {errorMessage: res.locals.message, url:"http://127.0.0.1:3000" + req.originalUrl});
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error.ejs', {errorMessage: res.locals.message, url:"http://127.0.0.1:5000" + req.originalUrl});
 });
 
 //listen port
