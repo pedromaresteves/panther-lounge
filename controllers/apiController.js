@@ -4,6 +4,7 @@ const resultsPerPage = 10;
 
 module.exports = {
     paginationArtists : async function(req,res){
+        console.log(req.hostname + "/guitar-chords/");
         let data = {
             name: 'paginationArtists',
             visibleResults: [],
