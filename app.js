@@ -11,12 +11,12 @@ const passport = require('passport');
 const passportSetup = require('./auth-config/passport-setup')
 const cookieSession = require('cookie-session');
 
-mongoose.connect(stuff.pantherLoungeDBConnection, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(process.env.DBCONNECTION, {useNewUrlParser: true, useUnifiedTopology: true});
 
 //set up cookies
 app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000,
-  keys: [stuff.session.cookieKey]
+  keys: [process.env.sessionCookieKey]
 }));
 
 //initialize passport

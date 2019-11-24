@@ -5,3 +5,4 @@ things-to-do.txt
 node_modules
 client_id.json
 .vscode
+*.env
