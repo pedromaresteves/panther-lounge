@@ -115,7 +115,7 @@ module.exports = {
         SongModel.find({artist: newSong.artist, title: newSongTitleRegex}).then(result=>{
           if(result.length === 0){
             newSong.save();
-            data.redirectUrl = `http://127.0.0.1:3000/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`;
+            data.redirectUrl = `/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`;
             return res.send(data);
           }
         data.errorMsg = "This song already exists in your song bank!";
@@ -131,7 +131,7 @@ module.exports = {
             nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
         });
         const data = {
-            redirectUrl: `http://127.0.0.1:3000/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`,
+            redirectUrl: `/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`,
             errorMsg: ""
         };
         let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");

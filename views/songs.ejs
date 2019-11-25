@@ -2,11 +2,11 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12  mt-3 mb-3 text-truncate">
-            <a href="http://127.0.0.1:3000/guitar-chords">Guitar Chords</a><span> / </span><a href="http://127.0.0.1:3000/guitar-chords/<%= songData.nArtist %>"><%= songData.artist %></a><span> / </span><span><%= songData.title %><span>
+            <a href="/guitar-chords">Guitar Chords</a><span> / </span><a href="/guitar-chords/<%= songData.nArtist %>"><%= songData.artist %></a><span> / </span><span><%= songData.title %><span>
             </div>
             <div class="col-md-12">
                 <h2 class="text-truncate"><%= songData.title %></h2>
-                <p class="text-truncate">By: <a href="http://127.0.0.1:3000/guitar-chords/<%= songData.nArtist %>"><%= songData.artist %></a></p>
+                <p class="text-truncate">By: <a href="/guitar-chords/<%= songData.nArtist %>"><%= songData.artist %></a></p>
                 <p><small>Added by: <%= songData.songCreator %></small></p>
             <div id="editor" class="mt-5" value="<%= songData.lyricsChords %>"></div>
         </div>      
