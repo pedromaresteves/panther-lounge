@@ -11,7 +11,7 @@ passport.deserializeUser((id,done) => {
         done(null, result)
     });
 });
-console.log(process.env.googleCallbackURL, "Drunk Dickhead");
+
 passport.use(
     new GoogleStrategy({
         //Options for google auth

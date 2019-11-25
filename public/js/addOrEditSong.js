@@ -107,7 +107,7 @@ export default function addOrEditSong() {
                 return true;
               }
               if(response.redirectUrl){
-                window.location = response.redirectUrl;
+                window.location = window.location.host + response.redirectUrl;
                 return true;
               }
             }
