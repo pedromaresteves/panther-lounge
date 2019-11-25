@@ -8,7 +8,7 @@ module.exports = {
       res.render("guitarChords.ejs", {userData: req.user, makeSongUrl: makeSongUrl}); 
     },
     artistList : function(req, res){ //SONGS ACCORDING TO ARTIST
-      let makeSongUrl = `add-song/${utils.encodeChars(req.params.artist)}`;
+      let makeSongUrl = `guitar-chords/add-song/${utils.encodeChars(req.params.artist)}`;
       res.render("artistPage.ejs", {userData: req.user, makeSongUrl: makeSongUrl})
     },
     song : async function(req,res){ //Get song from DB and Paint it
