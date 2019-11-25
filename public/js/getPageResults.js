@@ -54,7 +54,7 @@ export default function getPageResults() {
 function genGuitarChordsIndexResults(res){
     let html = '';
     res.visibleResults.forEach(function(item){
-        html += `<li class="list-group-item artist-item"><a class="col-6 text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><span>${item.nOfSongs} songs</span></li>`;
+        html += `<li class="list-group-item artist-item"><a class="col-6 text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><span>${item.nOfSongs} song(s)</span></li>`;
     });
     return html;
 }
