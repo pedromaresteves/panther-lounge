@@ -81,6 +81,7 @@ module.exports = {
         const totalUserSongs = await SongModel.aggregate([
             { $match: { songCreator: req.user._id.toString() } },
             { $count:"numSongs"}]);
+        data.totalSongs = totalUserSongs[0].numSongs;
         if(totalUserSongs[0]){
             data.numOfPages = Math.ceil(totalUserSongs[0].numSongs/resultsPerPage);
         }
