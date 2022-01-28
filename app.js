@@ -9,9 +9,10 @@ const app = express();
 const passport = require("passport");
 const passportSetup = require("./auth-config/passport-setup");
 const cookieSession = require("cookie-session");
-const PORT = process.env.PORT || 5000;
+const {PORT, DBCONNECTION, sessionCookieKey} = process.env;
 
-mongoose.connect(process.env.DBCONNECTION, {
+
+mongoose.connect(DBCONNECTION, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -20,7 +21,7 @@ mongoose.connect(process.env.DBCONNECTION, {
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [process.env.sessionCookieKey],
+    keys: [sessionCookieKey],
   })
 );
 
