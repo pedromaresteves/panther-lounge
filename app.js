@@ -8,9 +8,10 @@ const mongoose = require("mongoose");
 const app = express();
 const passport = require("passport");
 const passportSetup = require("./auth-config/passport-setup");
+const passportLocalSetup = require("./auth-config/passportLocalSetup");
 const cookieSession = require("cookie-session");
-const {PORT, DBCONNECTION, sessionCookieKey} = process.env;
-
+const {PORT, DBCONNECTION, sessionCookieKey} = require('./stuff');
+app.use(express.json())
 
 mongoose.connect(DBCONNECTION, {
   useNewUrlParser: true,
@@ -58,7 +59,7 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

@@ -27,16 +27,17 @@ export default function getPageResults() {
                 newResultsHtml = genArtistPageResults(response);
             }
             if(response.name === 'profileSongs'){
-                const sexyLevel = Math.floor((Math.random() * 1000) + 1);
                 const profileStats = document.querySelector('#profile-stats');
                 profileStats.innerHTML = `<strong>Total Songs: </strong>${response.totalSongs}<br>`; 
                 newResultsHtml = genProfileResults(response);
             }
-            for(let i = 1; i <= response.numOfPages; i++) {
-                if(i == response.currentPage) {
-                    paginationHtml += `<li class="page-item"><a class="page-link clicked-page-button" href="#"> ${i} </a></li>`; 
-                }else {
-                    paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
+            if(response.totalSongs){
+                for(let i = 1; i <= response.numOfPages; i++) {
+                    if(i == response.currentPage) {
+                        paginationHtml += `<li class="page-item"><a class="page-link clicked-page-button" href="#"> ${i} </a></li>`; 
+                    }else {
+                        paginationHtml += `<li class="page-item"><a class="page-link" href="#"> ${i} </a></li>`;
+                    }
                 }
             }
             resultsComponent.innerHTML = newResultsHtml;

@@ -81,7 +81,7 @@ module.exports = {
         const totalUserSongs = await SongModel.aggregate([
             { $match: { songCreator: req.user._id.toString() } },
             { $count:"numSongs"}]);
-        data.totalSongs = totalUserSongs[0].numSongs;
+        data.totalSongs = totalUserSongs[0] ? totalUserSongs[0].numSongs : 0;
         if(totalUserSongs[0]){
             data.numOfPages = Math.ceil(totalUserSongs[0].numSongs/resultsPerPage);
         }
@@ -138,7 +138,7 @@ module.exports = {
         let artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
         let titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
         SongModel.updateOne({nArtist: artistRegex, nTitle: titleRegex},
-            { $set: {lyricsChords: newSong.lyricsChords, title: newSong.title, nTitle: newSong.nTitle}}).then(result => {
+            { $set: {lyricsChords: newSong.lyricsChords, title: newSong.title, nTitle: newSong.nTitle}}).then(() => {
             return res.send(data);
         });
     },
@@ -148,9 +148,9 @@ module.exports = {
         const data = {
             deletedMsg: "The song was deleted. Bye bye! :("
         };
-        SongModel.findOneAndDelete({nArtist: artistRegex, nTitle: titleRegex}).then(result => {
+        SongModel.findOneAndDelete({nArtist: artistRegex, nTitle: titleRegex}).then(() => {
             return SongModel.findOne({artist: artistRegex});
-        }).then(result =>{
+        }).then(() =>{
             res.send(data);
         });
     },
