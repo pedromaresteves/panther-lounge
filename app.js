@@ -7,8 +7,8 @@ const apiRouter = require("./routes/api");
 const mongoose = require("mongoose");
 const app = express();
 const passport = require("passport");
-const passportSetup = require("./auth-config/passport-setup");
-const passportLocalSetup = require("./auth-config/passportLocalSetup");
+require("./auth-config/passportGoogleAuthsetup");
+require("./auth-config/passportLocalSetup");
 const cookieSession = require("cookie-session");
 const {PORT, DBCONNECTION, sessionCookieKey} = require('./stuff');
 app.use(express.json())
