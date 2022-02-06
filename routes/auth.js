@@ -11,10 +11,8 @@ router.get("/login", function(req, res) {
 });  
 
 router.get("/login-local", function(req, res) {
-    // const failedLogin = req.query.login === 'failed';
-    // const loginError = req.session.messages[req.session.messages.length-1];
-    const failedLogin = false;
-    const loginError = false;
+    const failedLogin = req.query.login === 'failed';
+    const loginError = req.session.messages ? req.session.messages[req.session.messages.length-1] : '';
     res.render("loginLocal.ejs", {userData: req.user, loginError: loginError, failedLogin: failedLogin}) 
 });  
 
