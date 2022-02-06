@@ -7,11 +7,13 @@ const apiRouter = require("./routes/api");
 const mongoose = require("mongoose");
 const app = express();
 const passport = require("passport");
-const passportSetup = require("./auth-config/passport-setup");
+require("./auth-config/passportGoogleAuthsetup");
+require("./auth-config/passportLocalSetup");
 const cookieSession = require("cookie-session");
-const PORT = process.env.PORT || 5000;
+const {PORT, DBCONNECTION, sessionCookieKey} = process.env;
+app.use(express.json())
 
-mongoose.connect(process.env.DBCONNECTION, {
+mongoose.connect(DBCONNECTION, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -20,7 +22,7 @@ mongoose.connect(process.env.DBCONNECTION, {
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
-    keys: [process.env.sessionCookieKey],
+    keys: [sessionCookieKey],
   })
 );
 
@@ -57,7 +59,7 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};

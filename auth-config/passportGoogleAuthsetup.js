@@ -1,6 +1,7 @@
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20');
-const UserModel = require('../models/user')
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20");
+const UserModel = require("../models/user")
+const {googleClientID, googleClientSecret, googleCallbackURL} = process.env;
 
 passport.serializeUser((user,done) => {
     done(null, user.id)
@@ -15,21 +16,27 @@ passport.deserializeUser((id,done) => {
 passport.use(
     new GoogleStrategy({
         //Options for google auth
-        clientID: process.env.googleClientID,
-        clientSecret: process.env.googleClientSecret,
-        callbackURL: process.env.googleCallbackURL,
+        clientID: googleClientID,
+        clientSecret: googleClientSecret,
+        callbackURL: googleCallbackURL,
     }, (accessToken, refreshToken, profile, done)=>{
         //Passport Callback function
         UserModel.findOne({ googleId: profile.id }, function (err, user) {
             const newUser = new UserModel({
                 username: profile.displayName,
                 googleId: profile.id,
-                thumbnail: profile._json.picture
+                thumbnail: profile._json.picture,
+                email: profile._json.email
             });
             if(!user) {
                 return newUser.save().then((newUser)=>{
                     done(null, newUser);
                 });
+            }
+            if(!user.email) {
+                return user.updateOne({ email: profile._json.email }).then(()=>{
+                    done(null, user);
+                })
             }
             return done(null, user);
         });

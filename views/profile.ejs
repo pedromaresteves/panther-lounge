@@ -3,13 +3,14 @@
 <div class='container'>
     <div class='row justify-content-md-center'>
         <div class='col-md-12 text-center mb-3'>
+            <% if (userData.thumbnail) {%>
             <div><img class='rounded-circle img-max img-thumbnail' src='<%= userData.thumbnail %>' alt='Profile Picture' /></div>
+            <%} %>
             <p class='h3 mt-2'><%= userData.username %></p>
             <p id='profile-stats' class='mt-0'>
-                <strong>Total Songs: </strong><%= userData.username %><br>
-                <strong>Today's sexyness level: </strong><%= userData.username %>
+                <strong>Total Songs: </strong><span>Loading</span><br>
+                <%- include makeSong.ejs %>
             </p>
-            <h5 class='mt-5'><strong>Your songs:</strong></h5>
             <div id="error-message"></div>
             <ul id='page-results' class='list-group'>
                 <div class="spinner"></div> 

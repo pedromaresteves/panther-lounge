@@ -5,24 +5,27 @@
   "main": "app.js",
   "scripts": {
     "testDB": "mocha --exit",
-    "start": "nodemon app.js"
+    "start": "nodemon app.js",
+    "webpackBuild": "webpack build"
   },
   "author": "pedro",
   "license": "ISC",
   "dependencies": {
-    "cookie-session": "^1.3.3",
-    "ejs": "^2.6.1",
-    "express": "^4.16.4",
-    "express-validator": "^5.3.1",
-    "fuse.js": "^3.4.4",
-    "mongoose": "^5.7.7",
-    "passport": "^0.4.0",
-    "passport-google-oauth": "^2.0.0"
+    "cookie-session": "^1.4.0",
+    "ejs": "^2.7.4",
+    "express": "^4.17.2",
+    "express-validator": "^6.14.0",
+    "fuse.js": "^3.6.1",
+    "mongoose": "^5.13.14",
+    "passport": "^0.4.1",
+    "passport-google-oauth": "^2.0.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "mocha": "^7.2.0",
-    "nodemon": "^2.0.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.6"
+    "eslint": "^8.8.0",
+    "mocha": "^9.2.0",
+    "nodemon": "^2.0.15",
+    "webpack": "^5.67.0",
+    "webpack-cli": "^4.9.2"
   }
 }
