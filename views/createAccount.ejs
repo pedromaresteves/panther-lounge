@@ -9,15 +9,15 @@
             <form action="/auth/create-account" method="post">
                 <div class="mb-3">
                   <label for="username" class="form-label">Username</label>
-                  <input type="text" class="form-control" name="username" id="username" placeholder="JohnnyDee">
+                  <input type="text" class="form-control" name="username" id="username" placeholder="JohnnyDee" required minlength="4">
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email address</label>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="johndoe@mail.com">
+                    <input type="email" class="form-control" name="email" id="email" placeholder="johndoe@mail.com" required>
                   </div>
                 <div class="mb-3">
                   <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" name="password" id="password" placeholder="At leat 6 characters">
+                  <input type="password" class="form-control" name="password" id="password" placeholder="At leat 6 characters" required minlength="4">
                 </div>
                 <div class="text-center"><button type="submit" class="btn btn-primary">Submit</button></div>
               </form>
