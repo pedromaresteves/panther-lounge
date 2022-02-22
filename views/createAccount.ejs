@@ -4,7 +4,7 @@
         <div class="col-md-8 align-self-center my-auto">
             <h1 class="text-center mb-4"> Create Account</h1>
             <% if (fail.failedLogin) {%>
-              <span class="text-center">Error: <%= fail.failedMsg %></span>
+              <span class="text-center text-monospace text-danger">Error: <%= fail.failedMsg %></span>
             <%} %>
             <form action="/auth/create-account" method="post">
                 <div class="mb-3">

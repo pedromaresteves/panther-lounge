@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var guitarChordsController = require("../controllers/guitarChordsController");
+const express = require('express');
+const router = express.Router();
+const guitarChordsController = require("../controllers/guitarChordsController");
 const bodyParser = require("body-parser");
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
