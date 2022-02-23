@@ -4,12 +4,16 @@ module.exports = {
         "commonjs": true,
         "es2021": true,
         "node": true,
-        "mocha": true
+        "mocha": true,
     },
+    "plugins": [
+        "import"
+    ],
     "extends": "eslint:recommended",
     "parserOptions": {
         "ecmaVersion": "latest"
     },
     "rules": {
+        
     }
 }
