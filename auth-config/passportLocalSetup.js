@@ -5,12 +5,10 @@ const crypto = require("crypto");
 const {Buffer} = require("buffer");
 
 passport.serializeUser((user,done) => {
-    console.log("SERIALIZE")
     done(null, user.id)
 });
 
 passport.deserializeUser((id,done) => {
-    console.log("DESERIALIZE")
     UserModel.findById(id).then((result)=>{
         done(null, result)
     });
@@ -24,7 +22,7 @@ passport.deserializeUser((id,done) => {
       UserModel.findOne({ email: email }, function (err, user) {
         if (err) { return done(err); }
         if (!user) { return done(null, false, { message: "User not found." }); }
-        if(!user.salt) {return done(null, false, { message: "You've registered through a different login method" }); }
+        if(!user.salt) {return done(null, false, { message: "You've registered through a different login method." }); }
         crypto.pbkdf2(password, user.salt, 310000, 32, "sha256", function(err, hashedPassword) {
           if (err) { return done(err); }
           const bufferedUserHashedPwd = Buffer.from(user.hashedPassword);
