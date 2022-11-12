@@ -4,7 +4,8 @@
     "description": "app for guitar chords",
     "main": "app.js",
     "scripts": {
-        "start": "nodemon app.js",
+        "start": "node app.js",
+        "startNodemon": "nodemon app.js",
         "webpackBuild": "webpack build",
         "wdio": "wdio run wdio.conf.js",
         "unitTests": "mocha ./test/unit/*.js"
