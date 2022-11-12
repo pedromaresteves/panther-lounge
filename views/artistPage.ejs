@@ -1,13 +1,13 @@
-<%- include nav.ejs %>
+<%- include('nav.ejs'); %>
     <div class="container">
         <div class='row'> 
             <div class="col-md-12 mt-3 mb-3 text-truncate">
                 <a href="/guitar-chords">Guitar Chords</a><span> / </span><span id="breadcrumb-artist"></span>
             </div>  
             <%if(userData){%>
-                <%- include makeSong.ejs %>
+                <%- include('makeSong.ejs') %>
             <%} else {%>
-                <%- include goToLoginGeneral.ejs %>
+                <%- include('goToLoginGeneral.ejs') %>
             <%}%>
             <div id="available-songs" class='col-md-10 offset-md-1'>
                 <h4 id="artist-title" class='text-center mt-2'></h4>
@@ -20,4 +20,4 @@
             </div>
         </div>
     </div>
-<%- include footer.ejs %>
+<%- include ('footer.ejs') %>
