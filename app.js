@@ -10,7 +10,7 @@ const passport = require("passport");
 require("./auth-config/passportGoogleAuthsetup");
 require("./auth-config/passportLocalSetup");
 const cookieSession = require("cookie-session");
-const {PORT, DBCONNECTION, sessionCookieKey} = process.env;
+const { PORT, DBCONNECTION, sessionCookieKey } = process.env;
 app.use(express.json())
 
 mongoose.connect(DBCONNECTION, {
