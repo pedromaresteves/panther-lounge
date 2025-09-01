@@ -19,13 +19,18 @@ passport.use(
         clientSecret: googleClientSecret,
         callbackURL: googleCallbackURL,
     }, async (accessToken, refreshToken, profile, done) => {
-        const user = await queries.getGoogleUser(profile.id);
         const newUser = {
             username: profile.displayName,
             googleId: profile.id,
             thumbnail: profile._json.picture,
             email: profile._json.email
         };
+        const user = await queries.getGoogleUser(profile.id);
+        const userEmailExists = await queries.findUserByEmail(profile._json.email);
+        if (userEmailExists) {
+            await queries.updateUser(userEmailExists._id, { email: profile._json.email, googleId: profile.id, thumbnail: profile._json.picture });
+            return done(null, userEmailExists);
+        }
         if (!user) {
             await queries.createNewUser(newUser);
             return done(null, newUser);
