@@ -1,5 +1,5 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const { DBCONNECTION } = require("../stuff");
+const { DBCONNECTION } = process.env;
 let pantherDb;
 // Replace the placeholder with your Atlas connection string
 const uri = DBCONNECTION;
