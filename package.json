@@ -7,8 +7,7 @@
         "start": "node app.js",
         "startNodemon": "nodemon app.js",
         "webpackBuild": "webpack build",
-        "wdio": "wdio run wdio.conf.js",
-        "unitTests": "mocha ./test/unit/*.js"
+        "wdio": "wdio run ./wdio.conf.js"
     },
     "author": "pedro",
     "license": "ISC",
@@ -18,7 +17,7 @@
         "express": "^4.21.2",
         "express-validator": "^7.2.1",
         "fuse.js": "^7.1.0",
-        "mongoose": "^8.18.0",
+        "mongodb": "^6.18.0",
         "passport": "^0.5.3",
         "passport-google-oauth": "^2.0.0",
         "passport-local": "^1.0.0"
@@ -29,10 +28,7 @@
         "@wdio/mocha-framework": "^9.19.2",
         "@wdio/spec-reporter": "^9.19.2",
         "eslint": "^8.8.0",
-        "mocha": "^11.7.1",
         "nodemon": "^3.1.10",
-        "wdio-chromedriver-service": "^8.1.1",
-        "wdio-eslinter-service": "^0.0.4",
         "webpack": "^5.101.3",
         "webpack-cli": "^6.0.1"
     }

@@ -4,19 +4,14 @@ const authRouter = require("./routes/auth");
 const guitarChordsRouter = require("./routes/guitarChords");
 const profileRouter = require("./routes/profile");
 const apiRouter = require("./routes/api");
-const mongoose = require("mongoose");
 const app = express();
 const passport = require("passport");
 require("./auth-config/passportGoogleAuthsetup");
 require("./auth-config/passportLocalSetup");
 const cookieSession = require("cookie-session");
-const { PORT, DBCONNECTION, sessionCookieKey } = process.env;
-app.use(express.json())
+const { PORT, sessionCookieKey } = process.env;
 
-mongoose.connect(DBCONNECTION, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+app.use(express.json())
 
 //set up cookies
 app.use(
@@ -29,12 +24,6 @@ app.use(
 //initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
-
-var db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function () {
-  console.log("DB Connection Started");
-});
 
 //set up template engine
 app.set("view engine", "ejs");
