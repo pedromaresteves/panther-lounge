@@ -23,13 +23,11 @@ const getAllSongs = async () => {
     songs = songs.map(song => {
         return { ...song }
     })
-    console.log(songs)
     return songs;
 };
 
 const getSongsBySongCreator = async (songCreator, resultsToSkip = 0) => {
     const db = await connection.run();
-    console.log(songCreator);
     const pipeline = [
         { $match: { songCreator: songCreator } },
         { $sort: { artist: 1 } },

@@ -38,7 +38,6 @@ module.exports = {
     getAllResults: async (req, res) => {
         const allSongs = await queries.getAllSongs();
         await allSongs.forEach(function (song) {
-            console.log(song.nArtist, "FUUUUCK");
             song.nArtist = utils.encodeChars(song.nArtist)
             song.nTitle = utils.encodeChars(song.nTitle)
         });
