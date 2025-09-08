@@ -1,10 +1,10 @@
-module.exports={
+module.exports = {
     entry: './public/js/main.js',
-    output:{
+    output: {
         path: __dirname + '/public/js/',
-        filename:'bundle.js'
+        filename: 'bundle.js'
     },
-    watch: true
+    watch: false
 }
 
 //to run without node_modules/.bin/webpack
