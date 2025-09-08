@@ -1,16 +1,15 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
-const UserModel = require("../models/user")
-const {googleClientID, googleClientSecret, googleCallbackURL} = process.env;
+const queries = require("../database/queries");
+const { googleClientID, googleClientSecret, googleCallbackURL } = process.env;
 
-passport.serializeUser((user,done) => {
-    done(null, user.id)
+passport.serializeUser((user, done) => {
+    done(null, user._id)
 });
 
-passport.deserializeUser((id,done) => {
-    UserModel.findById(id).then((result)=>{
-        done(null, result)
-    });
+passport.deserializeUser(async (id, done) => {
+    const user = await queries.findUserById(id);
+    done(null, user);
 });
 
 passport.use(
@@ -19,26 +18,26 @@ passport.use(
         clientID: googleClientID,
         clientSecret: googleClientSecret,
         callbackURL: googleCallbackURL,
-    }, (accessToken, refreshToken, profile, done)=>{
-        //Passport Callback function
-        UserModel.findOne({ googleId: profile.id }, function (err, user) {
-            const newUser = new UserModel({
-                username: profile.displayName,
-                googleId: profile.id,
-                thumbnail: profile._json.picture,
-                email: profile._json.email
-            });
-            if(!user) {
-                return newUser.save().then((newUser)=>{
-                    done(null, newUser);
-                });
-            }
-            if(!user.email) {
-                return user.updateOne({ email: profile._json.email }).then(()=>{
-                    done(null, user);
-                })
-            }
-            return done(null, user);
-        });
+    }, async (accessToken, refreshToken, profile, done) => {
+        const newUser = {
+            username: profile.displayName,
+            googleId: profile.id,
+            thumbnail: profile._json.picture,
+            email: profile._json.email
+        };
+        const user = await queries.getGoogleUser(profile.id);
+        const userEmailExists = await queries.findUserByEmail(profile._json.email);
+        if (userEmailExists) {
+            await queries.updateUser(userEmailExists._id, { email: profile._json.email, googleId: profile.id, thumbnail: profile._json.picture });
+            return done(null, userEmailExists);
+        }
+        if (!user) {
+            await queries.createNewUser(newUser);
+            return done(null, newUser);
+        }
+        if (!user.email) {
+            await queries.updateUser(user._id, { email: profile._json.email });
+        }
+        return done(null, user);
     })
 );

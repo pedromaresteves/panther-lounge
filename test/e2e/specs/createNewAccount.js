@@ -1,38 +1,27 @@
 const CreateNewAccountPage = require("../pageobjects/createAccount.page");
 const ProfilePage = require("../pageobjects/profile.page");
-const UserModel = require("../../../models/user");
-const mongoose = require("mongoose");
+const connection = require("../../../database/mongodb_connection.js");
+const queries = require("../../../database/queries.js");
 const userToBeCreated = {
     userName: "temp",
     userEmail: "tempuser@mail.com",
     userPass: "temp"
 }
-const {PORT, DBCONNECTION, sessionCookieKey} = process.env;
-
 
 
 describe("Cover Create New Account", () => {
     beforeEach(async () => {
+        await connection.run();
         await CreateNewAccountPage.open();
     });
 
-    after(async ()=>{
-        mongoose.connect(DBCONNECTION, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-          });
-        const db = mongoose.connection;
-        db.on("error", console.error.bind(console, "connection error:"));
-        db.once("open", function () {
-        console.log("DB Connection Started");
-        });
-        const dick = await UserModel.findOneAndDelete({email: userToBeCreated.userEmail});
-        db.close()
+    after(async () => {
+        return await queries.deleteUser(userToBeCreated.userEmail);
     });
 
     it("If an registered email is introduced, warn user", async () => {
         await CreateNewAccountPage.createAccount("cage", "cage@mail.com", "cage");
-        await expect(CreateNewAccountPage.errorMsg).toHaveTextContaining("Email aldready registered.");
+        await expect(CreateNewAccountPage.errorMsg).toHaveText(expect.stringContaining("Email aldready registered."));
         await expect(ProfilePage.profileStats).not.toBeDisplayed();
     });
 

@@ -11,25 +11,25 @@ describe("Cover local login", () => {
 
     it("Missing credentials error if email input is empty", async () => {
         await LocalLogin.login("", "cage");
-        await expect(LocalLogin.errorMsg).toHaveTextContaining("Missing credentials");
+        await expect(LocalLogin.errorMsg).toHaveText(expect.stringContaining("Missing credentials"));
         await expect(ProfilePage.profileStats).not.toBeDisplayed();
     });
 
     it("Missing credentials error if password input is empty", async () => {
         await LocalLogin.login("cage@mail.com", "");
-        await expect(LocalLogin.errorMsg).toHaveTextContaining("Missing credentials");
+        await expect(LocalLogin.errorMsg).toHaveText(expect.stringContaining("Missing credentials"));
         await expect(ProfilePage.profileStats).not.toBeDisplayed();
     });
 
     it("User not found error if email is not registered", async () => {
         await LocalLogin.login("usernotregistered@mail.com", "1234");
-        await expect(LocalLogin.errorMsg).toHaveTextContaining("User not found.");
+        await expect(LocalLogin.errorMsg).toHaveText(expect.stringContaining("User not found."));
         await expect(ProfilePage.profileStats).not.toBeDisplayed();
     });
 
     it("Wrong credentials error if the password doesn't match", async () => {
         await LocalLogin.login("cage@mail.com", "1234");
-        await expect(LocalLogin.errorMsg).toHaveTextContaining("Incorrect username or password.");
+        await expect(LocalLogin.errorMsg).toHaveText(expect.stringContaining("Incorrect username or password."));
         await expect(ProfilePage.profileStats).not.toBeDisplayed();
     });
 
