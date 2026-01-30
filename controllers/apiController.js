@@ -98,7 +98,7 @@ module.exports = {
             nTitle: normalizeString(title),
             songCreator: req.user._id.toString()
         };
-        const titleRegex = createCaseInsensitiveRegex(title);
+        const titleRegex = utils.createCaseInsensitiveRegex(title);
         const doesSongExist = await queries.getSongByArtistAndTitle(newSong.artist, titleRegex);
         if (doesSongExist) {
             return res.send({
