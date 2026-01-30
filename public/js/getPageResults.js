@@ -68,22 +68,20 @@ function genProfileResults(res) {
     let html = '';
     let counter = 0;
     res.visibleResults.forEach(function (item) {
-        html += `<li class="list-group-item artist-item"><a class="col-4 d-none d-sm-block text-left text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><a class="col-4 text-left text-truncate" href="/guitar-chords/${item.artistPath}/${item.songPath}">${item.title}</a><span class="col-md-2 text-right"><a href="/guitar-chords/edit-song/${item.artistPath}/${item.songPath}" class="mr-3">Edit</a><a href="#" data-toggle="modal" data-target="#modal-${counter}">Delete</a></span></li>
-        <div class="modal fade" id="modal-${counter}" tabindex="-1" role="dialog" aria-labelledby="delete-song-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        html += `<li class="list-group-item artist-item"><a class="col-4 d-none d-sm-block text-left text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><a class="col-4 text-left text-truncate" href="/guitar-chords/${item.artistPath}/${item.songPath}">${item.title}</a><span class="col-md-2 text-right"><a href="/guitar-chords/edit-song/${item.artistPath}/${item.songPath}" class="me-3">Edit</a><a href="#" data-bs-toggle="modal" data-bs-target="#modal-${counter}">Delete</a></span></li>
+        <div class="modal fade" id="modal-${counter}" tabindex="-1" aria-labelledby="delete-song-label" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="delete-song-warning-label">Delete Song Warning</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     Are you sure you want to delete this song?
                 </div>
                 <div class="modal-footer">
-                    <a id="closeDialog" href="/" data-dismiss="modal">Close</a>
-                    <a class="delete-song" data-dismiss="modal" href="/api/guitar-chords/${item.artistPath}/${item.songPath}">Delete Song</a>
+                    <a id="closeDialog" href="/" data-bs-dismiss="modal" class="btn btn-secondary">Close</a>
+                    <a class="delete-song btn btn-danger" data-bs-dismiss="modal" href="/api/guitar-chords/${item.artistPath}/${item.songPath}">Delete Song</a>
                 </div>
                 </div>
             </div>
