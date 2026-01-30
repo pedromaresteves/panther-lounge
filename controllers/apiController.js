@@ -99,11 +99,11 @@ module.exports = {
             songCreator: req.user._id.toString()
         };
         const titleRegex = utils.createCaseInsensitiveRegex(title);
-        const doesSongExist = await queries.getSongByArtistAndTitle(newSong.artist, titleRegex);
+        const doesSongExist = await queries.getSongByArtistAndTitle(newSong.nArtist, newSong.nTitle);
         if (doesSongExist) {
             return res.send({
                 redirectUrl: '',
-                errorMsg: "This song already exists in your song bank!"
+                errorMsg: `"${newSong.title}" by ${newSong.artist} already exists. Please update the name of the song.`
             });
         }
         await queries.addSong(newSong);

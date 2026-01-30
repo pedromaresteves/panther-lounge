@@ -92,22 +92,34 @@ export default function addOrEditSong() {
 
         httpRequest.onreadystatechange = function () {
             if (httpRequest.readyState === 4) {
-                const response = JSON.parse(httpRequest.response);
-                if (response.errorMsg) {
-                    const errorDiv = document.createElement("div");
-                    const errorMsg = document.createTextNode(response.errorMsg);
-                    errorDiv.className += "text-danger text-center text-monospace";
-                    errorDiv.appendChild(errorMsg);
-                    form.prepend(errorDiv);
-                    const intervalID = window.setInterval(function () {
-                        form.removeChild(errorDiv);
-                        clearInterval(intervalID);
-                    }, 3000);
-                    return true;
-                }
-                if (response.redirectUrl) {
-                    window.location = response.redirectUrl;
-                    return true;
+                try {
+                    const response = JSON.parse(httpRequest.response);
+
+                    // Check for error message first
+                    if (response.errorMsg && response.errorMsg.trim() !== '') {
+                        // Remove any existing error divs
+                        const existingErrors = form.querySelectorAll('.alert-danger');
+                        existingErrors.forEach(el => el.remove());
+
+                        const errorDiv = document.createElement("div");
+                        errorDiv.className = "alert alert-danger alert-dismissible fade show mt-3";
+                        errorDiv.innerHTML = `
+                            <strong>Error:</strong> ${response.errorMsg}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        `;
+                        form.prepend(errorDiv);
+                        window.scrollTo(0, 0);
+                        return true;
+                    }
+
+                    // If we have a redirect URL, proceed
+                    if (response.redirectUrl) {
+                        window.location = response.redirectUrl;
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                    alert('Error processing response. Please try again.');
                 }
             }
         };

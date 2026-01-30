@@ -52,7 +52,17 @@ export default function getPageResults() {
 
 function genGuitarChordsIndexResults(res) {
     let html = '';
-    res.visibleResults.forEach(function (item) {
+    // Deduplicate results by artistPath since different capitalizations map to the same page
+    const seen = new Set();
+    const uniqueResults = res.visibleResults.filter(item => {
+        if (seen.has(item.artistPath)) {
+            return false;
+        }
+        seen.add(item.artistPath);
+        return true;
+    });
+
+    uniqueResults.forEach(function (item) {
         html += `<li class="list-group-item artist-item"><a class="col-6 text-truncate" href="/guitar-chords/${item.artistPath}">${item.artist}</a><span>${item.nOfSongs} song(s)</span></li>`;
     });
     return html;
