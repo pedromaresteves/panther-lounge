@@ -1,137 +1,151 @@
 const utils = require("../utils/utils");
 const queries = require("../database/queries");
-const resultsPerPage = 10;
+
+const RESULTS_PER_PAGE = 10;
+
+const normalizeString = (str) =>
+    str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+
+const getResultsToSkip = (pageNumber) =>
+    !pageNumber ? 0 : (pageNumber - 1) * RESULTS_PER_PAGE;
+
+const calculateNumOfPages = (totalResults) =>
+    Math.ceil(totalResults / RESULTS_PER_PAGE);
+
+const createSongUrl = (nArtist, nTitle) =>
+    `/guitar-chords/${utils.encodeChars(nArtist)}/${utils.encodeChars(nTitle)}`;
 
 module.exports = {
-    profileSongs: async function (req, res) {
+    profileSongs: async (req, res) => {
+        const resultsToSkip = getResultsToSkip(req.query.page);
+        const userId = req.user._id.toString();
+        const [visibleResults, totalSongs] = await Promise.all([
+            queries.getSongsBySongCreator(userId, resultsToSkip),
+            queries.countSongsBySongCreator(userId)
+        ]);
         const data = {
             name: 'profileSongs',
-            visibleResults: [],
+            visibleResults: addUrlPathsToResults(visibleResults, 'nArtist', 'nTitle'),
             currentPage: req.query.page,
-            numOfPages: 1,
-            totalSongs: 0
+            numOfPages: calculateNumOfPages(totalSongs),
+            totalSongs
         };
-        const resultsToSkip = calculateResultsToSkip(req.query.page);
-        data.visibleResults = await queries.getSongsBySongCreator(req.user._id.toString(), resultsToSkip);
-        data.visibleResults = updateVisibleResultsWithUrlPaths(data.visibleResults)
-        data.totalSongs = await queries.countSongsBySongCreator(req.user._id.toString());
-        data.numOfPages = calculateHowManySongPagesUserHas(data.totalSongs);
         return res.send(data);
     },
-    paginationArtists: async function (req, res) {
-        let data = {
+    paginationArtists: async (req, res) => {
+        const resultsToSkip = getResultsToSkip(req.query.page);
+        const [results, totalArtists] = await Promise.all([
+            queries.getArtists(resultsToSkip),
+            queries.groupedArtistsCount()
+        ]);
+        const visibleResults = results.map(item => ({
+            artist: item._id.name,
+            nOfSongs: item.total,
+            artistPath: utils.encodeChars(item._id.link)
+        }));
+        const data = {
             name: 'paginationArtists',
-            visibleResults: [],
+            visibleResults,
             currentPage: req.query.page,
-            numOfPages: 1,
-            totalArtists: 0
+            numOfPages: calculateNumOfPages(totalArtists),
+            totalArtists
         };
-        const resultsToSkip = calculateResultsToSkip(req.query.page);
-        const results = await queries.getArtists(resultsToSkip);
-        results.forEach(function (item) {
-            data.visibleResults.push({ artist: item._id.name, nOfSongs: item.total, artistPath: utils.encodeChars(item._id.link) });
-        });
-        data.totalSongs = await queries.groupedArtistsCount();
-        data.numOfPages = Math.ceil(data.totalSongs / resultsPerPage);
         return res.send(data);
     },
     getAllResults: async (req, res) => {
         const allSongs = await queries.getAllSongs();
-        await allSongs.forEach(function (song) {
-            song.nArtist = utils.encodeChars(song.nArtist)
-            song.nTitle = utils.encodeChars(song.nTitle)
-        });
-        return res.send(allSongs);
+        const results = allSongs.map(song => ({
+            ...song,
+            nArtist: utils.encodeChars(song.nArtist),
+            nTitle: utils.encodeChars(song.nTitle)
+        }));
+        return res.send(results);
     },
-    paginationSongsByArtist: async function (req, res) {
-        let data = {
+    paginationSongsByArtist: async (req, res) => {
+        const resultsToSkip = getResultsToSkip(req.query.page);
+        const { artist } = req.params;
+        const [results, totalResults] = await Promise.all([
+            queries.getSongsByArtist(artist, resultsToSkip),
+            queries.countSongsByArtist(artist)
+        ]);
+        const visibleResults = results.map(item => ({
+            artist: item._id.name,
+            title: item._id.title,
+            songPath: utils.encodeChars(item._id.songPath)
+        }));
+        const data = {
             name: 'paginationSongsByArtist',
-            visibleResults: [],
-            artistPath: utils.encodeChars(req.params.artist),
+            visibleResults,
+            artistPath: utils.encodeChars(artist),
             currentPage: req.query.page,
-            numOfPages: 1
+            numOfPages: calculateNumOfPages(totalResults)
         };
-        const resultsToSkip = calculateResultsToSkip(req.query.page);
-        const results = await queries.getSongsByArtist(req.params.artist, resultsToSkip);
-        results.forEach(function (item) {
-            data.visibleResults.push({ artist: item._id.name, title: item._id.title, songPath: utils.encodeChars(item._id.songPath) })
-        });
-        const totalResults = await queries.countSongsByArtist(req.params.artist);
-        data.numOfPages = Math.ceil(totalResults / resultsPerPage);
         return res.send(data);
     },
-    addSong: async function (req, res) {
-        const data = {
-            redirectUrl: '',
-            errorMsg: ''
-        };
+    addSong: async (req, res) => {
         if (!req.user) {
-            data.errorMsg = 'You gotta be logged if you wanna add songs.'
-            return res.send(data);
+            return res.send({
+                redirectUrl: '',
+                errorMsg: 'You gotta be logged if you wanna add songs.'
+            });
         }
+        const { artist, title, lyricsAndChords } = req.body;
         const newSong = {
-            artist: utils.capitalizeName(req.body.artist),
-            title: req.body.title,
-            lyricsChords: req.body.lyricsAndChords,
-            nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
-            nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
+            artist: utils.capitalizeName(artist),
+            title,
+            lyricsChords: lyricsAndChords,
+            nArtist: normalizeString(artist),
+            nTitle: normalizeString(title),
             songCreator: req.user._id.toString()
         };
-        let newSongTitleRegex = new RegExp("^" + newSong.title + "$", "gi");
-        const doesSongExist = await queries.getSongByArtistAndTitle(newSong.artist, newSongTitleRegex);
-        if (!doesSongExist) {
-            await queries.addSong(newSong);
-            data.redirectUrl = `/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`;
-            return res.send(data);
+        const titleRegex = utils.createCaseInsensitiveRegex(title);
+        const doesSongExist = await queries.getSongByArtistAndTitle(newSong.nArtist, newSong.nTitle);
+        if (doesSongExist) {
+            return res.send({
+                redirectUrl: '',
+                errorMsg: `"${newSong.title}" by ${newSong.artist} already exists. Please update the name of the song.`
+            });
         }
-        data.errorMsg = "This song already exists in your song bank!";
-        return res.send(data);
+        await queries.addSong(newSong);
+        const redirectUrl = createSongUrl(newSong.nArtist, newSong.nTitle);
+        return res.send({
+            redirectUrl,
+            errorMsg: ''
+        });
     },
-    editSong: async function (req, res) {
+    editSong: async (req, res) => {
+        const { artist, title, lyricsAndChords } = req.body;
+        const { artist: paramArtist, title: paramTitle } = req.params;
         const newSong = {
-            artist: req.body.artist,
-            title: req.body.title,
-            lyricsChords: req.body.lyricsAndChords,
-            nArtist: req.body.artist.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
-            nTitle: req.body.title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+            artist,
+            title,
+            lyricsChords: lyricsAndChords,
+            nArtist: normalizeString(artist),
+            nTitle: normalizeString(title)
         };
-        const data = {
-            redirectUrl: `/guitar-chords/${utils.encodeChars(newSong.nArtist)}/${utils.encodeChars(newSong.nTitle)}`,
-            errorMsg: ""
-        };
-        const artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
-        const titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
+        const artistRegex = utils.createCaseInsensitiveRegex(paramArtist);
+        const titleRegex = utils.createCaseInsensitiveRegex(paramTitle);
         await queries.editSong(artistRegex, titleRegex, newSong);
-        return res.send(data);
+        return res.send({
+            redirectUrl: createSongUrl(newSong.nArtist, newSong.nTitle),
+            errorMsg: ""
+        });
     },
-    deleteSong: async function (req, res) {
-        const artistRegex = new RegExp("^" + utils.escapeRegExp(req.params.artist) + "$", "gi");
-        const titleRegex = new RegExp("^" + utils.escapeRegExp(req.params.title) + "$", "gi");
-        const data = {
-            deletedMsg: "The song was deleted. Bye bye! :("
-        };
+    deleteSong: async (req, res) => {
+        const { artist, title } = req.params;
+        const artistRegex = utils.createCaseInsensitiveRegex(artist);
+        const titleRegex = utils.createCaseInsensitiveRegex(title);
         await queries.deleteSong(artistRegex, titleRegex);
-        return res.send(data);
-    },
+        return res.send({
+            deletedMsg: "The song was deleted. Bye bye! :("
+        });
+    }
 };
 
-const calculateResultsToSkip = (pageNumber) => {
-    const resultsToSkip = !pageNumber ? 0 : (pageNumber - 1) * resultsPerPage;
-    return resultsToSkip;
+const addUrlPathsToResults = (results, artistField, titleField) => {
+    return results.map(item => ({
+        ...item,
+        artistPath: utils.encodeChars(item[artistField]),
+        songPath: utils.encodeChars(item[titleField])
+    }));
 };
-
-const calculateHowManySongPagesUserHas = (totalSongs) => {
-    const numOfPages = Math.ceil(totalSongs / resultsPerPage);
-    return numOfPages;
-};
-
-const updateVisibleResultsWithUrlPaths = (results) => {
-    const updatedResults = results.map(item => {
-        return {
-            ...item,
-            artistPath: utils.encodeChars(item.nArtist),
-            songPath: utils.encodeChars(item.nTitle)
-        };
-    });
-    return updatedResults;
-}
