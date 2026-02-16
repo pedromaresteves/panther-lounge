@@ -29,7 +29,7 @@
         "@wdio/spec-reporter": "^9.19.2",
         "eslint": "^8.8.0",
         "nodemon": "^3.1.10",
-        "webpack": "^5.101.3",
+        "webpack": "^5.105.0",
         "webpack-cli": "^6.0.1"
     }
 }
