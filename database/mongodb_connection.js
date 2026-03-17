@@ -1,8 +1,5 @@
-require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 let pantherDb;
-// use environment variable instead of hardcoding secrets
-console.log(process.env.DBCONNECTION)
 const DBCONNECTION = process.env.DBCONNECTION;
 if (!DBCONNECTION) {
     throw new Error('Missing DBCONNECTION in environment variables. Add it to your .env file.');
