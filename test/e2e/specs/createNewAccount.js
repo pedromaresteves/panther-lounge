@@ -21,7 +21,7 @@ describe("Cover Create New Account", () => {
 
     it("If an registered email is introduced, warn user", async () => {
         await CreateNewAccountPage.createAccount("cage", "cage@mail.com", "cage");
-        await expect(CreateNewAccountPage.errorMsg).toHaveText(expect.stringContaining("Email aldready registered."));
+        await expect(CreateNewAccountPage.errorMsg).toHaveText(expect.stringContaining("Email already registered."));
         await expect(ProfilePage.profileStats).not.toBeDisplayed();
     });
 
