@@ -4,7 +4,7 @@ const queries = require("../database/queries");
 module.exports = {
   index: (req, res) => {
     const makeSongUrl = "guitar-chords/add-song";
-    res.render("guitarChords.ejs", { userData: req.user, makeSongUrl });
+    return res.render("guitarChords.ejs", { userData: req.user, makeSongUrl });
   },
   artistList: (req, res) => {
     const makeSongUrl = `guitar-chords/add-song/${utils.encodeChars(req.params.artist)}`;
@@ -32,7 +32,7 @@ module.exports = {
       title: "",
       lyricsChords: undefined
     };
-    res.render("addOrEditSong.ejs", { userData: req.user, songData });
+    return res.render("addOrEditSong.ejs", { userData: req.user, songData });
   },
   getEditSong: async (req, res) => {
     try {

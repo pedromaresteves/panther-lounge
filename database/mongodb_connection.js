@@ -1,10 +1,11 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
-const { DBCONNECTION } = process.env;
 let pantherDb;
-// Replace the placeholder with your Atlas connection string
-const uri = DBCONNECTION;
+const DBCONNECTION = process.env.DBCONNECTION;
+if (!DBCONNECTION) {
+    throw new Error('Missing DBCONNECTION in environment variables. Add it to your .env file.');
+}
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
+const client = new MongoClient(DBCONNECTION, {
     serverApi: {
         version: ServerApiVersion.v1,
         strict: true,
