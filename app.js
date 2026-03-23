@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require("express");
+const expressLayouts = require('express-ejs-layouts');
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const guitarChordsRouter = require("./routes/guitarChords");
@@ -13,6 +14,10 @@ const cookieSession = require("cookie-session");
 const { PORT, sessionCookieKey } = process.env;
 
 app.use(express.json())
+
+//set up EJS layouts
+app.use(expressLayouts);
+app.set('layout', 'layouts/main');
 
 //set up cookies
 app.use(

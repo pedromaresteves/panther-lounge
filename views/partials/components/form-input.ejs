@@ -1,0 +1,14 @@
+<div class="mb-3">
+  <label for="<%= inputId %>" class="form-label"><%= label %></label>
+  <input 
+    type="<%= type || 'text' %>" 
+    class="form-control" 
+    name="<%= name %>" 
+    id="<%= inputId %>"
+    placeholder="<%= placeholder || '' %>"
+    <% if (required) { %>required<% } %>
+    <% if (minlength) { %>minlength="<%= minlength %>"<% } %>
+    <% if (maxlength) { %>maxlength="<%= maxlength %>"<% } %>
+    <% if (value) { %>value="<%= value %>"<% } %>
+  >
+</div>

@@ -1,24 +1,26 @@
-<%- include('nav.ejs'); %>
 <div class="container">
-    <div class="row justify-content-center h-100">
-        <div class="col-md-8 align-self-center my-auto">
-            <h1 class="text-center mb-4"> Log In</h1>
-            <% if (loginError && failedLogin) {%>
-                <span class="text-center text-center text-monospace text-danger">Error: <%= loginError %></span>
-              <%} %>
-            <form action="/auth/local" method="post">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Email address</label>
-                    <input type="email" class="form-control" name="email" id="username" placeholder="johndoe@mail.com">
-                  </div>
-                <div class="mb-3">
-                  <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" name="password" id="password" placeholder="At leat 6 characters">
-                </div>
-                <div class="text-center"><button type="submit" class="btn btn-primary">Submit</button></div>
-              </form>
-        </div>
+  <div class="row justify-content-center h-100">
+    <div class="col-md-8 align-self-center my-auto">
+      <h1 class="text-center mb-4">Log In</h1>
+      <form action="/auth/local" method="post">
+        <%- include('./partials/components/form-input', { 
+          label: 'Email address', 
+          name: 'email', 
+          inputId: 'email',
+          type: 'email', 
+          placeholder: 'johndoe@mail.com',
+          required: true 
+        }) %>
+        <%- include('./partials/components/form-input', { 
+          label: 'Password', 
+          name: 'password', 
+          inputId: 'password',
+          type: 'password', 
+          placeholder: 'At least 6 characters',
+          required: true 
+        }) %>
+        <div class="text-center"><button type="submit" class="btn btn-primary">Submit</button></div>
+      </form>
     </div>
+  </div>
 </div>
-
-

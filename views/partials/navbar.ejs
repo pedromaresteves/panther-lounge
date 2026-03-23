@@ -1,0 +1,22 @@
+<div class='container-fluid mb-5'>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Panther Lounge</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/guitar-chords">Guitar Chords<span class="visually-hidden">(current)</span></a>
+        </li>
+      </ul>
+      <div class="ms-auto d-flex gap-2 align-items-center">
+        <% if (userData) {%>
+          <a class="btn btn-outline-primary btn-sm" href="/profile">Your Profile</a>
+        <%} else { %>
+          <a class="nav-link" href="/auth/login">Login</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+</div>
