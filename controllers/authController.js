@@ -17,7 +17,7 @@ module.exports = {
     getCreateAccount: function (req, res) {
         const fail = {
             failedLogin: req.query.creation === 'failed',
-            failedMsg: "Email already registered."
+            failedMsg: req.query.creation === 'failed' ? "Email already registered." : ''
         };
         res.render("createAccount.ejs", { userData: req.user, fail: fail })
     },

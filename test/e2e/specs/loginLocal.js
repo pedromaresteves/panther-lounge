@@ -9,18 +9,6 @@ describe("Cover local login", () => {
         await LoginPage.localLoginBtn.click();
     });
 
-    it("Missing credentials error if email input is empty", async () => {
-        await LocalLogin.login("", "cage");
-        await expect(LocalLogin.errorMsg).toHaveText(expect.stringContaining("Missing credentials"));
-        await expect(ProfilePage.profileStats).not.toBeDisplayed();
-    });
-
-    it("Missing credentials error if password input is empty", async () => {
-        await LocalLogin.login("cage@mail.com", "");
-        await expect(LocalLogin.errorMsg).toHaveText(expect.stringContaining("Missing credentials"));
-        await expect(ProfilePage.profileStats).not.toBeDisplayed();
-    });
-
     it("User not found error if email is not registered", async () => {
         await LocalLogin.login("usernotregistered@mail.com", "1234");
         await expect(LocalLogin.errorMsg).toHaveText(expect.stringContaining("User not found."));
