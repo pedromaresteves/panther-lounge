@@ -2,26 +2,28 @@ const crypto = require("crypto");
 const queries = require("../database/queries");
 
 module.exports = {
-    loginHome: function (req, res) {
+    loginHome: (req, res) => {
         res.render("loginGeneral.ejs", { userData: req.user })
     },
-    localLogin: function (req, res) {
+    localLogin: (req, res) => {
         const failedLogin = req.query.login === 'failed';
         const loginError = req.session.messages ? req.session.messages[req.session.messages.length - 1] : '';
         res.render("loginLocal.ejs", { userData: req.user, loginError: loginError, failedLogin: failedLogin })
     },
-    logout: function (req, res) {
-        req.logout();
-        res.redirect("/");
+    logout: (req, res) => {
+        req.logout((err) => {
+            if (err) return res.status(500).send('Logout failed');
+            res.redirect("/");
+        });
     },
-    getCreateAccount: function (req, res) {
+    getCreateAccount: (req, res) => {
         const fail = {
             failedLogin: req.query.creation === 'failed',
             failedMsg: req.query.creation === 'failed' ? "Email already registered." : ''
         };
         res.render("createAccount.ejs", { userData: req.user, fail: fail })
     },
-    postCreateAccount: async function (req, res, next) {
+    postCreateAccount: async (req, res, next) => {
         const salt = crypto.randomBytes(16).toString("hex");
         const { username, email, password } = req.body;
         const user = await queries.findUserByEmail(email);
