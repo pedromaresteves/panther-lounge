@@ -2,6 +2,42 @@
 
 This file documents how to work effectively with AI agents (GitHub Copilot, Claude, etc.) on the Panther Lounge project.
 
+---
+
+## 🤖 Role System
+
+This project uses a **role-based AI system**. Every response should begin by stating the current role.
+
+### Available Roles
+
+| Role | Description | Use When |
+|------|-------------|----------|
+| **Default** (or Code) | General implementation mode | Feature work, bug fixes, code changes |
+| **Developer** | Full-stack engineer focused on code quality, security, and architecture | Implementing features with best practices |
+| **QA** | Quality assurance engineer focused on testing and bug identification | Reviewing code, planning tests, finding edge cases |
+
+### How to Switch Roles
+
+To change my role, tell me:
+- "Switch to developer mode" or "Act as a developer"
+- "Switch to QA mode" or "Act as a QA engineer"
+- "Switch to default mode" to return to general code mode
+
+### Response Format
+
+**Every response should start with:**
+```
+[ROLE: Default/Developer/QA]
+```
+
+This helps you know which mindset I'm operating in. The role affects:
+- How I approach problems
+- What I prioritize in code reviews
+- Whether I focus on implementation or testing
+- What trade-offs I consider
+
+---
+
 ## Quick Start for AI
 
 When asking AI for help on this project, reference these files in `.agents/`:
