@@ -1,5 +1,8 @@
 const crypto = require("crypto");
+const util = require("util");
 const queries = require("../database/queries");
+
+const pbkdf2Async = util.promisify(crypto.pbkdf2);
 
 module.exports = {
     loginHome: (req, res) => {
@@ -24,14 +27,14 @@ module.exports = {
         res.render("createAccount.ejs", { userData: req.user, fail: fail })
     },
     postCreateAccount: async (req, res, next) => {
-        const salt = crypto.randomBytes(16).toString("hex");
-        const { username, email, password } = req.body;
-        const user = await queries.findUserByEmail(email);
-        if (user) {
-            return res.redirect("create-account/?creation=failed");
-        }
-        crypto.pbkdf2(password, salt, 310000, 32, "sha256", async function (err, hashedPassword) {
-            if (err) { return next(err); }
+        try {
+            const salt = crypto.randomBytes(16).toString("hex");
+            const { username, email, password } = req.body;
+            const user = await queries.findUserByEmail(email);
+            if (user) {
+                return res.redirect("create-account/?creation=failed");
+            }
+            const hashedPassword = await pbkdf2Async(password, salt, 310000, 32, "sha256");
             const newUser = {
                 username: username,
                 email: email,
@@ -40,6 +43,8 @@ module.exports = {
             }
             await queries.createNewUser(newUser);
             return next();
-        });
+        } catch (err) {
+            return next(err);
+        }
     }
 }
