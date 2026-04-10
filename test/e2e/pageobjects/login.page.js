@@ -7,15 +7,15 @@ class LoginPage extends Page {
     /**
      * define selectors using getter methods
      */
-    get googleLoginBtn(){
-        return $(".btn-google")
+    get googleLoginBtn() {
+        return $(".btn-danger")
     }
 
-    get localLoginBtn(){
-        return $(".btn-info")
+    get localLoginBtn() {
+        return $(".btn-primary")
     }
 
-    get createAccountBtn(){
+    get createAccountBtn() {
         return $(".btn-secondary")
     }
 

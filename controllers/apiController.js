@@ -83,62 +83,122 @@ module.exports = {
         return res.send(data);
     },
     addSong: async (req, res) => {
-        if (!req.user) {
+        try {
+            if (!req.user) {
+                return res.send({
+                    redirectUrl: '',
+                    errorMsg: 'You gotta be logged if you wanna add songs.'
+                });
+            }
+            const { artist, title, lyricsAndChords } = req.body;
+            const newSong = {
+                artist: utils.capitalizeName(artist),
+                title,
+                lyricsChords: lyricsAndChords,
+                nArtist: normalizeString(artist),
+                nTitle: normalizeString(title),
+                songCreator: req.user._id.toString()
+            };
+            const doesSongExist = await queries.getSongByArtistAndTitle(newSong.nArtist, newSong.nTitle);
+            if (doesSongExist) {
+                return res.send({
+                    redirectUrl: '',
+                    errorMsg: `"${newSong.title}" by ${newSong.artist} already exists. Please update the name of the song.`
+                });
+            }
+            await queries.addSong(newSong);
+            const redirectUrl = createSongUrl(newSong.nArtist, newSong.nTitle);
             return res.send({
+                redirectUrl,
+                errorMsg: ''
+            });
+        } catch (error) {
+            return res.status(500).send({
                 redirectUrl: '',
-                errorMsg: 'You gotta be logged if you wanna add songs.'
+                errorMsg: 'An error occurred while adding the song.'
             });
         }
-        const { artist, title, lyricsAndChords } = req.body;
-        const newSong = {
-            artist: utils.capitalizeName(artist),
-            title,
-            lyricsChords: lyricsAndChords,
-            nArtist: normalizeString(artist),
-            nTitle: normalizeString(title),
-            songCreator: req.user._id.toString()
-        };
-        const titleRegex = utils.createCaseInsensitiveRegex(title);
-        const doesSongExist = await queries.getSongByArtistAndTitle(newSong.nArtist, newSong.nTitle);
-        if (doesSongExist) {
-            return res.send({
-                redirectUrl: '',
-                errorMsg: `"${newSong.title}" by ${newSong.artist} already exists. Please update the name of the song.`
-            });
-        }
-        await queries.addSong(newSong);
-        const redirectUrl = createSongUrl(newSong.nArtist, newSong.nTitle);
-        return res.send({
-            redirectUrl,
-            errorMsg: ''
-        });
     },
     editSong: async (req, res) => {
-        const { artist, title, lyricsAndChords } = req.body;
-        const { artist: paramArtist, title: paramTitle } = req.params;
-        const newSong = {
-            artist,
-            title,
-            lyricsChords: lyricsAndChords,
-            nArtist: normalizeString(artist),
-            nTitle: normalizeString(title)
-        };
-        const artistRegex = utils.createCaseInsensitiveRegex(paramArtist);
-        const titleRegex = utils.createCaseInsensitiveRegex(paramTitle);
-        await queries.editSong(artistRegex, titleRegex, newSong);
-        return res.send({
-            redirectUrl: createSongUrl(newSong.nArtist, newSong.nTitle),
-            errorMsg: ""
-        });
+        try {
+            const { artist, title, lyricsAndChords } = req.body;
+            const { artist: paramArtist, title: paramTitle } = req.params;
+
+            const existingSong = await queries.getSongByArtistAndTitle(
+                normalizeString(paramArtist),
+                normalizeString(paramTitle)
+            );
+
+            if (!existingSong) {
+                return res.status(404).send({
+                    redirectUrl: '',
+                    errorMsg: 'Song not found.'
+                });
+            }
+
+            if (existingSong.songCreator !== req.user._id.toString()) {
+                return res.status(403).send({
+                    redirectUrl: '',
+                    errorMsg: 'You are not authorized to edit this song.'
+                });
+            }
+
+            const newSong = {
+                artist,
+                title,
+                lyricsChords: lyricsAndChords,
+                nArtist: normalizeString(artist),
+                nTitle: normalizeString(title)
+            };
+            const artistRegex = utils.createCaseInsensitiveRegex(paramArtist);
+            const titleRegex = utils.createCaseInsensitiveRegex(paramTitle);
+            await queries.editSong(artistRegex, titleRegex, newSong);
+            return res.send({
+                redirectUrl: createSongUrl(newSong.nArtist, newSong.nTitle),
+                errorMsg: ""
+            });
+        } catch (error) {
+            return res.status(500).send({
+                redirectUrl: '',
+                errorMsg: 'An error occurred while editing the song.'
+            });
+        }
     },
     deleteSong: async (req, res) => {
-        const { artist, title } = req.params;
-        const artistRegex = utils.createCaseInsensitiveRegex(artist);
-        const titleRegex = utils.createCaseInsensitiveRegex(title);
-        await queries.deleteSong(artistRegex, titleRegex);
-        return res.send({
-            deletedMsg: "The song was deleted. Bye bye! :("
-        });
+        try {
+            const { artist, title } = req.params;
+
+            const existingSong = await queries.getSongByArtistAndTitle(
+                normalizeString(artist),
+                normalizeString(title)
+            );
+
+            if (!existingSong) {
+                return res.status(404).send({
+                    deletedMsg: '',
+                    errorMsg: 'Song not found.'
+                });
+            }
+
+            if (existingSong.songCreator !== req.user._id.toString()) {
+                return res.status(403).send({
+                    deletedMsg: '',
+                    errorMsg: 'You are not authorized to delete this song.'
+                });
+            }
+
+            const artistRegex = utils.createCaseInsensitiveRegex(artist);
+            const titleRegex = utils.createCaseInsensitiveRegex(title);
+            await queries.deleteSong(artistRegex, titleRegex);
+            return res.send({
+                deletedMsg: "The song was deleted. Bye bye! :("
+            });
+        } catch (error) {
+            return res.status(500).send({
+                deletedMsg: '',
+                errorMsg: 'An error occurred while deleting the song.'
+            });
+        }
     }
 };
 

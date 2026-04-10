@@ -1,0 +1,11 @@
+<% 
+  const errorMsg = (typeof errorMessage !== 'undefined' && errorMessage ? errorMessage : '') || 
+                   (typeof loginError !== 'undefined' && loginError ? loginError : '') || 
+                   (typeof fail !== 'undefined' && fail && fail.failedMsg ? fail.failedMsg : '');
+  if (errorMsg) { 
+%>
+  <div class="alert alert-danger alert-dismissible fade show container mt-3" role="alert">
+    <strong>Error:</strong> <%= errorMsg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
