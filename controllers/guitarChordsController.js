@@ -12,15 +12,15 @@ module.exports = {
   },
   song: async (req, res) => {
     try {
-      const artistRegex = utils.createCaseInsensitiveRegex(req.params.artist);
-      const titleRegex = utils.createCaseInsensitiveRegex(req.params.title);
-      const song = await queries.getSong(artistRegex, titleRegex);
+      const artist = req.params.artist;
+      const title = req.params.title;
+      const song = await queries.getSong(artist, title);
       song.lyricsChords = JSON.stringify(song.lyricsChords);
       if (song.songCreator) {
         const songCreatorData = await queries.findUserById(song.songCreator);
         song.songCreator = songCreatorData.username;
       }
-      song.nArtist = utils.encodeChars(song.nArtist);
+      song.artistURL = utils.encodeChars(song.artist);
       return res.render("songs.ejs", { userData: req.user, songData: song });
     } catch (err) {
       return utils.renderError(res, req, err);
