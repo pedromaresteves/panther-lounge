@@ -12,8 +12,8 @@ const getResultsToSkip = (pageNumber) =>
 const calculateNumOfPages = (totalResults) =>
     Math.ceil(totalResults / RESULTS_PER_PAGE);
 
-const createSongUrl = (nArtist, nTitle) =>
-    `/guitar-chords/${utils.encodeChars(nArtist)}/${utils.encodeChars(nTitle)}`;
+const createSongUrl = (artistSearch, titleSearch) =>
+    `/guitar-chords/${utils.encodeChars(artistSearch)}/${utils.encodeChars(titleSearch)}`;
 
 module.exports = {
     profileSongs: async (req, res) => {
@@ -25,7 +25,7 @@ module.exports = {
         ]);
         const data = {
             name: 'profileSongs',
-            visibleResults: addUrlPathsToResults(visibleResults, 'nArtist', 'nTitle'),
+            visibleResults: addUrlPathsToResults(visibleResults, 'artistSearch', 'titleSearch'),
             currentPage: req.query.page,
             numOfPages: calculateNumOfPages(totalSongs),
             totalSongs
@@ -54,12 +54,7 @@ module.exports = {
     },
     getAllResults: async (req, res) => {
         const allSongs = await queries.getAllSongs();
-        const results = allSongs.map(song => ({
-            ...song,
-            nArtist: utils.encodeChars(song.nArtist),
-            nTitle: utils.encodeChars(song.nTitle)
-        }));
-        return res.send(results);
+        return res.send(allSongs);
     },
     paginationSongsByArtist: async (req, res) => {
         const resultsToSkip = getResultsToSkip(req.query.page);
@@ -95,11 +90,11 @@ module.exports = {
                 artist: utils.capitalizeName(artist),
                 title,
                 lyricsChords: lyricsAndChords,
-                nArtist: normalizeString(artist),
-                nTitle: normalizeString(title),
+                artistSearch: normalizeString(artist),
+                titleSearch: normalizeString(title),
                 songCreator: req.user._id.toString()
             };
-            const doesSongExist = await queries.getSongByArtistAndTitle(newSong.nArtist, newSong.nTitle);
+            const doesSongExist = await queries.getSongByArtistAndTitle(newSong.artistSearch, newSong.titleSearch);
             if (doesSongExist) {
                 return res.send({
                     redirectUrl: '',
@@ -107,7 +102,7 @@ module.exports = {
                 });
             }
             await queries.addSong(newSong);
-            const redirectUrl = createSongUrl(newSong.nArtist, newSong.nTitle);
+            const redirectUrl = createSongUrl(newSong.artistSearch, newSong.titleSearch);
             return res.send({
                 redirectUrl,
                 errorMsg: ''
@@ -147,14 +142,14 @@ module.exports = {
                 artist,
                 title,
                 lyricsChords: lyricsAndChords,
-                nArtist: normalizeString(artist),
-                nTitle: normalizeString(title)
+                artistSearch: normalizeString(artist),
+                titleSearch: normalizeString(title)
             };
             const artistRegex = utils.createCaseInsensitiveRegex(paramArtist);
             const titleRegex = utils.createCaseInsensitiveRegex(paramTitle);
             await queries.editSong(artistRegex, titleRegex, newSong);
             return res.send({
-                redirectUrl: createSongUrl(newSong.nArtist, newSong.nTitle),
+                redirectUrl: createSongUrl(newSong.artistSearch, newSong.titleSearch),
                 errorMsg: ""
             });
         } catch (error) {
