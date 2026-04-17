@@ -62,6 +62,8 @@ Stores guitar song entries. Documents contain:
   
   title: "Song Title",
   artist: "Artist Name",
+  artistSearch: "normalizedsearchfield", // Normalized artist for search (lowercase, alphanumeric only)
+  titleSearch: "normalizedsearchfield", // Normalized title for search (lowercase, alphanumeric only)
   key: "C", // Chord key
   tempo: 120,
   
@@ -79,6 +81,12 @@ Stores guitar song entries. Documents contain:
   updatedAt: ISODate
 }
 ```
+
+**Important Notes**:
+- The `artistSearch` and `titleSearch` fields are used for search operations
+- Display values should always come from the original `artist` and `title` fields
+- The `normalizeForSearch` utility from `utils/string_utils.js` should be used to prepare search terms
+- Original fields like `nArtist` and `nTitle` have been removed in favor of these normalized search fields
 
 ## Query Helper Functions
 
