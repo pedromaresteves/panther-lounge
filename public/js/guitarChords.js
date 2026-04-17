@@ -25,9 +25,9 @@ export default function guitarChords() {
     result.forEach(function (song) {
       if (artistsArr.indexOf(song.item.artist) === -1) {
         artistsArr.push(song.item.artist);
-        artistResults.innerHTML += `<li class="list-group-item"><a href="/guitar-chords/${song.item.nArtist}">${song.item.artist} <small>(Artist Page)</small></a></li>`
+        artistResults.innerHTML += `<li class="list-group-item"><a href="/guitar-chords/${song.item.artistSearch}">${song.item.artist} <small>(Artist Page)</small></a></li>`
       }
-      songResults.innerHTML += `<li class="list-group-item"><a href="/guitar-chords/${song.item.nArtist}/${song.item.nTitle}">${song.item.artist} - ${song.item.title}</a></li>`;
+      songResults.innerHTML += `<li class="list-group-item"><a href="/guitar-chords/${song.item.artistSearch}/${song.item.titleSearch}">${song.item.artist} - ${song.item.title}</a></li>`;
     })
   });
 
@@ -42,8 +42,8 @@ export default function guitarChords() {
         maxPatternLength: 32,
         minMatchCharLength: 1,
         keys: [
-          "nTitle",
-          "nArtist"
+          "titleSearch",
+          "artistSearch"
         ]
       };
       fuse = new Fuse(data, options);
