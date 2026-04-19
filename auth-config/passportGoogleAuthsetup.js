@@ -4,7 +4,7 @@ const queries = require("../database/queries");
 const { googleClientID, googleClientSecret, googleCallbackURL } = process.env;
 
 passport.serializeUser((user, done) => {
-    done(null, user._id)
+    done(null, user._id ? user._id.toString() : user.id)
 });
 
 passport.deserializeUser(async (id, done) => {
@@ -28,7 +28,11 @@ passport.use(
         const user = await queries.getGoogleUser(profile.id);
         const userEmailExists = await queries.findUserByEmail(profile._json.email);
         if (userEmailExists) {
-            await queries.updateUser(userEmailExists._id, { email: profile._json.email, googleId: profile.id, thumbnail: profile._json.picture });
+            const updateFields = { email: profile._json.email, googleId: profile.id, thumbnail: profile._json.picture };
+            if (!userEmailExists.username && profile.displayName) {
+                updateFields.username = profile.displayName;
+            }
+            await queries.updateUser(userEmailExists._id.toString(), updateFields);
             return done(null, userEmailExists);
         }
         if (!user) {
@@ -36,7 +40,7 @@ passport.use(
             return done(null, newUser);
         }
         if (!user.email) {
-            await queries.updateUser(user._id, { email: profile._json.email });
+            await queries.updateUser(user._id.toString(), { email: profile._json.email });
         }
         return done(null, user);
     })

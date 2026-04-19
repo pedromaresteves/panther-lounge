@@ -14,10 +14,14 @@ module.exports = {
         res.render("loginLocal.ejs", { userData: req.user, loginError: loginError, failedLogin: failedLogin })
     },
     logout: (req, res) => {
-        req.logout((err) => {
-            if (err) return res.status(500).send('Logout failed');
-            res.redirect("/");
-        });
+        try {
+            req.logout();
+        } catch (e) {
+            console.error("req.logout error:", e);
+        }
+        req.session = null;
+        res.clearCookie('connect.sid');
+        res.redirect("/");
     },
     getCreateAccount: (req, res) => {
         const fail = {

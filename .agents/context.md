@@ -68,8 +68,6 @@ End-to-end tests using WebdriverIO:
 - `/pageobjects/` - Page object models for maintainability
 - `/specs/` - Test specifications for login flows
 
-## Known Issues & Testing Checklist
-From `things-to-do.txt`:
 
 ### ✅ Completed Tests
 1. Create account using Local login
@@ -77,17 +75,7 @@ From `things-to-do.txt`:
 3. Create account Using Google Oauth
 4. Login account using Google Oauth
 
-### ❌ Critical Bugs to Fix
 
-**Issue #5: User creates local account, then tries Google login**
-- **Behavior**: System creates a NEW user entry instead of linking accounts
-- **Root cause**: No account-linking logic; each strategy treats email independently
-- **Required fix**: Detect existing user by email during OAuth callback and merge accounts
-
-**Issue #6: User uses Google login, then tries local login**
-- **Behavior**: LocalStrategy rejects with "You've registered through a different login method"
-- **Root cause**: Google-only users have no `salt` field; LocalStrategy explicitly checks `if (!user.salt)`
-- **Required fix**: Allow account linking or provide UI guidance to use original auth method
 
 ## Environment Variables Required
 - `MONGO_URI` - MongoDB connection string
