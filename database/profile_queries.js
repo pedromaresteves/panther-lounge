@@ -93,4 +93,22 @@ const deleteUser = async (email) => {
     }
 };
 
-module.exports = { getGoogleUser, findUserById, findUserByEmail, createNewUser, updateUser, deleteUser }
+const linkLocalAccount = async (id, salt, hashedPassword) => {
+    if (!id) throw new Error('id is required');
+    if (!salt) throw new Error('salt is required');
+    if (!hashedPassword) throw new Error('hashedPassword is required');
+    const objectId = validateObjectId(id);
+    if (!objectId) throw new Error('Invalid user ID format');
+    const db = await connection.run();
+    try {
+        return await db.collection("users").updateOne(
+            { _id: objectId },
+            { $set: { salt, hashedPassword } }
+        );
+    } catch (error) {
+        console.error('Error linking local account:', error);
+        throw error;
+    }
+};
+
+module.exports = { getGoogleUser, findUserById, findUserByEmail, createNewUser, updateUser, deleteUser, linkLocalAccount }

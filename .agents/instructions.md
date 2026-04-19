@@ -6,13 +6,13 @@
 Before suggesting changes, read `.agents/context.md` to understand:
 - Project architecture and tech stack
 - Folder structure and responsibilities
-- Known issues (#5 and #6 authentication bugs)
 - Environment setup requirements
 
-### 2. Authentication is Complex
-This project has **two critical account-linking bugs**. When working on auth:
+### 2. Authentication
+When working on auth:
 - Understand the difference between LocalStrategy and GoogleStrategy
 - Know that users need a `salt` field for local login (Google-only users don't have it)
+- Google-only users cannot log in with local strategy - gets rejected with "You've registered through a different login method"
 - Reference `.agents/instructions/auth.instructions.md` for strategy patterns
 
 ### 3. Follow Established Patterns
@@ -30,7 +30,7 @@ This project has **two critical account-linking bugs**. When working on auth:
 ### 4. Testing Approach
 - E2E tests in `/test/e2e/` test full user flows (login, account creation, song CRUD)
 - Use WebdriverIO page objects for maintainability
-- Test checklist in `things-to-do.txt` tracks critical user journeys
+- Run tests with `npm run wdio`
 
 ### 5. Security Reminders
 - Use `crypto.pbkdf2()` with salt for any new password fields
@@ -63,16 +63,14 @@ This project has **two critical account-linking bugs**. When working on auth:
 5. Add frontend JS in `/public/js/` and rebuild with `npm run webpackBuild`
 6. Update E2E tests in `/test/e2e/` if it's a user-facing flow
 
-### 8. For Bug Fixes (Issues #5 & #6)
-See `.agents/instructions/auth.instructions.md` for detailed analysis and potential solutions.
+### 8. E2E Tests
+Run all tests with `npm run wdio`. Current tests cover:
+- createNewAccount.js - Account creation flow
+- loginLocal.js - Local login flow
+- loginGoogle.js - Google OAuth flow
+- viewChords.js - Core navigation flow
 
-## Quick Reference
-
-| When You Need... | Look Here |
-|---|---|
-| Auth patterns | `.agents/instructions/auth.instructions.md` |
-| Database patterns | `.agents/instructions/database.instructions.md` |
-| Controller patterns | `.agents/instructions/controllers.instructions.md` |
-| Full project overview | `.agents/context.md` |
-| Environment setup | Check `.env` for required vars |
-| Test status | `things-to-do.txt` |
+Run a single test file:
+```
+npm run wdio -- --spec .\test\e2e\specs\createNewAccount.js
+```

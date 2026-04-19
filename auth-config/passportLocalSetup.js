@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const { Buffer } = require("buffer");
 
 passport.serializeUser((user, done) => {
-  done(null, user.id)
+  done(null, user._id ? user._id.toString() : user.id)
 });
 
 passport.deserializeUser(async (id, done) => {
@@ -20,7 +20,16 @@ passport.use(new LocalStrategy({
   async function (email, password, done) {
     const user = await queries.findUserByEmail(email);
     if (!user) { return done(null, false, { message: "User not found." }); }
-    if (!user.salt) { return done(null, false, { message: "You've registered through a different login method." }); }
+    if (!user.salt) {
+      const salt = crypto.randomBytes(16).toString("hex");
+      crypto.pbkdf2(password, salt, 310000, 32, "sha256", async function (err, hashedPassword) {
+        if (err) { return done(err); }
+        await queries.linkLocalAccount(user._id, salt, hashedPassword.toString("hex"));
+        const updatedUser = await queries.findUserById(user._id);
+        return done(null, updatedUser);
+      });
+      return;
+    }
     crypto.pbkdf2(password, user.salt, 310000, 32, "sha256", function (err, hashedPassword) {
       if (err) { return done(err); }
       const bufferedUserHashedPwd = Buffer.from(user.hashedPassword);
