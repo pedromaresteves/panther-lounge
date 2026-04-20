@@ -145,9 +145,7 @@ module.exports = {
                 artistSearch: normalizeString(artist),
                 titleSearch: normalizeString(title)
             };
-            const artistRegex = utils.createCaseInsensitiveRegex(paramArtist);
-            const titleRegex = utils.createCaseInsensitiveRegex(paramTitle);
-            await queries.editSong(artistRegex, titleRegex, newSong);
+            await queries.editSong(normalizeString(paramArtist), normalizeString(paramTitle), newSong);
             return res.send({
                 redirectUrl: createSongUrl(newSong.artistSearch, newSong.titleSearch),
                 errorMsg: ""
