@@ -36,9 +36,7 @@ module.exports = {
   },
   getEditSong: async (req, res) => {
     try {
-      const artistRegex = utils.createCaseInsensitiveRegex(req.params.artist);
-      const titleRegex = utils.createCaseInsensitiveRegex(req.params.title);
-      const song = await queries.getSong(artistRegex, titleRegex);
+      const song = await queries.getSong(req.params.artist, req.params.title);
       song.lyricsChords = JSON.stringify(song.lyricsChords);
       return res.render("addOrEditSong.ejs", { userData: req.user, songData: song });
     } catch (err) {
