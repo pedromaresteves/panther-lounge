@@ -15,12 +15,21 @@ module.exports = {
       const artist = req.params.artist;
       const title = req.params.title;
       const song = await queries.getSong(artist, title);
-      song.lyricsChords = JSON.stringify(song.lyricsChords);
       if (song.songCreator) {
         const songCreatorData = await queries.findUserById(song.songCreator);
         song.songCreator = songCreatorData.username;
       }
-      song.artistURL = utils.encodeChars(song.artist);
+      song.artistURL = utils.encodeChars(utils.normalizeForUrl(song.artist));
+      
+      // Extract text from Quill Delta format if needed
+      if (song.lyrics && song.lyrics.ops) {
+        song.lyrics = song.lyrics.ops.map(op => op.insert).join('');
+      } else if (song.lyricsChords && song.lyricsChords.ops) {
+        song.lyrics = song.lyricsChords.ops.map(op => op.insert).join('');
+      } else {
+        song.lyrics = song.lyrics || song.lyricsChords || "";
+      }
+      
       return res.render("songs.ejs", { userData: req.user, songData: song });
     } catch (err) {
       return utils.renderError(res, req, err);
@@ -30,14 +39,13 @@ module.exports = {
     const songData = {
       artist: req.params.artist,
       title: "",
-      lyricsChords: undefined
+      lyrics: ""
     };
     return res.render("addOrEditSong.ejs", { userData: req.user, songData });
   },
   getEditSong: async (req, res) => {
     try {
       const song = await queries.getSong(req.params.artist, req.params.title);
-      song.lyricsChords = JSON.stringify(song.lyricsChords);
       return res.render("addOrEditSong.ejs", { userData: req.user, songData: song });
     } catch (err) {
       return utils.renderError(res, req, err);

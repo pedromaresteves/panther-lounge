@@ -6,7 +6,7 @@ const getArtists = async (resultsToSkip) => {
     if (resultsToSkip < 0) throw new Error('resultsToSkip must be non-negative');
     const db = await connection.run();
     try {
-        const artists = await db.collection("songs").aggregate([
+        const artists = await db.collection("songs_migration").aggregate([
             { $group: { _id: { name: "$artist", link: "$artistSearch" }, total: { $sum: 1 } } },
             { $sort: { '_id.name': 1 } },
             { $skip: resultsToSkip },
@@ -39,7 +39,7 @@ const getSong = async (artist, title) => {
 const getAllSongs = async () => {
     const db = await connection.run();
     try {
-        return await db.collection("songs").find({}).sort({ artist: 1 }).toArray();
+        return await db.collection("songs_migration").find({}).sort({ artist: 1 }).toArray();
     } catch (error) {
         console.error('Error fetching all songs:', error);
         throw error;
@@ -69,7 +69,7 @@ const countSongsBySongCreator = async (songCreator) => {
     if (!songCreator) throw new Error('songCreator is required');
     const db = await connection.run();
     try {
-        const count = await db.collection("songs").countDocuments({ songCreator: songCreator });
+        const count = await db.collection("songs_migration").countDocuments({ songCreator: songCreator });
         return count;
     } catch (error) {
         console.error('Error counting songs by song creator:', error);
@@ -88,7 +88,7 @@ const groupedArtistsCount = async () => {
         }
     ];
     try {
-        const groupSongsByArtist = await db.collection("songs").aggregate(pipeline).toArray();
+        const groupSongsByArtist = await db.collection("songs_migration").aggregate(pipeline).toArray();
         return groupSongsByArtist.length;
     } catch (error) {
         console.error('Error counting grouped artists:', error);
@@ -103,7 +103,7 @@ const getSongsByArtist = async (artist, resultsToSkip = 0) => {
     const normalizedArtist = normalizeForSearch(artist);
     const pipeline = [
         { $match: { artistSearch: normalizedArtist } },
-        { $group: { _id: { name: "$artist", title: "$title", songPath: "$titleSearch" } } },
+        { $group: { _id: { name: "$artist", title: "$title", songPath: "$titleSearch", artistSearch: "$artistSearch" } } },
         { $sort: { '_id.name': 1 } },
         { $skip: resultsToSkip },
         { $limit: 10 }
@@ -122,7 +122,7 @@ const countSongsByArtist = async (artist) => {
     const db = await connection.run();
     const normalizedArtist = normalizeForSearch(artist);
     try {
-        const count = await db.collection("songs").countDocuments({ artistSearch: normalizedArtist });
+        const count = await db.collection("songs_migration").countDocuments({ artistSearch: normalizedArtist });
         return count;
     } catch (error) {
         console.error('Error counting songs by artist:', error);
@@ -136,7 +136,7 @@ const addSong = async (songData) => {
     }
     const db = await connection.run();
     try {
-        const result = await db.collection("songs").insertOne({
+        const result = await db.collection("songs_migration").insertOne({
             ...songData,
             artistSearch: normalizeForSearch(songData.artist),
             titleSearch: normalizeForSearch(songData.title)
@@ -154,7 +154,7 @@ const editSong = async (artist, title, newSongData) => {
     const normalizedArtist = normalizeForSearch(artist);
     const normalizedTitle = normalizeForSearch(title);
     try {
-        const result = await db.collection("songs").updateOne(
+        const result = await db.collection("songs_migration").updateOne(
             { artistSearch: normalizedArtist, titleSearch: normalizedTitle },
             { $set: { 
                 lyricsChords: newSongData.lyricsChords, 
@@ -175,7 +175,7 @@ const deleteSong = async (artist, title) => {
     const normalizedArtist = normalizeForSearch(artist);
     const normalizedTitle = normalizeForSearch(title);
     try {
-        const result = await db.collection("songs").deleteOne({
+        const result = await db.collection("songs_migration").deleteOne({
             artistSearch: normalizedArtist,
             titleSearch: normalizedTitle
         });
@@ -211,7 +211,7 @@ const deleteSongsBatch = async (songIds) => {
         
         if (objectIds.length === 0) throw new Error('No valid song IDs provided');
         
-        const result = await db.collection("songs").deleteMany({ _id: { $in: objectIds } });
+        const result = await db.collection("songs_migration").deleteMany({ _id: { $in: objectIds } });
         return result;
     } catch (error) {
         console.error('Error batch deleting songs:', error);

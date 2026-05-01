@@ -1,90 +1,110 @@
 export default function addOrEditSong() {
-
-    //DOM Variables
+    // DOM Variables
     const form = document.querySelector('form');
     let artistField = document.querySelector('input[name=artist]');
     let titleField = document.querySelector('input[name=title]');
-    const formFields = [artistField, titleField];
-    let lyricsChordsSender = document.querySelector('input[name=lyrics]');
+    const lyricsField = document.querySelector('textarea[name=lyrics]');
+    const charCountElement = document.querySelector('#char-count');
+    const syntaxErrorElement = document.querySelector('#syntax-error');
+    const formFields = [artistField, titleField, lyricsField];
     let sendFormButton = document.querySelector('#submitButton');
     const addSongApiUrl = window.location.origin + "/api" + window.location.pathname;
-    const quillCharlimit = 6000;
+    const charLimit = 6000;
 
-    //Quill settings
-    const toolbarOptions = [{ size: ['small', false, 'large', 'huge'] }, 'bold', 'italic', 'underline', { 'indent': '-1' }, { 'indent': '+1' }];
-    const quill = new Quill('#editor', {
-        modules: {
-            toolbar: toolbarOptions
-        },
-        placeholder: 'Compose an epic...',
-        theme: 'snow'
-    });
-
-    quill.on('text-change', function (delta, old, source) {
-        if (quill.getLength() > quillCharlimit) {
-            quill.deleteText(quillCharlimit, quill.getLength());
+    // Character counter
+    function updateCharCount() {
+        const currentLength = lyricsField.value.length;
+        charCountElement.textContent = `${currentLength}/${charLimit} characters`;
+        
+        if (currentLength > charLimit) {
+            lyricsField.value = lyricsField.value.substring(0, charLimit);
+            updateCharCount();
         }
-    });
-
-    //If editing a song, we get the lyrics and chords and fill the text editor
-    if (!!lyricsChordsSender.value) {
-        const songContent = JSON.parse(lyricsChordsSender.value).ops;
-        let contentToBeSet = [];
-        songContent.forEach(function (item) {
-            contentToBeSet.push(item)
-        });
-        quill.setContents(contentToBeSet)
     }
+    
+    lyricsField.addEventListener('input', updateCharCount);
+    updateCharCount();
 
-    //If editing a song, don't allow user to edit Artist Name
+    // Client-side chord syntax validation
+    function validateChordSyntax() {
+        const text = lyricsField.value;
+        const chordRegex = /\[([^\]]+)\]/g;
+        const chordPattern = /^[A-G][b#]*(?:m|maj|min|aug|dim|sus)?[0-9]*(?:\/[A-G][b#]*)?$/i;
+        let match;
+        
+        while ((match = chordRegex.exec(text)) !== null) {
+            const chord = match[1].trim();
+            if (!chordPattern.test(chord)) {
+                syntaxErrorElement.textContent = `Invalid chord syntax: "${chord}". Use format like [Em], [Dsus4], [C#m7]`;
+                syntaxErrorElement.style.display = 'block';
+                return false;
+            }
+        }
+        
+        syntaxErrorElement.style.display = 'none';
+        return true;
+    }
+    
+    lyricsField.addEventListener('input', validateChordSyntax);
+    lyricsField.addEventListener('blur', validateChordSyntax);
+
+    // If editing a song, don't allow user to edit Artist Name
     if (window.location.pathname.indexOf("/edit-song/") !== -1) {
         artistField.disabled = true;
     }
 
-
-    //Check if Value is empty
+    // Check if Value is empty
     function checkEmptyValues(fieldValue) {
         if (fieldValue === "") return false;
         return true;
     }
 
-    //Check Form Values
-    function checkFormValues(artist, title) {
+    // Check Form Values
+    function checkFormValues(artist, title, lyrics) {
         let test = {
             errors: false,
             msg: ""
-        }
+        };
         if (checkEmptyValues(artist) === false) test.msg += "You must insert an Artist <br>";
         if (checkEmptyValues(title) === false) test.msg += "You must insert a Title <br>";
+        if (checkEmptyValues(lyrics) === false) test.msg += "You must insert Lyrics and Chords <br>";
         if (test.msg.length > 0) test.errors = true;
         return test;
     }
 
-    //Only allow saving if all field have values
+    // Only allow saving if all fields have values
     for (let i = 0; i < formFields.length; i++) {
         formFields[i].addEventListener('blur', function (event) {
-            let checkForm = checkFormValues(artistField.value, titleField.value);
-            if (checkForm.errors === false) {
+            let checkForm = checkFormValues(artistField.value, titleField.value, lyricsField.value);
+            if (checkForm.errors === false && validateChordSyntax()) {
                 sendFormButton.disabled = false;
             } else {
                 sendFormButton.disabled = true;
             }
         });
     }
-    if (checkFormValues(artistField.value, titleField.value).errors === false) sendFormButton.disabled = false;
+    
+    // Initialize button state
+    if (checkFormValues(artistField.value, titleField.value, lyricsField.value).errors === false && validateChordSyntax()) {
+        sendFormButton.disabled = false;
+    }
 
-    //Submiting Quill content through form
+    // Form submission
     form.onsubmit = function (e) {
-        lyricsChordsSender.value = JSON.stringify(quill.getContents());
+        e.preventDefault();
+        
+        if (!validateChordSyntax()) {
+            window.scrollTo(0, 0);
+            return false;
+        }
+        
         const songData = JSON.stringify({
             artist: artistField.value,
             title: titleField.value,
-            lyricsAndChords: quill.getContents()
+            lyrics: lyricsField.value
         });
-        var httpRequest;
-
-        e.preventDefault();
-        httpRequest = new XMLHttpRequest();
+        
+        var httpRequest = new XMLHttpRequest();
         if (!httpRequest) {
             alert('Giving up :( Cannot create an XMLHTTP instance');
             return false;
@@ -123,8 +143,9 @@ export default function addOrEditSong() {
                 }
             }
         };
+        
         httpRequest.open('POST', addSongApiUrl);
         httpRequest.setRequestHeader('Content-Type', 'application/json');
         httpRequest.send(songData);
-    }
+    };
 }

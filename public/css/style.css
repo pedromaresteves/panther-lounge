@@ -104,6 +104,35 @@ body {
     white-space: pre;
 }
 
+/* Chord and lyric styling */
+.chord-sheet {
+    font-family: monospace;
+    white-space: pre;
+    line-height: 2.0;
+}
+
+.chord {
+    font-weight: bold;
+    color: var(--accent-color);
+    display: inline-block;
+    min-width: 2.5em;
+    margin-right: 0.5em;
+}
+
+.lyric {
+    white-space: pre;
+}
+
+#lyrics {
+    font-family: monospace;
+    min-height: 300px;
+    resize: vertical;
+}
+
+#char-count {
+    font-size: 0.875em;
+}
+
 .fix-form{
     white-space: pre;
 }
