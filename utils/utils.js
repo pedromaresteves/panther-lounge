@@ -136,35 +136,38 @@ module.exports = {
   },
 
   /**
-   * PHASE 1: Validate chord syntax
-   * Chord pattern: [A-G][b#]*[m]?[0-9a-z]*
-   * Examples: Em, Dsus4, C#m7, F, Gmaj7, B♭
-   * Returns { valid: boolean, error: string | null }
-   */
-  validateChordSyntax: function (text) {
-    if (!text || typeof text !== 'string') {
-      return { valid: true, error: null };
-    }
+    * PHASE 1: Validate chord syntax
+    * Chord pattern: [A-G][b#]*[m|maj|min|aug|dim|sus]*[0-9]*
+    * Examples: Em, Dsus4, C#m7, F, Gmaj7, B♭, C/F
+    * Section markers: Intro, Verse, Chorus, Bridge, Outro, etc.
+    * Returns { valid: boolean, error: string | null }
+    */
+   validateChordSyntax: function (text) {
+     if (!text || typeof text !== 'string') {
+       return { valid: true, error: null };
+     }
 
-    const chordRegex = /\[(.*?)\]/g;
-    let match;
-    // Allow standard chords, section markers, and multi-chord lines
-    const chordPattern = /^(?:[A-G][b#]*(?:m|maj|min|aug|dim|sus)?[0-9]*(?:\([^)]*\))?(?:\/.+?)?(?:[ \t]+[A-G][b#]*(?:m|maj|min|aug|dim|sus)?[0-9]*(?:\([^)]*\))?(?:\/.+?)?)*(?:[ \t]+\(repeat\))?|Intro(?:[ \t:]|$)|Verse(?:[ \t:]|$)|Chorus(?:[ \t:]|$)|Bridge(?:[ \t:]|$)|Outro(?:[ \t:]|$)|Pre-(?:Verse|Chorus)(?:[ \t:]|$)|[A-Za-z]+(?:[ \t:][0-9]+)?|[A-Za-z]+(?:[ \t]+[A-Za-z]+)*(?:[ \t:]|$)|[0-9]+[A-Za-z]+)$/i;
+     const chordRegex = /\[(.*?)\]/g;
+     let match;
+     // Chord pattern: Root + optional accidental + optional quality + optional voicing + optional bass
+     const chordPattern = /^[A-G][b#]*(?:m|maj|min|aug|dim|sus)?[0-9]*(?:\([^)]*\))?(?:\/[A-G][b#]*)?$/i;
+     // Section marker pattern: common song sections
+     const sectionPattern = /^(?:Intro|Verse|Chorus|Bridge|Outro|Pre-Chorus|Pre-Verse|Interlude|Solo|Break)(?:[ \t:][0-9]+)?$/i;
 
-    while ((match = chordRegex.exec(text)) !== null) {
-      const chord = match[1].trim();
-      if (chord === "Gmaj7sus/F#") {
-        console.log(`Bypassing validation for chord: "${chord}"`); // Bypass specific chord
-        continue;
-      }
-      if (!chordPattern.test(chord)) {
-        return {
-          valid: false,
-          error: `Invalid chord syntax: "${chord}". Use format like [Em], [Dsus4], [C#m7], or section markers like [Intro]`
-        };
-      }
-    }
+     while ((match = chordRegex.exec(text)) !== null) {
+       const chord = match[1].trim();
+       if (chord === "Gmaj7sus/F#") {
+         console.log(`Bypassing validation for chord: "${chord}"`); // Bypass specific chord
+         continue;
+       }
+       if (!chordPattern.test(chord) && !sectionPattern.test(chord)) {
+         return {
+           valid: false,
+           error: `Invalid chord syntax: "${chord}". Use format like [Em], [Dsus4], [C#m7], or section markers like [Intro]`
+         };
+       }
+     }
 
-    return { valid: true, error: null };
+     return { valid: true, error: null };
   }
 }
