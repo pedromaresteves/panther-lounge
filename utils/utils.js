@@ -38,9 +38,6 @@ module.exports = {
   escapeRegExp(string) {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
   },
-  createCaseInsensitiveRegex(value) {
-    return new RegExp(`^${this.escapeRegExp(value)}$`, "gi");
-  },
   renderError(res, req, err) {
     return res.render("error.ejs", {
       userData: req.user,
@@ -144,7 +141,7 @@ module.exports = {
    * Examples: Em, Dsus4, C#m7, F, Gmaj7, B♭
    * Returns { valid: boolean, error: string | null }
    */
-   validateChordSyntax: function (text) {
+  validateChordSyntax: function (text) {
     if (!text || typeof text !== 'string') {
       return { valid: true, error: null };
     }

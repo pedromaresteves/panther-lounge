@@ -26,7 +26,7 @@ const getSong = async (artist, title) => {
     if (!artist || !title) throw new Error('Artist and title are required');
     const db = await connection.run();
     try {
-        return await db.collection("songs").findOne({
+        return await db.collection("songs_migration").findOne({
             artistSearch: normalizeForSearch(artist),
             titleSearch: normalizeForSearch(title)
         });
@@ -57,7 +57,7 @@ const getSongsBySongCreator = async (songCreator, resultsToSkip = 0) => {
         { $limit: 10 }
     ];
     try {
-        const songs = await db.collection("songs").aggregate(pipeline).toArray();
+        const songs = await db.collection("songs_migration").aggregate(pipeline).toArray();
         return songs;
     } catch (error) {
         console.error('Error fetching songs by song creator:', error);
@@ -109,7 +109,7 @@ const getSongsByArtist = async (artist, resultsToSkip = 0) => {
         { $limit: 10 }
     ];
     try {
-        const songs = await db.collection("songs").aggregate(pipeline).toArray();
+        const songs = await db.collection("songs_migration").aggregate(pipeline).toArray();
         return songs;
     } catch (error) {
         console.error('Error fetching songs by artist:', error);
@@ -156,11 +156,14 @@ const editSong = async (artist, title, newSongData) => {
     try {
         const result = await db.collection("songs_migration").updateOne(
             { artistSearch: normalizedArtist, titleSearch: normalizedTitle },
-            { $set: { 
-                lyricsChords: newSongData.lyricsChords, 
-                title: newSongData.title, 
-                titleSearch: normalizeForSearch(newSongData.title) 
-            }}
+            {
+                $set: {
+                    lyricsChords: newSongData.lyrics,
+                    lyrics: newSongData.lyrics,
+                    title: newSongData.title,
+                    titleSearch: normalizeForSearch(newSongData.title)
+                }
+            }
         );
         return result;
     } catch (error) {
@@ -190,7 +193,7 @@ const getSongByArtistAndTitle = async (artist, title) => {
     if (!artist || !title) throw new Error('Artist and title are required');
     const db = await connection.run();
     try {
-        return await db.collection("songs").findOne({
+        return await db.collection("songs_migration").findOne({
             artistSearch: normalizeForSearch(artist),
             titleSearch: normalizeForSearch(title)
         });
@@ -208,9 +211,9 @@ const deleteSongsBatch = async (songIds) => {
             try { return new ObjectId(id); }
             catch { return null; }
         }).filter(id => id !== null);
-        
+
         if (objectIds.length === 0) throw new Error('No valid song IDs provided');
-        
+
         const result = await db.collection("songs_migration").deleteMany({ _id: { $in: objectIds } });
         return result;
     } catch (error) {

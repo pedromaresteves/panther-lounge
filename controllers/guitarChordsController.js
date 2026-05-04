@@ -20,7 +20,7 @@ module.exports = {
         song.songCreator = songCreatorData.username;
       }
       song.artistURL = utils.encodeChars(utils.normalizeForUrl(song.artist));
-      
+
       // Extract text from Quill Delta format if needed
       if (song.lyrics && song.lyrics.ops) {
         song.lyrics = song.lyrics.ops.map(op => op.insert).join('');
@@ -29,7 +29,7 @@ module.exports = {
       } else {
         song.lyrics = song.lyrics || song.lyricsChords || "";
       }
-      
+
       return res.render("songs.ejs", { userData: req.user, songData: song });
     } catch (err) {
       return utils.renderError(res, req, err);

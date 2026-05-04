@@ -68,10 +68,13 @@ module.exports = {
             title: item._id.title,
             songPath: utils.encodeChars(item._id.songPath)
         }));
+
+        // Ensure artistPath is generated from the normalized artistSearch field
+        const artistPath = utils.encodeChars(results.length > 0 ? results[0]._id.artistSearch : normalizeString(artist));
         const data = {
             name: 'paginationSongsByArtist',
             visibleResults,
-            artistPath: utils.encodeChars(artist),
+            artistPath: utils.encodeChars(results.length > 0 ? results[0]._id.artistSearch : normalizeString(artist)),
             currentPage: req.query.page,
             numOfPages: calculateNumOfPages(totalResults)
         };
@@ -86,7 +89,7 @@ module.exports = {
                 });
             }
             const { artist, title, lyrics } = req.body;
-            
+
             // Validate chord syntax server-side
             const validation = utils.validateChordSyntax(lyrics);
             if (!validation.valid) {
@@ -95,7 +98,7 @@ module.exports = {
                     errorMsg: validation.error
                 });
             }
-            
+
             const newSong = {
                 artist: utils.capitalizeName(artist),
                 title,
@@ -179,7 +182,6 @@ module.exports = {
     deleteSong: async (req, res) => {
         try {
             const { artist, title } = req.params;
-
             const existingSong = await queries.getSongByArtistAndTitle(
                 normalizeString(artist),
                 normalizeString(title)
@@ -199,9 +201,7 @@ module.exports = {
                 });
             }
 
-            const artistRegex = utils.createCaseInsensitiveRegex(artist);
-            const titleRegex = utils.createCaseInsensitiveRegex(title);
-            await queries.deleteSong(artistRegex, titleRegex);
+            await queries.deleteSong(normalizeString(artist), normalizeString(title));
             return res.send({
                 deletedMsg: "The song was deleted. Bye bye! :("
             });
