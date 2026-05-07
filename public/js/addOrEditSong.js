@@ -32,17 +32,18 @@ export default function addOrEditSong() {
         const chordPattern = /^[A-G][b#]*(?:m|maj|min|aug|dim|sus)?[0-9]*(?:\/[A-G][b#]*)?$/i;
         let match;
         
-        while ((match = chordRegex.exec(text)) !== null) {
-            const chord = match[1].trim();
-            if (!chordPattern.test(chord)) {
-                syntaxErrorElement.textContent = `Invalid chord syntax: "${chord}". Use format like [Em], [Dsus4], [C#m7]`;
-                syntaxErrorElement.style.display = 'block';
-                return false;
-            }
+    while ((match = chordRegex.exec(text)) !== null) {
+        const chord = match[1].trim();
+        if (!chordPattern.test(chord)) {
+            syntaxErrorElement.textContent = `Keep in mind to use the chord syntax [Em], [Dsus4], [C#m7] for better user experience.`;
+            syntaxErrorElement.className = 'alert alert-warning mt-2';
+            syntaxErrorElement.style.display = 'block';
+            return false;
         }
-        
-        syntaxErrorElement.style.display = 'none';
-        return true;
+    }
+
+    syntaxErrorElement.style.display = 'none';
+    return true;
     }
     
     lyricsField.addEventListener('input', validateChordSyntax);
@@ -76,27 +77,22 @@ export default function addOrEditSong() {
     for (let i = 0; i < formFields.length; i++) {
         formFields[i].addEventListener('blur', function (event) {
             let checkForm = checkFormValues(artistField.value, titleField.value, lyricsField.value);
-            if (checkForm.errors === false && validateChordSyntax()) {
+            if (checkForm.errors === false) {
                 sendFormButton.disabled = false;
             } else {
                 sendFormButton.disabled = true;
             }
         });
     }
-    
+
     // Initialize button state
-    if (checkFormValues(artistField.value, titleField.value, lyricsField.value).errors === false && validateChordSyntax()) {
+    if (checkFormValues(artistField.value, titleField.value, lyricsField.value).errors === false) {
         sendFormButton.disabled = false;
     }
 
     // Form submission
     form.onsubmit = function (e) {
         e.preventDefault();
-        
-        if (!validateChordSyntax()) {
-            window.scrollTo(0, 0);
-            return false;
-        }
         
         const songData = JSON.stringify({
             artist: artistField.value,

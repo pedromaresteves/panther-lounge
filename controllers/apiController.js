@@ -90,15 +90,6 @@ module.exports = {
             }
             const { artist, title, lyrics } = req.body;
 
-            // Validate chord syntax server-side
-            const validation = utils.validateChordSyntax(lyrics);
-            if (!validation.valid) {
-                return res.send({
-                    redirectUrl: '',
-                    errorMsg: validation.error
-                });
-            }
-
             const newSong = {
                 artist: utils.capitalizeName(artist),
                 title,
@@ -131,15 +122,6 @@ module.exports = {
         try {
             const { artist, title, lyrics } = req.body;
             const { artist: paramArtist, title: paramTitle } = req.params;
-
-            // Validate chord syntax server-side
-            const validation = utils.validateChordSyntax(lyrics);
-            if (!validation.valid) {
-                return res.send({
-                    redirectUrl: '',
-                    errorMsg: validation.error
-                });
-            }
 
             const existingSong = await queries.getSongByArtistAndTitle(
                 normalizeString(paramArtist),
