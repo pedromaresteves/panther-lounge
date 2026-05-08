@@ -2,7 +2,8 @@ import addOrEditSong from "./addOrEditSong.js";
 import artistPage from "./artistPage.js";
 import guitarChords from "./guitarChords.js";
 import profile from "./profile.js";
-import songPong from "./song"
+import songPong from "./song";
+import ChordTooltip from "./components/tooltip.js";
 
 // Initialize Bootstrap 5 tooltips
 document.addEventListener('DOMContentLoaded', function () {
@@ -10,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function () {
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
+    
+    // ChordTooltip is initialized in tooltip.js
 });
 
 const numOfSlashes = window.location.pathname.match(/\//g).length;

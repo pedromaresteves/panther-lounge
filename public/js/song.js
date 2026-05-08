@@ -1,4 +1,22 @@
 
+// Load chords data
+let chordsDB = {};
+fetch('/data/chords-vexchords.json')
+  .then((res) => {
+    if (!res.ok) throw new Error('Failed to load chords');
+    return res.json();
+  })
+  .then((data) => {
+    chordsDB = data;
+    window.chordsDB = data;
+  })
+  .catch((err) => {
+    console.error('Failed to load chords:', err);
+    // Fallback: Load a minimal subset of chords or show a user-friendly error
+    chordsDB = {};
+    window.chordsDB = {};
+  });
+
 export default function songPong() {
     const lyricsContainer = document.querySelector('#lyrics-container');
     if (!lyricsContainer) return;
@@ -74,4 +92,35 @@ export default function songPong() {
     // Replace newlines with <br> tags for proper display
     const formattedHtml = html.replace(/\n/g, '<br>');
     lyricsContainer.innerHTML = formattedHtml;
+    
+    // Add event listeners for chord tooltips
+    const chordElements = lyricsContainer.querySelectorAll('.chord');
+    chordElements.forEach(chordElement => {
+      chordElement.setAttribute('role', 'button');
+      chordElement.setAttribute('tabindex', '0');
+      chordElement.setAttribute('aria-label', `Show chord diagram for ${chordElement.textContent.trim()}`);
+      
+      chordElement.addEventListener('mouseenter', () => {
+        const chordName = chordElement.textContent.trim();
+        window.chordTooltip.show(chordName, chordElement);
+      });
+      
+      chordElement.addEventListener('mouseleave', () => {
+        window.chordTooltip.hide();
+      });
+      
+      chordElement.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const chordName = chordElement.textContent.trim();
+          window.chordTooltip.show(chordName, chordElement);
+        } else if (e.key === 'Escape') {
+          window.chordTooltip.hide();
+        }
+      });
+      
+      chordElement.addEventListener('blur', () => {
+        window.chordTooltip.hide();
+      });
+    });
 }
