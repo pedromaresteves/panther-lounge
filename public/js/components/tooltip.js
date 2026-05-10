@@ -39,14 +39,15 @@ class ChordTooltip {
 
   // Parse chord name into key, suffix, and bass note (e.g., "A", "Am", "C#m7", "D7/F#", "N.C.")
   _parseChordName(chordName) {
+    if (!chordName || typeof chordName !== 'string') return { key: null, suffix: null, bass: null };
     if (chordName === 'N.C.') return { key: null, suffix: null, bass: null };
 
     // Handle slash chords (e.g., "D7/F#", "Am/G")
-    const slashMatch = chordName.match(/^(.+?)\/([A-G][b#]?)$/);
+    const slashMatch = chordName.match(/^(.+?)\/([A-G][b#]?)$/i);
     if (slashMatch) {
       // Parse the chord name before the slash (e.g., "Am" or "D7")
       const baseChord = slashMatch[1];
-      const baseMatch = baseChord.match(/^([A-G][b#]?)(.*)$/);
+      const baseMatch = baseChord.match(/^([A-G][b#]?)(.*)$/i);
       if (!baseMatch) return { key: null, suffix: null, bass: null };
       
       let suffix = baseMatch[2] || 'major';
@@ -58,11 +59,11 @@ class ChordTooltip {
         key: baseMatch[1],
         suffix: suffix,
         bass: slashMatch[2],
-        isMinor: baseMatch[2].includes('m') || baseMatch[2].includes('min')
+        isMinor: baseMatch[2].toLowerCase().includes('m') || baseMatch[2].toLowerCase().includes('min')
       };
     }
 
-    const regex = /^([A-G][b#]?)(.*)$/;
+    const regex = /^([A-G][b#]?)(.*)$/i;
     const match = chordName.match(regex);
     if (!match) return { key: null, suffix: null, bass: null };
 
@@ -82,9 +83,14 @@ class ChordTooltip {
     this.currentChord = chordName;
     this.currentPositionIndex = 0;
 
+    if (!chordName || typeof chordName !== 'string') {
+      this.hide();
+      return;
+    }
+
     try {
       const { key, suffix, bass, isMinor } = this._parseChordName(chordName);
-      if (!key) {
+      if (!key && chordName !== 'N.C.') {
         this.hide();
         return;
       }
@@ -113,12 +119,8 @@ class ChordTooltip {
           } else {
             bassPositions = window.chordsDB[key]?.[`/${bass}`] || [];
           }
-          } else {
-            bassPositions = window.chordsDB[key]?.[`/${bass}`] || [];
-          }
           
           // For slash chords, prioritize bass positions that are compatible with the base chord
-          // E.g., for "Am/G", prioritize positions from "m_G" that work with "minor"
           positions = [...bassPositions];
           
           // If no bass positions, fall back to base chord positions
@@ -138,6 +140,8 @@ class ChordTooltip {
         if (positions.length === 0) {
           console.warn(`No positions found for chord: ${key}${suffix}${bass ? `/${bass}` : ''}`);
         }
+      } else {
+        console.warn("chordsDB not available. Tooltip will not render chord diagrams.");
       }
 
       if (positions.length) {
@@ -162,7 +166,6 @@ class ChordTooltip {
     if (!this.positions.length) return;
 
     const position = this.positions[this.currentPositionIndex];
-    console.log("Rendering position:", this.positions);
     titleElement.textContent = `${this.currentChord} (Position ${this.currentPositionIndex + 1}/${this.positions.length})`;
 
     diagramContainer.innerHTML = "";
@@ -178,7 +181,7 @@ class ChordTooltip {
       fretWidth: 2,
       labelWeight: "bold",
     }).draw({
-      chord: position.frets.map((value, index) => [position.frets.length - index, value === -1 ? 'x' : value]),
+      chord: position.frets.map((value, index) => [index + 1, value === -1 ? 'x' : value]),
       position: position.barres,
     });
   }
