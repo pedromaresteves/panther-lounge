@@ -21,6 +21,8 @@ class ChordTooltip {
     this.currentChord = null;
     this.currentPositionIndex = 0;
     this.positions = [];
+    this.isHovered = false;
+    this.hideTimeout = null;
 
     this._setupEventListeners();
   }
@@ -28,6 +30,16 @@ class ChordTooltip {
   _setupEventListeners() {
     this.tooltip.querySelector(".chord-tooltip-arrow-left").addEventListener("click", () => this._navigatePosition(-1));
     this.tooltip.querySelector(".chord-tooltip-arrow-right").addEventListener("click", () => this._navigatePosition(1));
+
+    this.tooltip.addEventListener('mouseenter', () => {
+      this.isHovered = true;
+      clearTimeout(this.hideTimeout);
+    });
+
+    this.tooltip.addEventListener('mouseleave', () => {
+      this.isHovered = false;
+      this.hide();
+    });
   }
 
   _navigatePosition(direction) {
@@ -80,6 +92,7 @@ class ChordTooltip {
   }
 
   async show(chordName, targetElement) {
+    clearTimeout(this.hideTimeout);
     this.currentChord = chordName;
     this.currentPositionIndex = 0;
 
@@ -196,9 +209,14 @@ class ChordTooltip {
   }
 
   hide() {
-    this.tooltip.setAttribute("aria-hidden", "true");
-    this.positions = [];
-    this.currentChord = null;
+    this.hideTimeout = setTimeout(() => {
+      if (!this.isHovered) {
+        this.tooltip.setAttribute("aria-hidden", "true");
+        this.positions = [];
+        this.currentChord = null;
+        this.currentPositionIndex = 0;
+      }
+    }, 200);
   }
 }
 
