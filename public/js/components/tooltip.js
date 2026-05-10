@@ -49,12 +49,12 @@ class ChordTooltip {
       const baseChord = slashMatch[1];
       const baseMatch = baseChord.match(/^([A-G][b#]?)(.*)$/i);
       if (!baseMatch) return { key: null, suffix: null, bass: null };
-      
+
       let suffix = baseMatch[2] || 'major';
       // Normalize minor chord suffixes
       if (suffix === 'm') suffix = 'minor';
       if (suffix === 'min') suffix = 'minor';
-      
+
       return {
         key: baseMatch[1],
         suffix: suffix,
@@ -102,12 +102,12 @@ class ChordTooltip {
         if (bass) {
           // Fetch positions for the base chord (e.g., "D7" or "Am")
           let basePositions = window.chordsDB[key]?.[suffix] || [];
-          
+
           // Fallback to shorthand suffix (e.g., "m" for "minor") if no positions found
           if (basePositions.length === 0 && suffix === 'minor') {
             basePositions = window.chordsDB[key]?.['m'] || [];
           }
-          
+
           // Fetch positions for the bass note (e.g., "A/G")
           let bassPositions = [];
           if (isMinor) {
@@ -119,10 +119,10 @@ class ChordTooltip {
           } else {
             bassPositions = window.chordsDB[key]?.[`/${bass}`] || [];
           }
-          
+
           // For slash chords, prioritize bass positions that are compatible with the base chord
           positions = [...bassPositions];
-          
+
           // If no bass positions, fall back to base chord positions
           if (positions.length === 0) {
             positions = [...basePositions];
@@ -130,13 +130,13 @@ class ChordTooltip {
         } else {
           // Try the normalized suffix first (e.g., "minor" for "m")
           positions = window.chordsDB[key]?.[suffix] || [];
-          
+
           // Fallback to shorthand suffix (e.g., "m" for "minor") if no positions found
           if (positions.length === 0 && suffix === 'minor') {
             positions = window.chordsDB[key]?.['m'] || [];
           }
         }
-        
+
         if (positions.length === 0) {
           console.warn(`No positions found for chord: ${key}${suffix}${bass ? `/${bass}` : ''}`);
         }
@@ -181,7 +181,7 @@ class ChordTooltip {
       fretWidth: 2,
       labelWeight: "bold",
     }).draw({
-      chord: position.frets.map((value, index) => [index + 1, value === -1 ? 'x' : value]),
+      chord: position.frets.map((value, index) => [position.frets.length - index, value === -1 ? 'x' : value]),
       position: position.barres,
     });
   }
