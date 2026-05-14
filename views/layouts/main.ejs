@@ -8,20 +8,31 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel='stylesheet' href='https://cdn.bootcss.com/bootstrap-social/5.1.1/bootstrap-social.min.css'>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/tooltip.css">
+     <link rel="stylesheet" href="/css/style.css">
+     <link rel="stylesheet" href="/css/tooltip.css">
+     <script>
+       (function() {
+         const savedTheme = localStorage.getItem('theme');
+         if (savedTheme === 'dark') {
+           document.documentElement.setAttribute('data-theme', 'dark');
+         }
+       })();
+     </script>
+     <script src="https://kit.fontawesome.com/b98331d97a.js" defer></script>
+      <!-- Standalone chord tooltip (immediate fallback) -->
+    <script src="/js/chordTooltipStandalone.js" defer></script>
+    <!-- Main application module (includes VexChords from npm) -->
+    <script type="module" src="/js/main.bundle.js" defer></script>
+    <!-- Debug script to verify everything loaded -->
     <script>
-      (function() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        }
-      })();
+      console.log('Page scripts loaded');
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM fully loaded, checking components:', {
+          chordTooltipAvailable: typeof window.chordTooltip !== 'undefined',
+          vexChordsAvailable: typeof window.VexChords !== 'undefined'
+        });
+      });
     </script>
-    <script src="https://kit.fontawesome.com/b98331d97a.js" defer></script>
-    <script type="module" src="/js/bundle.js" defer></script>
-    <script src="/js/theme.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </head>
 
   <body>

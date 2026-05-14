@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node app.js",
         "startNodemon": "nodemon app.js",
-        "webpackBuild": "webpack --watch",
+        "webpackBuild": "webpack",
         "wdio": "wdio run ./wdio.conf.js",
         "test": "mocha test/unit/**/*.js"
     },
