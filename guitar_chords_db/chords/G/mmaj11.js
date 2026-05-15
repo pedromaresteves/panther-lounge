@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   key: 'G',
   suffix: 'mmaj11',
   positions: [

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   key: 'Ab',
   suffix: 'maj9',
   positions: [

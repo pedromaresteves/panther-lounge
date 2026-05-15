@@ -1,17 +1,17 @@
-import C from './C/index';
-import Csharp from './C#/index';
-import D from './D/index';
-import Eb from './Eb/index';
-import E from './E/index';
-import F from './F/index';
-import Fsharp from './F#/index';
-import G from './G/index';
-import A from './A/index';
-import Ab from './Ab/index';
-import B from './B/index';
-import Bb from './Bb/index';
+const C = require('./C/index');
+const Csharp = require('./C#/index');
+const D = require('./D/index');
+const Eb = require('./Eb/index');
+const E = require('./E/index');
+const F = require('./F/index');
+const Fsharp = require('./F#/index');
+const G = require('./G/index');
+const A = require('./A/index');
+const Ab = require('./Ab/index');
+const B = require('./B/index');
+const Bb = require('./Bb/index');
 
-export default {
+module.exports = {
   C,
   Csharp,
   D,

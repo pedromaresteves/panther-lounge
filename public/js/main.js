@@ -6,8 +6,12 @@ import songPong from "./song";
 
 // Import VexChords exposer first
 import './exposeVexChords';
+// Import chord database module
+import './chordDatabase.js';
 // Import tooltip functionality
 import "./../../components/tooltip.js";
+// Make chordDatabase available globally for tooltip.js
+window.chordDatabase = require('./chordDatabase.js');
 // Initialize Bootstrap 5 tooltips
 document.addEventListener('DOMContentLoaded', function () {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

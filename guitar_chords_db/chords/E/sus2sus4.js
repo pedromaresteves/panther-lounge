@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   key: 'E',
   suffix: 'sus2sus4',
   positions: [

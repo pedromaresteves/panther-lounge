@@ -12,6 +12,55 @@ function createTooltip() {
   tooltip.style.zIndex = '1000';
   tooltip.style.display = 'none';
   tooltip.id = 'chord-tooltip';
+  
+  // Add navigation arrows container
+  const navContainer = document.createElement('div');
+  navContainer.style.position = 'relative';
+  navContainer.style.width = '100%';
+  navContainer.style.height = '100%';
+  tooltip.appendChild(navContainer);
+  
+  // Add content container
+  const contentContainer = document.createElement('div');
+  contentContainer.id = 'chord-tooltip-content';
+  contentContainer.style.width = '100%';
+  contentContainer.style.height = '100%';
+  navContainer.appendChild(contentContainer);
+  
+  // Add previous arrow
+  const prevArrow = document.createElement('button');
+  prevArrow.className = 'chord-nav-arrow prev';
+  prevArrow.innerHTML = '←';
+  prevArrow.style.display = 'none';
+  prevArrow.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (window.chordTooltip && window.chordTooltip.currentShapeIndex > 0) {
+      window.chordTooltip.currentShapeIndex--;
+      const activeChord = document.querySelector('[aria-describedby="chord-tooltip"]');
+      if (activeChord) {
+        window.chordTooltip.show(activeChord.textContent, activeChord);
+      }
+    }
+  });
+  navContainer.appendChild(prevArrow);
+  
+  // Add next arrow
+  const nextArrow = document.createElement('button');
+  nextArrow.className = 'chord-nav-arrow next';
+  nextArrow.innerHTML = '→';
+  nextArrow.style.display = 'none';
+  nextArrow.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (window.chordTooltip && window.chordTooltip.currentShapeIndex < (window.chordTooltip.currentChordShapes.length - 1)) {
+      window.chordTooltip.currentShapeIndex++;
+      const activeChord = document.querySelector('[aria-describedby="chord-tooltip"]');
+      if (activeChord) {
+        window.chordTooltip.show(activeChord.textContent, activeChord);
+      }
+    }
+  });
+  navContainer.appendChild(nextArrow);
+  
   document.body.appendChild(tooltip);
   return tooltip;
 }
@@ -42,7 +91,7 @@ function mapSuffixToVexChords(suffix) {
 }
 
 // Render chord diagram into tooltip using VexChords
-function renderChordDiagram(chordName, tooltip) {
+function renderChordDiagram(chordName, tooltip, shapeIndex = 0, tooltipInstance = null) {
   // Check if this is the enhanced tooltip with content/status elements
   const isEnhancedTooltip = tooltip.querySelector('#chord-tooltip-content') !== null;
 
@@ -68,6 +117,17 @@ function renderChordDiagram(chordName, tooltip) {
       
       // Try to build the chord structure using VexChords build function
       try {
+          // If we have specific positions from database, use the current one
+          if (tooltipInstance && tooltipInstance.currentChordShapes.length > 0) {
+              const currentPosition = tooltipInstance.currentChordShapes[shapeIndex];
+              const vexChordData = window.chordDatabase.convertPositionToVexFormat(currentPosition);
+              if (vexChordData) {
+                  vexChordBox.draw(vexChordData);
+                  return; // Success, exit early
+              }
+          }
+
+          // Fallback: Try VexChords algorithmic generation
           const chordStructure = window.VexChords.build(root, 'E', vexSuffix + ' E');
           vexChordBox.draw(chordStructure);
       } catch (buildError) {
@@ -102,6 +162,17 @@ function renderChordDiagram(chordName, tooltip) {
       
       // Try to build the chord structure using VexChords build function
       try {
+          // If we have specific positions from database, use the current one
+          if (tooltipInstance && tooltipInstance.currentChordShapes.length > 0) {
+              const currentPosition = tooltipInstance.currentChordShapes[shapeIndex];
+              const vexChordData = window.chordDatabase.convertPositionToVexFormat(currentPosition);
+              if (vexChordData) {
+                  vexChordBox.draw(vexChordData);
+                  return; // Success, exit early
+              }
+          }
+
+          // Fallback: Try VexChords algorithmic generation
           const chordStructure = window.VexChords.build(root, 'E', vexSuffix + ' E');
           vexChordBox.draw(chordStructure);
       } catch (buildError) {
@@ -134,6 +205,31 @@ function renderChordDiagram(chordName, tooltip) {
       tooltip.style.textAlign = 'center';
       tooltip.style.lineHeight = '150px';
     }
+  }
+  
+  // Update navigation arrows visibility
+  if (tooltipInstance && tooltipInstance.currentChordShapes.length > 1) {
+    const prevArrow = tooltip.querySelector('.chord-nav-arrow.prev');
+    const nextArrow = tooltip.querySelector('.chord-nav-arrow.next');
+    
+    if (prevArrow && nextArrow) {
+      prevArrow.style.display = 'block';
+      nextArrow.style.display = 'block';
+      
+      // Update arrow states based on current position
+      prevArrow.disabled = shapeIndex <= 0;
+      nextArrow.disabled = shapeIndex >= tooltipInstance.currentChordShapes.length - 1;
+      
+      // Update arrow opacity to show enabled/disabled state
+      prevArrow.style.opacity = prevArrow.disabled ? '0.3' : '1';
+      nextArrow.style.opacity = nextArrow.disabled ? '0.3' : '1';
+    }
+  } else {
+    // Hide arrows if only one position
+    const prevArrow = tooltip.querySelector('.chord-nav-arrow.prev');
+    const nextArrow = tooltip.querySelector('.chord-nav-arrow.next');
+    if (prevArrow) prevArrow.style.display = 'none';
+    if (nextArrow) nextArrow.style.display = 'none';
   }
 }
 
@@ -181,7 +277,7 @@ function getManualChordDefinition(root, suffix) {
 // Parse chord name into root and suffix
 function parseChordName(chordName) {
   // Handle slash chords first (e.g., "Am/G", "D7/F#")
-  const slashMatch = chordName.match(/^([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d)?[#b\d\/]*)\/([A-G][#b]?)$/);
+   const slashMatch = chordName.match(/^([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d)?[#b\d/]*)\/([A-G][#b]?)$/);
 
   if (slashMatch) {
     // For slash chords, use the part before the slash as the main chord
@@ -221,6 +317,8 @@ function parseChordName(chordName) {
 const ChordTooltip = {
   tooltip: null,
   pendingRequests: [],
+  currentShapeIndex: 0,
+  currentChordShapes: [],
 
   init: function () {
     this.tooltip = createTooltip();
@@ -244,18 +342,35 @@ const ChordTooltip = {
     }
 
     try {
-      renderChordDiagram(chordName, this.tooltip);
+      // Fetch chord shapes for this chord
+      this.fetchChordShapes(chordName, () => {
+        renderChordDiagram(chordName, this.tooltip, this.currentShapeIndex, this);
 
-      // Position tooltip near the chord
-      const rect = chordElement.getBoundingClientRect();
-      this.tooltip.style.left = `${rect.left + window.scrollX}px`;
-      this.tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
-      this.tooltip.style.display = 'block';
+        // Position tooltip near the chord
+        const rect = chordElement.getBoundingClientRect();
+        this.tooltip.style.left = `${rect.left + window.scrollX}px`;
+        this.tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+        this.tooltip.style.display = 'block';
 
-      // Add accessibility attributes
-      chordElement.setAttribute('aria-describedby', 'chord-tooltip');
+        // Add accessibility attributes
+        chordElement.setAttribute('aria-describedby', 'chord-tooltip');
+      });
     } catch (error) {
       console.error('Error rendering chord diagram:', error);
+      
+      // Fallback to simple rendering if VexChords fails
+      if (this.tooltip) {
+        this.tooltip.innerHTML = chordName + ' chord';
+        this.tooltip.style.textAlign = 'center';
+        this.tooltip.style.lineHeight = '150px';
+        this.tooltip.style.display = 'block';
+        
+        const rect = chordElement.getBoundingClientRect();
+        this.tooltip.style.left = `${rect.left + window.scrollX}px`;
+        this.tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+        
+        chordElement.setAttribute('aria-describedby', 'chord-tooltip');
+      }
     }
   },
 
@@ -272,6 +387,32 @@ const ChordTooltip = {
       // If not initialized yet, queue the request
       this.pendingRequests.push({ action: 'hide' });
     }
+  },
+
+  // Fetch chord shapes from client-side database
+  fetchChordShapes: function (chordName, callback) {
+    // Reset shape index
+    this.currentShapeIndex = 0;
+    
+    console.log('Looking up shapes for chord:', chordName);
+    
+    try {
+      // Use client-side database
+      const positions = window.chordDatabase.findChordPositions(chordName);
+
+      if (positions.length > 0) {
+        this.currentChordShapes = positions;
+        console.log('Found', positions.length, 'shapes for', chordName);
+      } else {
+        this.currentChordShapes = [];
+        console.log('No shapes found for', chordName);
+      }
+    } catch (error) {
+      console.error('Error getting chord shapes:', error);
+      this.currentChordShapes = [];
+    }
+    
+    callback();
   },
 
   processPendingRequests: function () {
@@ -299,31 +440,33 @@ function checkVexChordsAndInit() {
       const originalShow = window.chordTooltip.show;
       const originalHide = window.chordTooltip.hide;
 
-      // Override show method to use VexChords when possible
-      window.chordTooltip.show = function (chordName, chordElement) {
-        try {
-          // Try to render with VexChords
-          renderChordDiagram(chordName, this.tooltip);
+       // Override show method to use VexChords when possible
+       window.chordTooltip.show = function (chordName, chordElement) {
+         try {
+           // Fetch chord shapes for this chord using the original ChordTooltip's method
+           ChordTooltip.fetchChordShapes.call(this, chordName, () => {
+             renderChordDiagram(chordName, this.tooltip, this.currentShapeIndex, this);
 
-          // Position tooltip near the chord
-          const rect = chordElement.getBoundingClientRect();
-          this.tooltip.style.left = `${rect.left + window.scrollX}px`;
-          this.tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
-          this.tooltip.style.display = 'block';
+             // Position tooltip near the chord
+             const rect = chordElement.getBoundingClientRect();
+             this.tooltip.style.left = `${rect.left + window.scrollX}px`;
+             this.tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+             this.tooltip.style.display = 'block';
 
-          // Add accessibility attributes
-          chordElement.setAttribute('aria-describedby', 'chord-tooltip');
+             // Add accessibility attributes
+             chordElement.setAttribute('aria-describedby', 'chord-tooltip');
 
-          // Update status if method exists
-          if (this.upgradeToVexChords) {
-            this.upgradeToVexChords();
-          }
-        } catch (error) {
-          console.error('Error rendering with VexChords, falling back:', error);
-          // Fall back to original implementation
-          originalShow.call(this, chordName, chordElement);
-        }
-      };
+             // Update status if method exists
+             if (this.upgradeToVexChords) {
+               this.upgradeToVexChords();
+             }
+           });
+         } catch (error) {
+           console.error('Error rendering with VexChords, falling back:', error);
+           // Fall back to original implementation
+           originalShow.call(this, chordName, chordElement);
+         }
+       };
 
       // Keep the original hide method
       window.chordTooltip.hide = originalHide;

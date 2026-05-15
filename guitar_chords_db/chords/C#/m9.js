@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   key: 'C#',
   suffix: 'm9',
   positions: [

@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   key: 'F#',
   suffix: 'add9',
   positions: [

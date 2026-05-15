@@ -1,10 +1,10 @@
-import main from './main';
-import tunings from './tunings';
-import keys from './keys';
-import suffixes from './suffixes';
-import chords from './chords';
+const main = require('./main');
+const tunings = require('./tunings');
+const keys = require('./keys');
+const suffixes = require('./suffixes');
+const chords = require('./chords');
 
-export default {
+module.exports = {
   main,
   tunings,
   keys,
