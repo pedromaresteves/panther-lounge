@@ -69,7 +69,10 @@ function parseChordName(chordName) {
   const rootMatch = chordName.match(/^[A-G][#b]?/);
   const root = rootMatch ? rootMatch[0] : 'C';
   let suffix = chordName.slice(root.length);
-  suffix = suffix.replace('maj', 'major').replace('min', 'minor') || 'major';
+  if (suffix === 'maj') suffix = 'major';
+  else if (suffix === 'min') suffix = 'minor';
+  else if (suffix === 'm') suffix = 'minor';
+  suffix = suffix || 'major';
   return [root, suffix];
 }
 

@@ -33,10 +33,10 @@ function parseChordName(chordName) {
     const root = rootMatch ? rootMatch[0] : 'C';
     let suffix = chordName.slice(root.length);
     
-    // Normalize suffix
-    suffix = suffix.replace('maj', 'major');
-    suffix = suffix.replace('min', 'minor');
-    suffix = suffix.replace('m', 'minor'); // Handle short form 'm'
+    // Normalize suffix (only standalone, not compound like maj7)
+    if (suffix === 'maj') suffix = 'major';
+    else if (suffix === 'min') suffix = 'minor';
+    else if (suffix === 'm') suffix = 'minor';
     suffix = suffix || 'major';
    
     return [root, suffix];
@@ -112,9 +112,10 @@ function convertPositionToSvguitarFormat(position, title) {
     const reversedFingers = fingers.slice().reverse();
 
     // Calculate position: minimum non-x, non-0 fret
+    // Note: database uses hex digits a=10, b=11, c=12 for higher frets
     const actualFrets = reversedFrets
         .filter(f => f !== 'x' && f !== '0')
-        .map(f => parseInt(f, 10));
+        .map(f => parseInt(f, 16));
     const minFret = actualFrets.length > 0 ? Math.min(...actualFrets) : 1;
 
     // If position > 1, all frets are relative to position
@@ -130,7 +131,7 @@ function convertPositionToSvguitarFormat(position, title) {
         if (fret === 'x') {
             return [stringNum, 'x'];
         }
-        const actualFret = parseInt(fret, 10);
+        const actualFret = parseInt(fret, 16);
         let diagramFret;
         if (actualFret === 0) {
             diagramFret = 0;

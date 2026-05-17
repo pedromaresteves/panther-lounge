@@ -3,6 +3,7 @@
 
   var ChordTooltip = {
     tooltip: null,
+    titleElement: null,
     contentElement: null,
     counterElement: null,
     prevArrow: null,
@@ -24,10 +25,20 @@
       tooltip.style.border = '1px solid #ddd';
       tooltip.style.borderRadius = '6px';
       tooltip.style.boxShadow = '0 3px 12px rgba(0,0,0,0.12)';
-      tooltip.style.padding = '8px';
+      tooltip.style.padding = '4px';
       tooltip.style.zIndex = '1000';
       tooltip.style.display = 'none';
-      tooltip.style.minWidth = '100px';
+      tooltip.style.minWidth = '140px';
+
+      var titleEl = document.createElement('div');
+      titleEl.id = 'chord-tooltip-title';
+      titleEl.style.fontWeight = 'bold';
+      titleEl.style.fontSize = '14px';
+      titleEl.style.textAlign = 'center';
+      titleEl.style.marginBottom = '2px';
+      titleEl.style.color = '#444';
+      titleEl.style.display = 'none';
+      tooltip.appendChild(titleEl);
 
       var wrapper = document.createElement('div');
       wrapper.style.position = 'relative';
@@ -52,40 +63,29 @@
 
       var prev = document.createElement('button');
       prev.className = 'chord-nav-arrow prev';
-      prev.textContent = '\u2190';
+      prev.textContent = '\u276E';
       prev.style.position = 'absolute';
-      prev.style.left = '0';
+      prev.style.left = '2px';
       prev.style.top = '50%';
       prev.style.transform = 'translateY(-50%)';
       prev.style.display = 'none';
-      prev.style.border = 'none';
-      prev.style.background = 'rgba(0,0,0,0.04)';
-      prev.style.borderRadius = '3px';
-      prev.style.cursor = 'pointer';
-      prev.style.fontSize = '14px';
-      prev.style.padding = '2px 6px';
       wrapper.appendChild(prev);
 
       var next = document.createElement('button');
       next.className = 'chord-nav-arrow next';
-      next.textContent = '\u2192';
+      next.textContent = '\u276F';
       next.style.position = 'absolute';
-      next.style.right = '0';
+      next.style.right = '2px';
       next.style.top = '50%';
       next.style.transform = 'translateY(-50%)';
       next.style.display = 'none';
-      next.style.border = 'none';
-      next.style.background = 'rgba(0,0,0,0.04)';
-      next.style.borderRadius = '3px';
-      next.style.cursor = 'pointer';
-      next.style.fontSize = '14px';
-      next.style.padding = '2px 6px';
       wrapper.appendChild(next);
 
       tooltip.appendChild(wrapper);
       document.body.appendChild(tooltip);
 
       this.tooltip = tooltip;
+      this.titleElement = titleEl;
       this.contentElement = content;
       this.counterElement = counter;
       this.prevArrow = prev;
@@ -192,6 +192,7 @@
 
     render: function (chordName) {
       var self = this;
+      self.titleElement.style.display = 'none';
       self.contentElement.innerHTML = '';
 
       var position = self.currentChordShapes[self.currentShapeIndex];
@@ -202,19 +203,24 @@
         try {
           var chordData = window.chordDatabase.convertPositionToSvguitarFormat(position, chordName);
           if (chordData) {
+            self.titleElement.textContent = chordName;
+            self.titleElement.style.display = 'block';
+
             var container = document.createElement('div');
             container.style.display = 'flex';
             container.style.alignItems = 'center';
             container.style.justifyContent = 'center';
-            container.style.width = '120px';
-            container.style.height = '140px';
+            container.style.width = '180px';
+            container.style.height = '180px';
             self.contentElement.appendChild(container);
+
+            chordData.title = '';
 
             var chart = new window.SVGuitarChord(container);
             chart
               .configure({
-                width: 110,
-                height: 130,
+                width: 150,
+                height: 160,
                 strings: 6,
                 frets: 5,
                 tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
@@ -222,14 +228,14 @@
                 backgroundColor: 'none',
                 strokeWidth: 1.5,
                 nutWidth: 5,
-                fingerSize: 0.55,
+                fingerSize: 0.65,
                 fingerColor: '#333',
                 fingerTextColor: '#fff',
-                fingerTextSize: 10,
+                fingerTextSize: 12,
                 fontFamily: 'Arial, sans-serif',
-                fretLabelFontSize: 10,
-                tuningsFontSize: 9,
-                titleFontSize: 14,
+                fretLabelFontSize: 25,
+                tuningsFontSize: 11,
+                titleFontSize: 0,
                 titleBottomMargin: 0,
                 showFretMarkers: false,
                 showTuning: true
@@ -299,10 +305,11 @@
     var rootMatch = chordName.match(/^[A-G][#b]?/);
     if (!rootMatch) return [];
     var root = rootMatch[0].replace('#', 'sharp');
-    var suffix = chordName.slice(rootMatch[0].length)
-      .replace('maj', 'major')
-      .replace('min', 'minor')
-      .replace('m', 'minor') || 'major';
+    var suffix = chordName.slice(rootMatch[0].length);
+    if (suffix === 'maj') suffix = 'major';
+    else if (suffix === 'min') suffix = 'minor';
+    else if (suffix === 'm') suffix = 'minor';
+    suffix = suffix || 'major';
     var rootObj = window.chordDatabaseBrowser.chords[root];
     if (!rootObj) return [];
     var match = rootObj.filter(function (c) { return c && c.suffix === suffix; });
