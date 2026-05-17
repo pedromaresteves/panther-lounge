@@ -9,7 +9,7 @@ export default function deleteSong() {
       e.preventDefault();
       let currentPage = 1;
       const eventTarget = e.target;
-      const itemToRemove = document.querySelector("a[href='" + eventTarget.attributes.href.value + "'").parentElement;
+      const itemToRemove = document.querySelector("a[href='" + eventTarget.attributes.href.value + "']").parentElement;
       const songToDeleteUrl = eventTarget.href;
       let httpRequest;
     
