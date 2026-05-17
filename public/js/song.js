@@ -132,5 +132,32 @@ export default function songPong() {
       }
       window.chordTooltip.hide();
     });
+
+    chordElement.addEventListener('click', (e) => {
+      if (window.matchMedia('(pointer: coarse)').matches) {
+        e.preventDefault();
+        if (showTimeout) {
+          clearTimeout(showTimeout);
+        }
+        if (window.hideTooltipTimeout) {
+          clearTimeout(window.hideTooltipTimeout);
+        }
+        const chordName = chordElement.textContent.trim();
+        if (window.chordTooltip) {
+          window.chordTooltip.show(chordName, chordElement);
+        }
+      }
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (window.matchMedia('(pointer: coarse)').matches && window.chordTooltip) {
+      const tooltip = document.getElementById('chord-tooltip');
+      if (tooltip && tooltip.style.display !== 'none') {
+        if (!e.target.closest('.chord') && !e.target.closest('#chord-tooltip')) {
+          window.chordTooltip.hide();
+        }
+      }
+    }
   });
 }
