@@ -7,6 +7,7 @@
         "start": "node app.js",
         "startNodemon": "nodemon app.js",
         "webpackBuild": "webpack",
+        "convertDb": "node scripts/convertDatabaseForBrowser.js",
         "wdio": "wdio run ./wdio.conf.js",
         "test": "mocha test/unit/**/*.js"
     },

@@ -19,20 +19,12 @@
        })();
      </script>
       <script src="https://kit.fontawesome.com/b98331d97a.js" defer></script>
+    <!-- Theme toggle (dark/light mode) -->
+    <script src="/js/theme.js" defer></script>
     <!-- Chord tooltip (uses SVGuitar from webpack bundle) -->
     <script src="/js/chordTooltip.js" defer></script>
     <!-- Main application module (includes SVGuitar from npm) -->
     <script type="module" src="/js/main.bundle.js" defer></script>
-    <!-- Debug script to verify everything loaded -->
-    <script>
-      console.log('Page scripts loaded');
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM fully loaded, checking components:', {
-          chordTooltipAvailable: typeof window.chordTooltip !== 'undefined',
-          svguitarAvailable: typeof window.SVGuitarChord !== 'undefined'
-        });
-      });
-    </script>
   </head>
 
   <body>

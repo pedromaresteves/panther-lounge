@@ -1,12 +1,9 @@
 
 export default function songPong() {
-  console.log('songPong function called');
   const lyricsContainer = document.querySelector('#lyrics-container');
   if (!lyricsContainer) {
-    console.log('No lyrics container found');
     return;
   }
-  console.log('Found lyrics container, setting up chord tooltips');
 
   const lyricsText = lyricsContainer.dataset.lyrics;
   const utils = {
@@ -90,13 +87,19 @@ export default function songPong() {
       // Add debounce for tooltip show to prevent flickering
       let showTimeout = null;
       
-      chordElement.addEventListener('mouseenter', () => {
-        // Clear any existing timeout
+      chordElement.addEventListener('mouseenter', (event) => {
+        const tooltip = document.getElementById('chord-tooltip');
+        if (tooltip && tooltip.style.display !== 'none') {
+          const elAtMouse = document.elementFromPoint(event.clientX, event.clientY);
+          if (elAtMouse && tooltip.contains(elAtMouse)) {
+            return;
+          }
+        }
+
         if (showTimeout) {
           clearTimeout(showTimeout);
         }
-        
-        // Set a timeout to show the tooltip after 300ms
+
         showTimeout = setTimeout(() => {
           const chordName = chordElement.textContent.trim();
           if (window.chordTooltip) {

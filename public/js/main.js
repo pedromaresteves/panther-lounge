@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ChordTooltip is initialized in tooltip.js
-    console.log('Main module loaded');
 });
 
 const numOfSlashes = window.location.pathname.match(/\//g).length;
@@ -43,7 +42,6 @@ if (window.location.pathname.indexOf("/guitar-chords") != -1
     && window.location.pathname.indexOf("/add-song") == -1
     && window.location.pathname.indexOf("/edit-song") == -1
     && numOfSlashes == 3) {
-    console.log('Loading songPong for path:', window.location.pathname);
     songPong();
 }
 

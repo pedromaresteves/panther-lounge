@@ -1,7 +1,8 @@
 const path = require('path');
 
 module.exports = {
-    mode: 'development', // Better for debugging
+    mode: 'development',
+    devtool: 'source-map',
     entry: {
         main: './public/js/main.js'
     },
