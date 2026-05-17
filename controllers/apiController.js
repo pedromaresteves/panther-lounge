@@ -15,7 +15,22 @@ const calculateNumOfPages = (totalResults) =>
 const createSongUrl = (artistSearch, titleSearch) =>
     `/guitar-chords/${utils.encodeChars(artistSearch)}/${utils.encodeChars(titleSearch)}`;
 
+const addUrlPathsToResults = (results, artistField, titleField) => {
+    return results.map(item => ({
+        ...item,
+        artistPath: utils.encodeChars(item[artistField]),
+        songPath: utils.encodeChars(item[titleField])
+    }));
+};
+
 module.exports = {
+    // Exported pure helpers for unit testing
+    normalizeString,
+    getResultsToSkip,
+    calculateNumOfPages,
+    createSongUrl,
+    addUrlPathsToResults,
+
     profileSongs: async (req, res) => {
         const resultsToSkip = getResultsToSkip(req.query.page);
         const userId = req.user._id.toString();
@@ -68,10 +83,11 @@ module.exports = {
             title: item._id.title,
             songPath: utils.encodeChars(item._id.songPath)
         }));
+
         const data = {
             name: 'paginationSongsByArtist',
             visibleResults,
-            artistPath: utils.encodeChars(artist),
+            artistPath: utils.encodeChars(results.length > 0 ? results[0]._id.artistSearch : normalizeString(artist)),
             currentPage: req.query.page,
             numOfPages: calculateNumOfPages(totalResults)
         };
@@ -85,11 +101,12 @@ module.exports = {
                     errorMsg: 'You gotta be logged if you wanna add songs.'
                 });
             }
-            const { artist, title, lyricsAndChords } = req.body;
+            const { artist, title, lyrics } = req.body;
+
             const newSong = {
                 artist: utils.capitalizeName(artist),
                 title,
-                lyricsChords: lyricsAndChords,
+                lyrics,
                 artistSearch: normalizeString(artist),
                 titleSearch: normalizeString(title),
                 songCreator: req.user._id.toString()
@@ -116,7 +133,7 @@ module.exports = {
     },
     editSong: async (req, res) => {
         try {
-            const { artist, title, lyricsAndChords } = req.body;
+            const { artist, title, lyrics } = req.body;
             const { artist: paramArtist, title: paramTitle } = req.params;
 
             const existingSong = await queries.getSongByArtistAndTitle(
@@ -141,7 +158,7 @@ module.exports = {
             const newSong = {
                 artist,
                 title,
-                lyricsChords: lyricsAndChords,
+                lyrics,
                 artistSearch: normalizeString(artist),
                 titleSearch: normalizeString(title)
             };
@@ -160,7 +177,6 @@ module.exports = {
     deleteSong: async (req, res) => {
         try {
             const { artist, title } = req.params;
-
             const existingSong = await queries.getSongByArtistAndTitle(
                 normalizeString(artist),
                 normalizeString(title)
@@ -180,9 +196,7 @@ module.exports = {
                 });
             }
 
-            const artistRegex = utils.createCaseInsensitiveRegex(artist);
-            const titleRegex = utils.createCaseInsensitiveRegex(title);
-            await queries.deleteSong(artistRegex, titleRegex);
+            await queries.deleteSong(normalizeString(artist), normalizeString(title));
             return res.send({
                 deletedMsg: "The song was deleted. Bye bye! :("
             });
@@ -193,12 +207,4 @@ module.exports = {
             });
         }
     }
-};
-
-const addUrlPathsToResults = (results, artistField, titleField) => {
-    return results.map(item => ({
-        ...item,
-        artistPath: utils.encodeChars(item[artistField]),
-        songPath: utils.encodeChars(item[titleField])
-    }));
 };

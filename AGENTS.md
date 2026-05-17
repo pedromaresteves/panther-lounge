@@ -18,6 +18,7 @@ When asking for help, reference these files in `.agents/`:
 3. **[`.agents/instructions/database.instructions.md`**](.agents/instructions/database.instructions.md) — MongoDB queries, schemas
 4. **[`.agents/instructions/controllers.instructions.md`**](.agents/instructions/controllers.instructions.md) — Request/response patterns
 5. **[`.agents/copilot-instructions.md`**](.agents/copilot-instructions.md) — Coding conventions, testing approach
+6. **[`.agents/current_user.md`**](.agents/current_user.md) — Important considerations about the current user
 
 ## 📋 Common Task Prompts
 Use these patterns when requesting AI assistance:

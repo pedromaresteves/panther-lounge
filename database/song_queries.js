@@ -103,7 +103,7 @@ const getSongsByArtist = async (artist, resultsToSkip = 0) => {
     const normalizedArtist = normalizeForSearch(artist);
     const pipeline = [
         { $match: { artistSearch: normalizedArtist } },
-        { $group: { _id: { name: "$artist", title: "$title", songPath: "$titleSearch" } } },
+        { $group: { _id: { name: "$artist", title: "$title", songPath: "$titleSearch", artistSearch: "$artistSearch" } } },
         { $sort: { '_id.name': 1 } },
         { $skip: resultsToSkip },
         { $limit: 10 }
@@ -156,11 +156,13 @@ const editSong = async (artist, title, newSongData) => {
     try {
         const result = await db.collection("songs").updateOne(
             { artistSearch: normalizedArtist, titleSearch: normalizedTitle },
-            { $set: { 
-                lyricsChords: newSongData.lyricsChords, 
-                title: newSongData.title, 
-                titleSearch: normalizeForSearch(newSongData.title) 
-            }}
+            {
+                $set: {
+                    lyrics: newSongData.lyrics,
+                    title: newSongData.title,
+                    titleSearch: normalizeForSearch(newSongData.title)
+                }
+            }
         );
         return result;
     } catch (error) {
@@ -208,9 +210,9 @@ const deleteSongsBatch = async (songIds) => {
             try { return new ObjectId(id); }
             catch { return null; }
         }).filter(id => id !== null);
-        
+
         if (objectIds.length === 0) throw new Error('No valid song IDs provided');
-        
+
         const result = await db.collection("songs").deleteMany({ _id: { $in: objectIds } });
         return result;
     } catch (error) {

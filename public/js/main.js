@@ -2,14 +2,22 @@ import addOrEditSong from "./addOrEditSong.js";
 import artistPage from "./artistPage.js";
 import guitarChords from "./guitarChords.js";
 import profile from "./profile.js";
-import songPong from "./song"
+import songPong from "./song";
 
+// Import SVGuitar exposer first
+import './exposeSvguitar';
+// Import chord database module
+import './chordDatabase.js';
+// Make chordDatabase available globally for tooltip.js
+window.chordDatabase = require('./chordDatabase.js');
 // Initialize Bootstrap 5 tooltips
 document.addEventListener('DOMContentLoaded', function () {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
+
+    // ChordTooltip is initialized in tooltip.js
 });
 
 const numOfSlashes = window.location.pathname.match(/\//g).length;

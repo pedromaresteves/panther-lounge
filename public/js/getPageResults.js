@@ -18,12 +18,14 @@ export default function getPageResults() {
             if (response.name === 'paginationArtists') {
                 newResultsHtml = genGuitarChordsIndexResults(response);
             }
-            if (response.name === 'paginationSongsByArtist') {
-                const artistTitleElement = document.querySelector('#artist-title');
-                const breadcrumbArtist = document.querySelector('#breadcrumb-artist');
-                breadcrumbArtist.innerHTML = response.visibleResults[0].artist;
-                artistTitleElement.innerHTML = `${response.visibleResults[0].artist} Songs`;
-                newResultsHtml = genArtistPageResults(response);
+             if (response.name === 'paginationSongsByArtist') {
+                 const artistTitleElement = document.querySelector('#artist-title');
+                 const breadcrumbArtist = document.querySelector('#breadcrumb-artist');
+                 if (response.visibleResults && response.visibleResults.length > 0) {
+                     breadcrumbArtist.innerHTML = `<a href="/guitar-chords/${response.artistPath}">${response.visibleResults[0].artist}</a>`;
+                     artistTitleElement.innerHTML = `${response.visibleResults[0].artist} Songs`;
+                 }
+                 newResultsHtml = genArtistPageResults(response);
             }
             if (response.name === 'profileSongs') {
                 const profileStats = document.querySelector('#profile-stats');
@@ -70,7 +72,7 @@ function genGuitarChordsIndexResults(res) {
 function genArtistPageResults(res) {
     let html = '';
     res.visibleResults.forEach(function (item) {
-        html += `<li class="list-group-item artist-item text-center"><a class="col-12 text-center text-truncate" href="${res.artistPath}/${item.songPath}">${item.title}</a></li>`
+        html += `<li class="list-group-item artist-item text-center"><a class="col-12 text-center text-truncate" href="/guitar-chords/${res.artistPath}/${item.songPath}">${item.title}</a></li>`
     });
     return html;
 }

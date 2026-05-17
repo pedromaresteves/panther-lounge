@@ -1,8 +1,8 @@
 <div id="form-container" class="container mt-3">
-  <% if(songData.lyricsChords){ %>
+  <% if(songData.lyrics){ %>
     <h3>C'mon, edit the song</h3>
   <% } %>
-  <% if(!songData.lyricsChords){ %>
+  <% if(!songData.lyrics){ %>
     <h3>Add a brand new song</h3>
   <% } %>
   <form class="mt-3" method="post" action="/guitar-chords/add-song" novalidate>
@@ -11,11 +11,12 @@
       <input class="form-control" name="artist" maxlength="450" value="<%= songData.artist %>">
       <label class="mt-3" for="title">Song Title</label>
       <input class="form-control" name="title" maxlength="450" value="<%= songData.title %>">
-      <label class="mt-3" for="lyrics">Write the Lyrics and Chords</label>
-      <input placeholder="Write the song" name="lyrics" value="<%= songData.lyricsChords %>" hidden>
-      <div id="toolbar"></div>
-      <div id="editor"></div>
-      <button id="submitButton" class="btn btn-primary mt-3" type="submit" disabled>Save Song</button>
+    <label class="mt-3" for="lyrics">Write the Lyrics and Chords</label>
+    <p class="form-text text-muted">Use [Chord] syntax, e.g., [Em]Lyrics here</p>
+    <textarea class="form-control" id="lyrics" name="lyrics" rows="15" maxlength="6000" placeholder="[Em]Verse 1\n[Am]Lyrics here..." required><%- songData.lyrics %></textarea>
+    <div id="char-count" class="form-text text-muted text-end">0/6000 characters</div>
+    <div id="syntax-error" class="alert alert-danger mt-2" style="display: none;"></div>
+    <button id="submitButton" class="btn btn-primary mt-3" type="submit" disabled>Save Song</button>
     </div>  
   </form>
 </div>
