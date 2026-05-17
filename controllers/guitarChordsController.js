@@ -21,13 +21,8 @@ module.exports = {
       }
       song.artistURL = utils.encodeChars(utils.normalizeForUrl(song.artist));
 
-      // Extract text from Quill Delta format if needed
       if (song.lyrics && song.lyrics.ops) {
         song.lyrics = song.lyrics.ops.map(op => op.insert).join('');
-      } else if (song.lyricsChords && song.lyricsChords.ops) {
-        song.lyrics = song.lyricsChords.ops.map(op => op.insert).join('');
-      } else {
-        song.lyrics = song.lyrics || song.lyricsChords || "";
       }
 
       return res.render("songs.ejs", { userData: req.user, songData: song });

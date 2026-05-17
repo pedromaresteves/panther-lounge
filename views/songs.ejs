@@ -7,7 +7,7 @@
       <h2 class="text-truncate"><%= songData.title %></h2>
       <p class="text-truncate">By: <a href="/guitar-chords/<%= songData.artistURL %>"><%= songData.artist %></a></p>
       <p><small>Added by: <%= songData.songCreator %></small></p>
-      <div id="lyrics-container" class="mt-5 chord-sheet" data-lyrics="<%- songData.lyrics || songData.lyricsChords %>"></div>
+      <div id="lyrics-container" class="mt-5 chord-sheet" data-lyrics="<%- songData.lyrics %>"></div>
     </div>      
   </div>
 </div>
