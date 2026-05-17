@@ -58,10 +58,11 @@ function parseChordName(chordName) {
   
   if (slashMatch) {
     const mainChord = slashMatch[1];
+    const bassNote = slashMatch[2];
     const rootMatch = mainChord.match(/^[A-G][#b]?/);
     const root = rootMatch ? rootMatch[0] : 'C';
-    let suffix = mainChord.slice(root.length).replace('/' + slashMatch[2], '');
-    suffix = suffix || 'major';
+    const quality = mainChord.slice(root.length);
+    const suffix = quality ? quality + '/' + bassNote : '/' + bassNote;
     return [root, suffix];
   }
   

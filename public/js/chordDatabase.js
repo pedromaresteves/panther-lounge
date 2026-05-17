@@ -21,10 +21,11 @@ function parseChordName(chordName) {
    
     if (slashMatch) {
         const mainChord = slashMatch[1];
+        const bassNote = slashMatch[2];
         const rootMatch = mainChord.match(/^[A-G][#b]?/);
         const root = rootMatch ? rootMatch[0] : 'C';
-        let suffix = mainChord.slice(root.length).replace('/' + slashMatch[2], '');
-        suffix = suffix || 'major';
+        const quality = mainChord.slice(root.length);
+        const suffix = quality ? quality + '/' + bassNote : '/' + bassNote;
         return [root, suffix];
     }
    
@@ -77,6 +78,13 @@ function findChordPositions(chordName) {
         );
 
         if (matchingChords.length === 0) {
+            // For slash chords not found in DB, fall back to the base chord
+            const slashIdx = chordName.indexOf('/');
+            if (slashIdx !== -1) {
+                const baseName = chordName.slice(0, slashIdx);
+                console.warn(`No positions for ${chordName}, falling back to ${baseName}`);
+                return findChordPositions(baseName);
+            }
             console.warn(`No positions found for chord: ${chordName}`);
             return [];
         }

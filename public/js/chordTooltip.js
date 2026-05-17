@@ -313,7 +313,15 @@
     var rootObj = window.chordDatabaseBrowser.chords[root];
     if (!rootObj) return [];
     var match = rootObj.filter(function (c) { return c && c.suffix === suffix; });
-    return match.length > 0 ? (match[0].positions || []) : [];
+    if (match.length > 0) {
+      return match[0].positions || [];
+    }
+    // Slash chord fallback: try the base chord
+    var slashIdx = chordName.indexOf('/');
+    if (slashIdx !== -1) {
+      return findChordPositionsFallback(chordName.slice(0, slashIdx));
+    }
+    return [];
   }
 
   function escapeHtml(text) {
