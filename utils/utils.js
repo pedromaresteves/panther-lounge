@@ -21,8 +21,12 @@ module.exports = {
     let artistCapitalized = [];
     string = string.split(" ");
     string.forEach((word) => {
-      word = word[0].toUpperCase() + word.slice(1, word.length)
-      artistCapitalized.push(word)
+      if (word.length === 0) {
+        artistCapitalized.push(word);
+      } else {
+        word = word[0].toUpperCase() + word.slice(1, word.length)
+        artistCapitalized.push(word)
+      }
     });
     return artistCapitalized.join(" ");
   },

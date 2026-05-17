@@ -15,7 +15,22 @@ const calculateNumOfPages = (totalResults) =>
 const createSongUrl = (artistSearch, titleSearch) =>
     `/guitar-chords/${utils.encodeChars(artistSearch)}/${utils.encodeChars(titleSearch)}`;
 
+const addUrlPathsToResults = (results, artistField, titleField) => {
+    return results.map(item => ({
+        ...item,
+        artistPath: utils.encodeChars(item[artistField]),
+        songPath: utils.encodeChars(item[titleField])
+    }));
+};
+
 module.exports = {
+    // Exported pure helpers for unit testing
+    normalizeString,
+    getResultsToSkip,
+    calculateNumOfPages,
+    createSongUrl,
+    addUrlPathsToResults,
+
     profileSongs: async (req, res) => {
         const resultsToSkip = getResultsToSkip(req.query.page);
         const userId = req.user._id.toString();
@@ -69,8 +84,6 @@ module.exports = {
             songPath: utils.encodeChars(item._id.songPath)
         }));
 
-        // Ensure artistPath is generated from the normalized artistSearch field
-        const artistPath = utils.encodeChars(results.length > 0 ? results[0]._id.artistSearch : normalizeString(artist));
         const data = {
             name: 'paginationSongsByArtist',
             visibleResults,
@@ -194,12 +207,4 @@ module.exports = {
             });
         }
     }
-};
-
-const addUrlPathsToResults = (results, artistField, titleField) => {
-    return results.map(item => ({
-        ...item,
-        artistPath: utils.encodeChars(item[artistField]),
-        songPath: utils.encodeChars(item[titleField])
-    }));
 };

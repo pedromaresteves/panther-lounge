@@ -12,7 +12,10 @@ const withErrorHandling = (fn) => async (...args) => {
     }
 };
 
-module.exports = Object.keys(queries).reduce((acc, key) => {
+const exported = Object.keys(queries).reduce((acc, key) => {
     acc[key] = withErrorHandling(queries[key]);
     return acc;
 }, {});
+exported.withErrorHandling = withErrorHandling;
+
+module.exports = exported;

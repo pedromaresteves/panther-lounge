@@ -54,7 +54,7 @@ router.get("/chords/:chordName", async (req, res) => {
 // Helper function to parse chord name
 function parseChordName(chordName) {
   // Handle slash chords (e.g., "Am/G")
-  const slashMatch = chordName.match(/^([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d)?[#b\d\/]*)\/([A-G][#b]?)$/);
+  const slashMatch = chordName.match(/^([A-G][#b]?(?:m|maj|min|dim|aug|sus|add|\d)?[#b\d/]*)\/([A-G][#b]?)$/);
   
   if (slashMatch) {
     const mainChord = slashMatch[1];
@@ -99,4 +99,7 @@ function findChordInDb(db, root, suffix) {
   return null;
 }
 
+// Export helpers for unit testing
 module.exports = router;
+module.exports.parseChordName = parseChordName;
+module.exports.findChordInDb = findChordInDb;
