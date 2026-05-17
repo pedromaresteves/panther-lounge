@@ -1,6 +1,5 @@
 // Client-side chord database module
-// Load the converted guitar_chords_db
-const guitarChordsDb = require('../../guitar_chords_db/index.js');
+let guitarChordsDb = require('../../guitar_chords_db/index.js');
 
 /**
  * Normalize root note name for database lookup
@@ -50,6 +49,17 @@ function parseChordName(chordName) {
  */
 function findChordPositions(chordName) {
     try {
+        // Lazily load database from window if not already loaded
+        if (!guitarChordsDb && typeof window !== 'undefined' && typeof window.chordDatabaseBrowser !== 'undefined') {
+            guitarChordsDb = window.chordDatabaseBrowser;
+        }
+        
+        // Check if database is loaded
+        if (!guitarChordsDb) {
+            console.warn('findChordPositions: Database not loaded yet');
+            return [];
+        }
+        
         const [root, suffix] = parseChordName(chordName);
         const normalizedRoot = normalizeRoot(root);
 
@@ -80,77 +90,76 @@ function findChordPositions(chordName) {
     }
 }
 
+
+
 /**
- * Convert guitar_chords_db position format to VexChords format
- * @param {Object} position - Position object from database
- * @returns {Object} VexChords-compatible chord object
+ * Convert guitar_chords_db position format to SVGuitar format
+ * @param {Object} position - Position object from database (frets, fingers, barres)
+ * @param {string} title - Chord name to display (e.g., 'Am', 'C')
+ * @returns {Object} SVGuitar-compatible chord object
  */
-function convertPositionToVexFormat(position) {
+function convertPositionToSvguitarFormat(position, title) {
     if (!position || !position.frets) {
         return null;
     }
 
-    // Convert fret string to array format
     const frets = position.frets.split('');
-    const fingers = position.fingers ? position.fingers.split('') : ['0','0','0','0','0','0'];
+    const fingers = position.fingers ? position.fingers.split('') : [];
 
-    // VexChords expects strings in order: 1=high E, 2=B, 3=G, 4=D, 5=A, 6=low E
-    // Our database stores strings as: low E, A, D, G, B, high E
-    // So we need to reverse the order
-    return {
-        chord: [
-            [1, frets[5] === 'x' ? 'x' : parseInt(frets[5])], // String 1 = high E (last in original array)
-            [2, frets[4] === 'x' ? 'x' : parseInt(frets[4])], // String 2 = B
-            [3, frets[3] === 'x' ? 'x' : parseInt(frets[3])], // String 3 = G
-            [4, frets[2] === 'x' ? 'x' : parseInt(frets[2])], // String 4 = D
-            [5, frets[1] === 'x' ? 'x' : parseInt(frets[1])], // String 5 = A
-            [6, frets[0] === 'x' ? 'x' : parseInt(frets[0])]  // String 6 = low E (first in original array)
-        ],
-        position: calculateVexPosition(frets)
+    // SVGuitar expects strings in order: 1=high E, 2=B, 3=G, 4=D, 5=A, 6=low E
+    // Database stores strings as: low E, A, D, G, B, high E — reverse
+    const reversedFrets = frets.slice().reverse();
+    const reversedFingers = fingers.slice().reverse();
+
+    // Calculate position: minimum non-x, non-0 fret
+    const actualFrets = reversedFrets
+        .filter(f => f !== 'x' && f !== '0')
+        .map(f => parseInt(f, 10));
+    const minFret = actualFrets.length > 0 ? Math.min(...actualFrets) : 1;
+
+    // If position > 1, all frets are relative to position
+    // (diagram fret = actual fret - minFret + 1)
+    // If there are open strings mixed with fretted strings, use position 1
+    const hasOpen = reversedFrets.some(f => f === '0');
+    const hasFretted = actualFrets.length > 0;
+    const svgPosition = (hasOpen && hasFretted) ? 1 : minFret;
+
+    // Build finger array
+    const svgFingers = reversedFrets.map((fret, i) => {
+        const stringNum = i + 1;
+        if (fret === 'x') {
+            return [stringNum, 'x'];
+        }
+        const actualFret = parseInt(fret, 10);
+        let diagramFret;
+        if (actualFret === 0) {
+            diagramFret = 0;
+        } else if (svgPosition <= 1) {
+            diagramFret = actualFret;
+        } else {
+            diagramFret = actualFret - svgPosition + 1;
+        }
+        const fingerLabel = reversedFingers[i];
+        if (fingerLabel && fingerLabel !== '0') {
+            return [stringNum, diagramFret, fingerLabel];
+        }
+        return [stringNum, diagramFret];
+    });
+
+    const result = {
+        fingers: svgFingers,
+        barres: [],
+        position: svgPosition,
+        title: title || ''
     };
-}
 
-function calculateVexPosition(frets) {
-    // Calculate position as the first non-zero fret (excluding 'x' for muted strings)
-    // For VexChords, position should be 0 for open chords (where some strings are 0)
-    // Only use non-zero position for barre chords where ALL played strings start at same fret
-    
-    // Check if this is an open chord (has both 0 and non-zero frets)
-    let hasOpenStrings = false;
-    let hasFrettedStrings = false;
-    
-    for (let i = 0; i < frets.length; i++) {
-        if (frets[i] === '0') {
-            hasOpenStrings = true;
-        } else if (frets[i] !== 'x' && frets[i] !== '0') {
-            hasFrettedStrings = true;
-        }
-    }
-    
-    // If it has both open and fretted strings, it's an open chord - position 0
-    if (hasOpenStrings && hasFrettedStrings) {
-        return 0;
-    }
-    
-    // If all strings are either muted (x) or open (0), position is 0
-    if (!hasFrettedStrings) {
-        return 0;
-    }
-    
-    // For barre chords (no open strings), find the first fret position
-    for (let i = 0; i < frets.length; i++) {
-        if (frets[i] !== 'x' && frets[i] !== '0') {
-            return parseInt(frets[i]);
-        }
-    }
-    
-    return 0; // Fallback
+    return result;
 }
 
 // Export for use in tooltip.js
 module.exports = {
     findChordPositions,
     parseChordName,
-    convertPositionToVexFormat,
+    convertPositionToSvguitarFormat,
     normalizeRoot
 };

@@ -23,7 +23,7 @@
         "passport": "^0.5.3",
         "passport-google-oauth": "^2.0.0",
         "passport-local": "^1.0.0",
-        "vexchords": "^1.2.0"
+        "svguitar": "^2.5.1"
     },
     "devDependencies": {
         "@wdio/cli": "^9.19.2",

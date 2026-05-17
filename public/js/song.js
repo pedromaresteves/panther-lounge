@@ -87,14 +87,33 @@ export default function songPong() {
     chordElement.setAttribute('tabindex', '0');
     chordElement.setAttribute('aria-label', `Show chord diagram for ${chordElement.textContent.trim()}`);
 
-     chordElement.addEventListener('mouseenter', () => {
-       const chordName = chordElement.textContent.trim();
-       window.chordTooltip.show(chordName, chordElement);
-     });
+      // Add debounce for tooltip show to prevent flickering
+      let showTimeout = null;
+      
+      chordElement.addEventListener('mouseenter', () => {
+        // Clear any existing timeout
+        if (showTimeout) {
+          clearTimeout(showTimeout);
+        }
+        
+        // Set a timeout to show the tooltip after 300ms
+        showTimeout = setTimeout(() => {
+          const chordName = chordElement.textContent.trim();
+          if (window.chordTooltip) {
+            window.chordTooltip.show(chordName, chordElement);
+          } else {
+            console.warn('chordTooltip not available for chord:', chordName);
+          }
+        }, 300);
+      });
 
-     chordElement.addEventListener('mouseleave', () => {
-       window.chordTooltip.hide();
-     });
+      // Add delayed hide for tooltip persistence
+      chordElement.addEventListener('mouseleave', () => {
+        // Set a timeout to hide the tooltip after 300ms
+        window.hideTooltipTimeout = setTimeout(() => {
+          window.chordTooltip.hide();
+        }, 300);
+      });
 
     chordElement.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -106,7 +125,11 @@ export default function songPong() {
       }
     });
 
-    chordElement.addEventListener('blur', () => {
+    chordElement.addEventListener('blur', (e) => {
+      const tooltip = document.getElementById('chord-tooltip');
+      if (tooltip && e.relatedTarget && tooltip.contains(e.relatedTarget)) {
+        return;
+      }
       window.chordTooltip.hide();
     });
   });

@@ -4,12 +4,10 @@ import guitarChords from "./guitarChords.js";
 import profile from "./profile.js";
 import songPong from "./song";
 
-// Import VexChords exposer first
-import './exposeVexChords';
+// Import SVGuitar exposer first
+import './exposeSvguitar';
 // Import chord database module
 import './chordDatabase.js';
-// Import tooltip functionality
-import "./../../components/tooltip.js";
 // Make chordDatabase available globally for tooltip.js
 window.chordDatabase = require('./chordDatabase.js');
 // Initialize Bootstrap 5 tooltips
