@@ -72,5 +72,5 @@ Run all tests with `npm run wdio`. Current tests cover:
 
 Run a single test file:
 ```
-npm run wdio -- --spec .\test\e2e\specs\createNewAccount.js
+npm run wdio -- --spec test/e2e/specs/createNewAccount.js
 ```

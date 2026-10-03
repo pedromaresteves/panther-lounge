@@ -6,19 +6,17 @@ This file provides essential guidance for working effectively with AI agents on 
 ## 🔑 Role System
 Every AI response should start with `[ROLE: Default/Developer/QA]`:
 - **Default/Code**: General implementation (feature work, bug fixes)
-- **Developer**: Full-stack focus on quality, security, architecture
-- **QA**: Testing focus, bug identification, edge cases
+- **Developer**: Full-stack focus on quality, security, architecture — use `@builder` subagent (`.opencode/agents/builder.md`)
+- **QA**: Testing focus, bug identification, edge cases — use `@qa-reviewer` subagent (`.opencode/agents/qa-reviewer.md`, read-only)
 
-To switch roles: "Switch to developer mode" etc.
+To switch roles: "Switch to developer mode" etc. Or invoke directly: `@builder ...`, `@qa-reviewer ...`.
 
 ## 🚀 Quick Start for AI
 When asking for help, reference these files in `.agents/`:
 1. **[`.agents/context.md`**](.agents/context.md) — Project overview, tech stack, known issues
 2. **[`.agents/instructions/auth.instructions.md`**](.agents/instructions/auth.instructions.md) — Auth patterns, OAuth flows, bugs #5 & #6
 3. **[`.agents/instructions/database.instructions.md`**](.agents/instructions/database.instructions.md) — MongoDB queries, schemas
-4. **[`.agents/instructions/controllers.instructions.md`**](.agents/instructions/controllers.instructions.md) — Request/response patterns
-5. **[`.agents/copilot-instructions.md`**](.agents/copilot-instructions.md) — Coding conventions, testing approach
-6. **[`.agents/current_user.md`**](.agents/current_user.md) — Important considerations about the current user
+4. **[`.agents/instructions.md`**](.agents/instructions.md) — Coding conventions, testing approach
 
 ## 📋 Common Task Prompts
 Use these patterns when requesting AI assistance:
@@ -47,12 +45,17 @@ AI must always follow these security and quality practices:
 
 ## 🏗️ Code Organization
 When adding features:
-1. Route in `/routes/`
+1. Route in `/routes/` (Express 5: optional `/{:param}`, wildcard `/*splat`, no `:param?`)
 2. Controller logic in `/controllers/`  
 3. Database queries in `/database/`
 4. Views in `/views/`
 5. Frontend JS in `/public/js/` (run `npm run webpackBuild`)
-6. Tests in `/test/e2e/`
+6. Tests in `/test/unit/` (`npm run test`, mocha) + `/test/e2e/` (`npm run wdio`, WebdriverIO)
+
+## 🛡️ Guardrails
+- Never read `.env` contents (global `read: *.env → deny`). Check existence only. Canonical vars: `DBCONNECTION`, `PORT` (5000), `sessionCookieKey`, `googleClientID/Secret/CallbackURL`.
+- Never `git commit/push`, branch, or PR unless asked in that same conversation.
+- WSL2 Ubuntu, Linux paths (`test/e2e/...`), never `/mnt/c`. If `sudo` needed, give exact command instead of running it.
 
 ## ✅ Before Asking AI
 1. Clarify: "Add feature X" vs "Fix bug Y" vs "Explain how Z works"
@@ -64,10 +67,11 @@ When adding features:
 After AI completes work:
 1. Review changes against instruction files
 2. Test locally with `npm run startNodemon`
-3. Run E2E tests with `npm run wdio`
+3. Run unit tests with `npm run test`, E2E with `npm run wdio`
 4. Report issues with specific error messages
 
 ---
-**Last Updated**: April 17, 2026
+**Last Updated**: October 3, 2026
 **Project**: Panther Lounge (Guitar Chords App)
-**Tech Stack**: Node.js, Express, EJS, MongoDB, Passport.js, WebdriverIO
+**Tech Stack**: Node.js 22, Express 5, EJS, MongoDB, Passport.js, WebdriverIO
+**Config**: instructions auto-loaded via `opencode.json` (`.agents/context.md`, `.agents/instructions/*.md`)

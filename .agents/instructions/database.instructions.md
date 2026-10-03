@@ -14,13 +14,13 @@ Panther Lounge uses MongoDB for all data persistence. Queries are centralized in
 ### Connection (`mongodb_connection.js`)
 ```javascript
 const { MongoClient } = require("mongodb");
-const MONGO_URI = process.env.MONGO_URI;
-const client = new MongoClient(MONGO_URI);
-// Connection established on server startup
+const DBCONNECTION = process.env.DBCONNECTION;
+const client = new MongoClient(DBCONNECTION);
+// Connection established lazily via run() with retry + ping to panterloungedb
 ```
 
 ### Required Environment Variable
-- `MONGO_URI` - MongoDB connection string (e.g., `mongodb://localhost:27017/panther` or Atlas URI)
+- `DBCONNECTION` - MongoDB connection string (e.g., `mongodb://localhost:27017/panther` or Atlas URI)
 
 ## Collections
 
