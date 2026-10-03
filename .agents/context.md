@@ -77,13 +77,13 @@ End-to-end tests using WebdriverIO:
 
 
 
-## Environment Variables Required
-- `MONGO_URI` - MongoDB connection string
-- `SESSION_SECRET` - Secret key for cookie encryption
-- `PORT` - Server port (default usually 3000)
-- `GOOGLE_CLIENT_ID` - From Google Cloud Console
-- `GOOGLE_CLIENT_SECRET` - From Google Cloud Console
-- `GOOGLE_CALLBACK_URL` - OAuth callback URL (typically `http://localhost:3000/auth/google/callback`)
+## Environment Variables Required (see `.env.example`, actual names in `app.js` / `mongodb_connection.js`)
+- `DBCONNECTION` - MongoDB connection string
+- `sessionCookieKey` - Secret key for cookie encryption
+- `PORT` - Server port (default 5000)
+- `googleClientID` - From Google Cloud Console
+- `googleClientSecret` - From Google Cloud Console
+- `googleCallbackURL` - OAuth callback URL (typically `http://localhost:5000/auth/google/callback`)
 
 ## Scripts
 - `npm start` - Run production server

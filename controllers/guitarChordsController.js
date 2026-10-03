@@ -32,7 +32,7 @@ module.exports = {
   },
   getAddSong: (req, res) => {
     const songData = {
-      artist: req.params.artist,
+      artist: req.params.artist ?? "",
       title: "",
       lyrics: ""
     };
