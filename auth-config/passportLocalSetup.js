@@ -21,19 +21,21 @@ passport.use(new LocalStrategy({
     const user = await queries.findUserByEmail(email);
     if (!user) { return done(null, false, { message: "User not found." }); }
     if (!user.salt) {
-      const salt = crypto.randomBytes(16).toString("hex");
-      crypto.pbkdf2(password, salt, 310000, 32, "sha256", async function (err, hashedPassword) {
-        if (err) { return done(err); }
-        await queries.linkLocalAccount(user._id, salt, hashedPassword.toString("hex"));
-        const updatedUser = await queries.findUserById(user._id);
-        return done(null, updatedUser);
-      });
-      return;
+      // Google-only account: fail closed. Setting a password from an
+      // unauthenticated request would let anyone who knows the email take
+      // over the account. Owner must log in with Google first, then add a
+      // password via POST /auth/link-local while authenticated.
+      return done(null, false, { message: "This account uses Google login. Please log in with Google." });
     }
     crypto.pbkdf2(password, user.salt, 310000, 32, "sha256", function (err, hashedPassword) {
       if (err) { return done(err); }
       const bufferedUserHashedPwd = Buffer.from(user.hashedPassword);
       const bufferedIntroducedPwd = Buffer.from(hashedPassword.toString("hex"));
+      // timingSafeEqual throws on length mismatch (corrupt/short hash) —
+      // treat as failed login, not a 500.
+      if (bufferedUserHashedPwd.length !== bufferedIntroducedPwd.length) {
+        return done(null, false, { message: "Incorrect username or password." });
+      }
       if (!crypto.timingSafeEqual(bufferedUserHashedPwd, bufferedIntroducedPwd)) {
         return done(null, false, { message: "Incorrect username or password." });
       }
