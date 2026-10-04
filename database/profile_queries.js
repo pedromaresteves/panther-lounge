@@ -97,7 +97,9 @@ const linkLocalAccount = async (id, salt, hashedPassword) => {
     if (!id) throw new Error('id is required');
     if (!salt) throw new Error('salt is required');
     if (!hashedPassword) throw new Error('hashedPassword is required');
-    const objectId = validateObjectId(id);
+    // Accept both string and ObjectId (callers may hold user._id directly)
+    const idString = typeof id === 'string' ? id : (id && typeof id.toString === 'function' ? id.toString() : null);
+    const objectId = idString && validateObjectId(idString);
     if (!objectId) throw new Error('Invalid user ID format');
     const db = await connection.run();
     try {
@@ -111,4 +113,32 @@ const linkLocalAccount = async (id, salt, hashedPassword) => {
     }
 };
 
-module.exports = { getGoogleUser, findUserById, findUserByEmail, createNewUser, updateUser, deleteUser, linkLocalAccount }
+// Dedicated Google-link helper. updateUser() intentionally strips
+// googleId/salt via forbiddenFields, so linking needs its own
+// allow-listed $set. Only call after ownership is verified
+// (same Google identity, or explicit password proof while authed).
+const linkGoogleAccount = async (id, googleId, extra) => {
+    if (!id) throw new Error('id is required');
+    if (!googleId) throw new Error('googleId is required');
+    const idString = typeof id === 'string' ? id : (id && typeof id.toString === 'function' ? id.toString() : null);
+    const objectId = idString && validateObjectId(idString);
+    if (!objectId) throw new Error('Invalid user ID format');
+    const setFields = { googleId: googleId };
+    if (extra && typeof extra === 'object') {
+        if (typeof extra.thumbnail === 'string') setFields.thumbnail = extra.thumbnail;
+        if (typeof extra.email === 'string') setFields.email = extra.email;
+        if (typeof extra.username === 'string') setFields.username = extra.username;
+    }
+    const db = await connection.run();
+    try {
+        return await db.collection("users").updateOne(
+            { _id: objectId },
+            { $set: setFields }
+        );
+    } catch (error) {
+        console.error('Error linking Google account:', error);
+        throw error;
+    }
+};
+
+module.exports = { getGoogleUser, findUserById, findUserByEmail, createNewUser, updateUser, deleteUser, linkLocalAccount, linkGoogleAccount }

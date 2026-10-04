@@ -11,6 +11,7 @@ const passport = require("passport");
 require("./auth-config/passportGoogleAuthsetup");
 require("./auth-config/passportLocalSetup");
 const cookieSession = require("cookie-session");
+const utils = require("./utils/utils");
 const { PORT, sessionCookieKey } = process.env;
 
 app.use(express.json())
@@ -46,11 +47,24 @@ app.use("/guitar-chords", guitarChordsRouter);
 //fire API router
 app.use("/api", apiRouter);
 
-// catch 404 and forward to error handler
+// catch 404 and forward to error handler (include method + path so the
+// log tells you WHAT was requested, not just that something failed)
 app.use(function (req, res, next) {
-  var err = new Error("Not Found");
+  var err = new Error(`Not Found: ${req.method} ${req.originalUrl}`);
   err.status = 404;
   next(err);
+});
+
+// helpful error handler: one-line server log + friendly user-facing page.
+// API/AJAX callers get JSON, browsers get the existing error.ejs view.
+app.use(function (err, req, res, next) {
+  const status = err.status || 500;
+  console.error(`${req.method} ${req.originalUrl} → ${status} ${err.message}`);
+  res.status(status);
+  if (req.path.startsWith("/api/")) {
+    return res.json({ error: status === 404 ? "Not Found" : "Internal Server Error", path: req.originalUrl });
+  }
+  return utils.renderError(res, req, err);
 });
 
 

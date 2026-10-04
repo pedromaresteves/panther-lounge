@@ -8,3 +8,7 @@ client_id.json
 
 # Local development
 *.env
+
+# Webpack build output (Render builds it via webpack before starting server)
+public/js/*.bundle.js
+public/js/*.bundle.js.map
