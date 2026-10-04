@@ -6,6 +6,9 @@
       <a class="btn btn-primary w-100 mb-3" href="/auth/login-local"><i class="fas fa-cat me-2"></i>Login with your PantherLounge account</a>
       <p class="text-center or">Or</p>
       <a class="btn btn-secondary w-100" href="/auth/create-account">Create a new account</a>
+      <% if (typeof linkNotice !== 'undefined' && linkNotice) { %>
+      <p class="text-center text-muted mt-3">An account with this email already exists — try logging in with your password.</p>
+      <% } %>
     </div>
   </div>
 </div>

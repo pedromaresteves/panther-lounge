@@ -47,15 +47,4 @@ router.post(
     })
 );
 
-// Add a local password to the currently logged-in Google account.
-// Guarded by session ownership inside authController.linkLocal.
-// NOTE: not yet exposed in any UX (no form calls this) — next step is an
-// "Add a password" form on profile.ejs for salt-less users. Keep the
-// login-failure message honest until that lands.
-router.post(
-    "/link-local",
-    express.json(),
-    authController.linkLocal
-);
-
 module.exports = router;

@@ -116,33 +116,4 @@ describe('profile_queries', () => {
         });
     });
 
-    describe('linkLocalAccount()', () => {
-        it('should reject when id is missing', async () => {
-            await assert.rejects(
-                () => queries.linkLocalAccount(),
-                /id is required/
-            );
-        });
-
-        it('should reject when salt is missing', async () => {
-            await assert.rejects(
-                () => queries.linkLocalAccount('507f1f77bcf86cd799439011'),
-                /salt is required/
-            );
-        });
-
-        it('should reject when hashedPassword is missing', async () => {
-            await assert.rejects(
-                () => queries.linkLocalAccount('507f1f77bcf86cd799439011', 'somesalt'),
-                /hashedPassword is required/
-            );
-        });
-
-        it('should reject when id has invalid format', async () => {
-            await assert.rejects(
-                () => queries.linkLocalAccount('invalid', 'somesalt', 'somehash'),
-                /Invalid user ID format/
-            );
-        });
-    });
 });

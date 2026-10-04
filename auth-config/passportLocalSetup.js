@@ -23,8 +23,8 @@ passport.use(new LocalStrategy({
     if (!user.salt) {
       // Google-only account: fail closed. Setting a password from an
       // unauthenticated request would let anyone who knows the email take
-      // over the account. Owner must log in with Google first, then add a
-      // password via POST /auth/link-local while authenticated.
+      // over the account. There is deliberately no password flow for these
+      // accounts — Google-only users log in with Google, period.
       return done(null, false, { message: "This account uses Google login. Please log in with Google." });
     }
     crypto.pbkdf2(password, user.salt, 310000, 32, "sha256", function (err, hashedPassword) {

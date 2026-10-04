@@ -93,30 +93,10 @@ const deleteUser = async (email) => {
     }
 };
 
-const linkLocalAccount = async (id, salt, hashedPassword) => {
-    if (!id) throw new Error('id is required');
-    if (!salt) throw new Error('salt is required');
-    if (!hashedPassword) throw new Error('hashedPassword is required');
-    // Accept both string and ObjectId (callers may hold user._id directly)
-    const idString = typeof id === 'string' ? id : (id && typeof id.toString === 'function' ? id.toString() : null);
-    const objectId = idString && validateObjectId(idString);
-    if (!objectId) throw new Error('Invalid user ID format');
-    const db = await connection.run();
-    try {
-        return await db.collection("users").updateOne(
-            { _id: objectId },
-            { $set: { salt, hashedPassword } }
-        );
-    } catch (error) {
-        console.error('Error linking local account:', error);
-        throw error;
-    }
-};
-
 // Dedicated Google-link helper. updateUser() intentionally strips
 // googleId/salt via forbiddenFields, so linking needs its own
 // allow-listed $set. Only call after ownership is verified
-// (same Google identity, or explicit password proof while authed).
+// (same verified Google identity with no conflicting googleId).
 const linkGoogleAccount = async (id, googleId, extra) => {
     if (!id) throw new Error('id is required');
     if (!googleId) throw new Error('googleId is required');
@@ -141,4 +121,4 @@ const linkGoogleAccount = async (id, googleId, extra) => {
     }
 };
 
-module.exports = { getGoogleUser, findUserById, findUserByEmail, createNewUser, updateUser, deleteUser, linkLocalAccount, linkGoogleAccount }
+module.exports = { getGoogleUser, findUserById, findUserByEmail, createNewUser, updateUser, deleteUser, linkGoogleAccount }
