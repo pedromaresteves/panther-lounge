@@ -3,13 +3,15 @@
 ## 🎯 Purpose
 This file provides essential guidance for working effectively with AI agents on the Panther Lounge project. For detailed information, reference the files in `.agents/`.
 
-## 🔑 Role System
-Every AI response should start with `[ROLE: Default/Developer/QA]`:
-- **Default/Code**: General implementation (feature work, bug fixes)
-- **Developer**: Full-stack focus on quality, security, architecture — use `@builder` subagent (`.opencode/agents/builder.md`)
-- **QA**: Testing focus, bug identification, edge cases — use `@qa-reviewer` subagent (`.opencode/agents/qa-reviewer.md`, read-only)
+## 🤖 Subagents
+- `@builder` (`.opencode/agents/builder.md`, `edit: allow`) — implementation work delegated via `Task`
+- `@qa-reviewer` (`.opencode/agents/qa-reviewer.md`, `edit: deny`, read-only) — review/verification via `Task`
+- Stock `explore`/`general` subagents for read-only recon and multi-step research
 
-To switch roles: "Switch to developer mode" etc. Or invoke directly: `@builder ...`, `@qa-reviewer ...`.
+Authorship: the main agent does all work directly unless it says otherwise.
+When work is delegated, the message states which subagent ran (e.g.
+"Delegated to `@qa-reviewer` via Task — output below"). Silence means
+main-agent work — no role prefixes on messages.
 
 ## 🚀 Quick Start for AI
 When asking for help, reference these files in `.agents/`:
