@@ -9,6 +9,12 @@ Evaluate `base...head` diff on 4 dimensions, each 1-5 with `file:line` evidence.
 ## When to use me
 PR / pre-merge review in Panther Lounge. Run read-only via `@qa-reviewer` (`edit: deny`). Never read `.env`, never edit code.
 
+## Scope (branch-only, enforced)
+- Review ONLY files in `git diff base...head --name-only`. Ignore `node_modules/`, `*.env`.
+- Evidence MUST cite a changed `file:line` from that diff. Pre-existing project issues (old test failures, stale docs elsewhere, unrelated routes) go under `Out of scope notes`, never lower a score.
+- Only lower a score if a touched file introduces the risk or breaks a directly dependent route/query. Docs-only renames score D4 ≤3 unless runtime `curl`/boot proof for touched routes is provided as input.
+- If runtime evidence (`npm start` log, `curl -w "%{http_code}"`, `npm run test` tail) is pasted in chat, accept it for D3/D4 for touched routes only.
+
 ## Inputs
 - `base...head` range, e.g. `master...experiment`. Default: `master...HEAD`.
 - Steps: `git diff base...head --stat`, then full diff for changed files only. Ignore `node_modules/`, `*.env`.
