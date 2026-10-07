@@ -14,7 +14,6 @@ module.exports = {
   },
   linkify: function (name) {
     name = name.toLowerCase();
-    //name = name.normalize('NFD').replace(/[\u0300-\u036f]/g, ""); DON'T KNOW HOW TO DENORMALIZE THE URLS TO SEARCH IN DB LATER, SO I REMOVE THIS
     return name
   },
   capitalizeName: function (string) {
@@ -160,10 +159,9 @@ module.exports = {
 
      while ((match = chordRegex.exec(text)) !== null) {
        const chord = match[1].trim();
-       if (chord === "Gmaj7sus/F#") {
-         console.log(`Bypassing validation for chord: "${chord}"`); // Bypass specific chord
-         continue;
-       }
+        if (chord === "Gmaj7sus/F#") {
+          continue;
+        }
        if (!chordPattern.test(chord) && !sectionPattern.test(chord)) {
          return {
            valid: false,

@@ -22,22 +22,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const numOfSlashes = window.location.pathname.match(/\//g).length;
 
-//CHECK INDEX AND ARTIST PAGE LOCATIONS
+// Index and artist page locations
 if (window.location.pathname.indexOf("/guitar-chords") != -1 && numOfSlashes == 1) {
     guitarChords();
 }
 
-//CHECK ARTIST PAGE LOCATION
+// Artist page location
 if (window.location.pathname.indexOf("/guitar-chords/") != -1 && window.location.pathname.indexOf("add-song") == -1 && numOfSlashes == 2) {
     artistPage();
 }
 
-//CHECK ADD/EDIT SONG PAGE LOCATION AND LOAD SCRIPT
+// Add/edit song page location
 if (window.location.pathname.indexOf("/guitar-chords/add-song") != -1 || window.location.pathname.indexOf("/guitar-chords/edit-song") != -1) {
     addOrEditSong();
 }
 
-//SONG
+// Song page
 if (window.location.pathname.indexOf("/guitar-chords") != -1
     && window.location.pathname.indexOf("/add-song") == -1
     && window.location.pathname.indexOf("/edit-song") == -1
@@ -45,7 +45,7 @@ if (window.location.pathname.indexOf("/guitar-chords") != -1
     songPong();
 }
 
-//PROFILE
+// Profile page
 if (window.location.pathname.indexOf("/profile") != -1) {
     profile();
 }
