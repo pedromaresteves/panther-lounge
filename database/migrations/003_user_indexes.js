@@ -1,4 +1,4 @@
-// database/migrations/002_user_indexes.js
+// database/migrations/003_user_indexes.js
 // User collection indexes for email and Google authentication
 // Run once in migration
 

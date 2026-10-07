@@ -2,7 +2,6 @@
 
 const assert = require('assert');
 const utils = require('../../utils/utils');
-const { convertDeltaToPlainText } = require('../../database/migrations/003_convert_quill_to_plaintext');
 
 describe('Chord Utilities', () => {
     describe('parseChords()', () => {
@@ -136,48 +135,6 @@ describe('Chord Utilities', () => {
         it('should bypass Gmaj7sus/F# chord', () => {
             const result = utils.validateChordSyntax('[Gmaj7sus/F#]Lyric');
             assert.deepStrictEqual(result, { valid: true, error: null });
-        });
-    });
-    
-    describe('convertDeltaToPlainText()', () => {
-        it('should convert Quill Delta to plain text with chord syntax', () => {
-            const deltaOps = [
-                { insert: "Em", attributes: { bold: true } },
-                { insert: "\nVerse 1\n" },
-                { insert: "Am", attributes: { bold: true } },
-                { insert: "\nLyric line\n" }
-            ];
-            const result = convertDeltaToPlainText(deltaOps);
-            assert.strictEqual(result, "[Em]\nVerse 1\n[Am]\nLyric line");
-        });
-        
-        it('should handle mixed chords and lyrics on same line', () => {
-            const deltaOps = [
-                { insert: "Em", attributes: { bold: true } },
-                { insert: " Verse 1\n" }
-            ];
-            const result = convertDeltaToPlainText(deltaOps);
-            assert.strictEqual(result, "[Em] Verse 1");
-        });
-        
-        it('should handle empty delta', () => {
-            const result = convertDeltaToPlainText([]);
-            assert.strictEqual(result, "");
-        });
-
-        it('should handle null delta', () => {
-            const result = convertDeltaToPlainText(null);
-            assert.strictEqual(result, "");
-        });
-
-        it('should handle undefined delta', () => {
-            const result = convertDeltaToPlainText(undefined);
-            assert.strictEqual(result, "");
-        });
-
-        it('should handle non-array delta', () => {
-            const result = convertDeltaToPlainText({});
-            assert.strictEqual(result, "");
         });
     });
 });
